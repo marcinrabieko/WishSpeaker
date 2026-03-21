@@ -1,0 +1,39 @@
+import SwiftUI
+
+struct PrimaryButton: View {
+    let title: String
+    let action: () -> Void
+    var isEnabled: Bool = true
+
+    @State private var isPressed = false
+
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .font(.system(size: 17, weight: .semibold))
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .frame(height: WSSize.buttonHeight)
+                .background(isEnabled ? Color.wsAccent : Color.wsAccent.opacity(0.5))
+                .cornerRadius(WSRadius.button)
+        }
+        .buttonStyle(ScaleButtonStyle())
+        .disabled(!isEnabled)
+    }
+}
+
+struct ScaleButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
+            .animation(.easeInOut(duration: 0.15), value: configuration.isPressed)
+    }
+}
+
+#Preview {
+    VStack(spacing: WSSpacing.sm) {
+        PrimaryButton(title: "Create a Wish") {}
+        PrimaryButton(title: "Disabled", action: {}, isEnabled: false)
+    }
+    .padding(.horizontal, WSSpacing.horizontalPadding)
+}

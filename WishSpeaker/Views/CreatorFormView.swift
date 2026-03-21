@@ -6,123 +6,81 @@ struct CreatorFormView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 20) {
-                // Recipient Name
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Recipient Name")
-                        .font(.subheadline)
-                    TextField("e.g. Gregory", text: $appState.currentForm.recipientName)
-                        .textFieldStyle(.roundedBorder)
-                }
-
-                // Occasion
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Occasion")
-                        .font(.subheadline)
-                    TextField("e.g. Birthday", text: $appState.currentForm.occasion)
-                        .textFieldStyle(.roundedBorder)
-                }
-
-                // Age (optional)
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Age (optional)")
-                        .font(.subheadline)
-                    TextField("e.g. 40", text: $appState.currentForm.age)
-                        .textFieldStyle(.roundedBorder)
-                        .keyboardType(.numberPad)
-                }
-
-                // Tone
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Tone")
-                        .font(.subheadline)
-                    TextField("e.g. Funny", text: $appState.currentForm.tone)
-                        .textFieldStyle(.roundedBorder)
-                }
-
-                // From
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("From")
-                        .font(.subheadline)
-                    TextField("e.g. Marcin", text: $appState.currentForm.fromPerson)
-                        .textFieldStyle(.roundedBorder)
-                }
-
-                // Relation
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Relation")
-                        .font(.subheadline)
-                    TextField("e.g. Brother-in-law", text: $appState.currentForm.relation)
-                        .textFieldStyle(.roundedBorder)
-                }
-
-                // Note about the person
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Note about the person")
-                        .font(.subheadline)
-                    TextEditor(text: $appState.currentForm.note)
-                        .frame(minHeight: 100)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+            VStack(spacing: WSSpacing.lg) {
+                // Recipient Section
+                FormSection(title: "Recipient") {
+                    VStack(spacing: WSSpacing.sm) {
+                        FormInput(
+                            label: "Recipient Name",
+                            placeholder: "e.g. Gregory",
+                            text: $appState.currentForm.recipientName
                         )
-                        .overlay(
-                            Group {
-                                if appState.currentForm.note.isEmpty {
-                                    Text("e.g. Runs a paving company, hardworking and dreams about owning a quad.")
-                                        .foregroundColor(.gray.opacity(0.5))
-                                        .padding(8)
-                                        .allowsHitTesting(false)
-                                }
-                            },
-                            alignment: .topLeading
+
+                        FormInput(
+                            label: "Occasion",
+                            placeholder: "e.g. Birthday",
+                            text: $appState.currentForm.occasion
                         )
-                }
 
-                // Voice selection
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Voice")
-                        .font(.subheadline)
-
-                    HStack(spacing: 12) {
-                        Button(action: {
-                            appState.currentForm.voiceGender = .male
-                        }) {
-                            Text("Male Voice")
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(appState.currentForm.voiceGender == .male ? Color.gray.opacity(0.4) : Color.gray.opacity(0.2))
-                                .cornerRadius(8)
-                        }
-                        .buttonStyle(.plain)
-
-                        Button(action: {
-                            appState.currentForm.voiceGender = .female
-                        }) {
-                            Text("Female Voice")
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(appState.currentForm.voiceGender == .female ? Color.gray.opacity(0.4) : Color.gray.opacity(0.2))
-                                .cornerRadius(8)
-                        }
-                        .buttonStyle(.plain)
+                        FormInput(
+                            label: "Age (optional)",
+                            placeholder: "e.g. 40",
+                            text: $appState.currentForm.age,
+                            keyboardType: .numberPad
+                        )
                     }
                 }
 
-                // Generate button
-                Button(action: generateWish) {
-                    Text("Generate Wishes")
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.gray.opacity(0.3))
-                        .cornerRadius(8)
+                // Context Section
+                FormSection(title: "Context") {
+                    VStack(spacing: WSSpacing.sm) {
+                        FormInput(
+                            label: "Tone",
+                            placeholder: "e.g. Funny",
+                            text: $appState.currentForm.tone
+                        )
+
+                        FormInput(
+                            label: "Relation",
+                            placeholder: "e.g. Brother-in-law",
+                            text: $appState.currentForm.relation
+                        )
+
+                        FormInput(
+                            label: "From",
+                            placeholder: "e.g. Marcin",
+                            text: $appState.currentForm.fromPerson
+                        )
+                    }
                 }
-                .buttonStyle(.plain)
-                .padding(.top, 20)
+
+                // About Section
+                FormSection(title: "About the Person") {
+                    FormInput(
+                        label: "Note about the person",
+                        placeholder: "Runs a paving company, hardworking and dreams about owning a quad.",
+                        text: $appState.currentForm.note,
+                        isMultiline: true
+                    )
+                }
+
+                // Voice Selection
+                FormSection(title: "Voice") {
+                    VoiceSelector(selectedGender: $appState.currentForm.voiceGender)
+                }
+
+                // Generate Button
+                PrimaryButton(title: "Generate Wish") {
+                    generateWish()
+                }
+                .padding(.top, WSSpacing.sm)
             }
-            .padding()
+            .padding(.horizontal, WSSpacing.horizontalPadding)
+            .padding(.vertical, WSSpacing.md)
         }
+        .background(Color.wsBackground)
         .navigationTitle("Create Wish")
+        .navigationBarTitleDisplayMode(.large)
         .navigationDestination(isPresented: $navigateToPreview) {
             GeneratedPreviewView()
         }
@@ -131,6 +89,58 @@ struct CreatorFormView: View {
     private func generateWish() {
         appState.generatedText = MockWishGenerator.shared.generateMockWish(form: appState.currentForm)
         navigateToPreview = true
+    }
+}
+
+struct VoiceSelector: View {
+    @Binding var selectedGender: VoiceGender
+
+    var body: some View {
+        HStack(spacing: WSSpacing.sm) {
+            VoiceOption(
+                title: "Male",
+                icon: "person.fill",
+                isSelected: selectedGender == .male
+            ) {
+                selectedGender = .male
+            }
+
+            VoiceOption(
+                title: "Female",
+                icon: "person.fill",
+                isSelected: selectedGender == .female
+            ) {
+                selectedGender = .female
+            }
+        }
+    }
+}
+
+struct VoiceOption: View {
+    let title: String
+    let icon: String
+    let isSelected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: WSSpacing.xs) {
+                Image(systemName: icon)
+                    .font(.system(size: 24))
+                Text(title)
+                    .font(.system(size: 15, weight: .medium))
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, WSSpacing.sm)
+            .foregroundColor(isSelected ? .white : .wsPrimaryText)
+            .background(isSelected ? Color.wsAccent : Color.wsSecondaryBackground)
+            .cornerRadius(WSRadius.button)
+            .overlay(
+                RoundedRectangle(cornerRadius: WSRadius.button)
+                    .stroke(isSelected ? Color.clear : Color.gray.opacity(0.2), lineWidth: 1)
+            )
+        }
+        .buttonStyle(ScaleButtonStyle())
     }
 }
 

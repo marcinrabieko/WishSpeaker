@@ -14,50 +14,21 @@ struct FinalWishView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 24) {
-                // Title
-                Text("Wish for \(appState.currentForm.recipientName)")
-                    .font(.title2)
-                    .fontWeight(.bold)
+            VStack(spacing: WSSpacing.md) {
+                // WishCard with full details
+                WishCard(wish: wish, showFullDetails: true)
 
-                // Voice info
-                HStack {
-                    Image(systemName: "waveform")
-                    Text("\(appState.currentForm.voiceGender.rawValue) Voice")
-                }
-                .font(.subheadline)
-
-                // Audio player
-                AudioPlayerView()
-
-                // Transcript section
-                DisclosureGroup("Show Transcript") {
-                    Text(appState.generatedText)
-                        .font(.body)
-                        .padding(.top, 8)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .padding()
-                .background(Color.gray.opacity(0.05))
-                .cornerRadius(12)
-
-                // Package info
+                // Package summary
                 if let package = appState.selectedPackage {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Package: \(package.name)")
-                            .font(.subheadline)
-                        Text(String(format: "Price: $%.2f", package.price))
-                            .font(.subheadline)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
-                    .background(Color.gray.opacity(0.05))
-                    .cornerRadius(12)
+                    PackageSummaryCard(package: package)
                 }
             }
-            .padding()
+            .padding(.horizontal, WSSpacing.horizontalPadding)
+            .padding(.vertical, WSSpacing.md)
         }
+        .background(Color.wsBackground)
         .navigationTitle("Your Wish")
+        .navigationBarTitleDisplayMode(.large)
         .onAppear {
             if !hasBeenSaved {
                 appState.saveWish()
@@ -67,69 +38,74 @@ struct FinalWishView: View {
     }
 }
 
+struct PackageSummaryCard: View {
+    let package: PremiumPackage
+
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: WSSpacing.xxs) {
+                Text("Package")
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(.wsSecondaryText)
+                    .textCase(.uppercase)
+
+                Text(package.name)
+                    .font(.system(size: 17, weight: .semibold))
+                    .foregroundColor(.wsPrimaryText)
+            }
+
+            Spacer()
+
+            Text(String(format: "$%.2f", package.price))
+                .font(.system(size: 20, weight: .bold))
+                .foregroundColor(.wsAccent)
+        }
+        .padding(WSSpacing.md)
+        .background(Color.wsSecondaryBackground)
+        .cornerRadius(WSRadius.card)
+        .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 2)
+    }
+}
+
 // Variant for viewing existing wishes from library
 struct SavedWishDetailView: View {
     let wish: Wish
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 24) {
-                // Title
-                Text("Wish for \(wish.recipientName)")
-                    .font(.title2)
-                    .fontWeight(.bold)
-
-                // Voice info
-                HStack {
-                    Image(systemName: "waveform")
-                    Text("\(wish.voiceGender.rawValue) Voice")
-                }
-                .font(.subheadline)
-
-                // Audio player
-                AudioPlayerView()
-
-                // Transcript section
-                DisclosureGroup("Show Transcript") {
-                    Text(wish.generatedText)
-                        .font(.body)
-                        .padding(.top, 8)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .padding()
-                .background(Color.gray.opacity(0.05))
-                .cornerRadius(12)
+            VStack(spacing: WSSpacing.md) {
+                // WishCard with full details
+                WishCard(wish: wish, showFullDetails: true)
 
                 // Package info
                 if let package = wish.selectedPackage {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Package: \(package.name)")
-                            .font(.subheadline)
-                        Text(String(format: "Price: $%.2f", package.price))
-                            .font(.subheadline)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
-                    .background(Color.gray.opacity(0.05))
-                    .cornerRadius(12)
+                    PackageSummaryCard(package: package)
                 }
 
                 // Creation date
-                Text("Created: \(wish.createdAt.formatted(date: .abbreviated, time: .shortened))")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                HStack {
+                    Image(systemName: "calendar")
+                        .font(.system(size: 14))
+                    Text("Created \(wish.createdAt.formatted(date: .abbreviated, time: .shortened))")
+                        .font(.system(size: 14))
+                }
+                .foregroundColor(.wsSecondaryText)
+                .padding(.top, WSSpacing.xs)
             }
-            .padding()
+            .padding(.horizontal, WSSpacing.horizontalPadding)
+            .padding(.vertical, WSSpacing.md)
         }
+        .background(Color.wsBackground)
         .navigationTitle("Your Wish")
+        .navigationBarTitleDisplayMode(.large)
     }
 }
 
 #Preview {
     let appState = AppState()
     appState.currentForm = WishForm(
-        recipientName: "Grzegorz",
-        occasion: "Birthday",
+        recipientName: "Gregory",
+        occasion: "40th Birthday",
         age: "40",
         tone: "Funny",
         fromPerson: "Marcin",
@@ -137,8 +113,8 @@ struct SavedWishDetailView: View {
         note: "Runs a paving company",
         voiceGender: .male
     )
-    appState.generatedText = "Dear Grzegorz, on your 40th birthday I wish you all the best!"
-    appState.selectedPackage = PremiumPackage(name: "Premium", description: "High quality", price: 9.99, recommended: true)
+    appState.generatedText = "Gregory, on your 40th birthday I wish you that everything in life aligns as perfectly as the paving stones you lay every day. May your business grow, your projects succeed and your dream of owning a quad finally become reality. All the best from Marcin."
+    appState.selectedPackage = PremiumPackage(name: "Premium", description: "Studio voice", price: 9.99, recommended: true)
 
     return NavigationStack {
         FinalWishView()

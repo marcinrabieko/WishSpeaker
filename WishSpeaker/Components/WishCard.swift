@@ -3,96 +3,163 @@ import SwiftUI
 struct WishCard: View {
     let wish: Wish
     var showFullDetails: Bool = false
+    var isCompact: Bool = false
 
     @State private var showTranscript: Bool = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            // Header info
-            VStack(alignment: .leading, spacing: 8) {
-                Text("To: \(wish.recipientName)")
-                    .font(.headline)
+        VStack(alignment: .leading, spacing: WSSpacing.sm) {
+            // Header
+            VStack(alignment: .leading, spacing: WSSpacing.xs) {
+                Text("Wish for \(wish.recipientName)")
+                    .font(.system(size: isCompact ? 17 : 20, weight: .semibold))
+                    .foregroundColor(.wsPrimaryText)
 
-                HStack {
-                    Label(wish.occasion, systemImage: "gift")
-                    Spacer()
-                    Label(wish.tone, systemImage: "sparkles")
-                }
-                .font(.subheadline)
+                HStack(spacing: WSSpacing.xs) {
+                    Text(wish.occasion)
+                        .font(.system(size: 15))
+                        .foregroundColor(.wsSecondaryText)
 
-                HStack {
-                    Label(wish.voiceGender.rawValue + " Voice", systemImage: "waveform")
-                    Spacer()
-                    if !wish.fromPerson.isEmpty {
-                        Text("From: \(wish.fromPerson)")
-                            .font(.subheadline)
-                    }
+                    Text("•")
+                        .foregroundColor(.wsSecondaryText)
+
+                    Text(wish.tone)
+                        .font(.system(size: 15))
+                        .foregroundColor(.wsSecondaryText)
                 }
             }
 
-            // Text preview (when not showing full details)
-            if !showFullDetails {
-                Text(wish.generatedText.prefix(100) + (wish.generatedText.count > 100 ? "..." : ""))
-                    .font(.body)
-                    .foregroundColor(.secondary)
-                    .lineLimit(3)
-            }
-
-            // Audio player (when showing full details)
             if showFullDetails {
+                // Audio player
                 AudioPlayerView()
+                    .padding(.top, WSSpacing.xs)
 
                 // Transcript toggle
-                DisclosureGroup("Show Transcript", isExpanded: $showTranscript) {
-                    Text(wish.generatedText)
-                        .font(.body)
-                        .padding(.top, 8)
+                Button(action: {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        showTranscript.toggle()
+                    }
+                }) {
+                    HStack {
+                        Text(showTranscript ? "Hide Transcript" : "Show Transcript")
+                            .font(.system(size: 15, weight: .medium))
+                            .foregroundColor(.wsAccent)
+
+                        Spacer()
+
+                        Image(systemName: showTranscript ? "chevron.up" : "chevron.down")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundColor(.wsAccent)
+                    }
+                    .padding(.vertical, WSSpacing.xs)
                 }
+
+                if showTranscript {
+                    Text(wish.generatedText)
+                        .font(.system(size: 15))
+                        .foregroundColor(.wsPrimaryText)
+                        .lineSpacing(4)
+                        .padding(.top, WSSpacing.xs)
+                }
+            } else {
+                // Preview text for list view
+                Text(wish.generatedText.prefix(100) + (wish.generatedText.count > 100 ? "..." : ""))
+                    .font(.system(size: 15))
+                    .foregroundColor(.wsSecondaryText)
+                    .lineSpacing(2)
+                    .lineLimit(2)
             }
         }
-        .padding()
-        .background(Color.gray.opacity(0.05))
-        .cornerRadius(12)
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-        )
+        .padding(WSSpacing.md)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.wsSecondaryBackground)
+        .cornerRadius(WSRadius.card)
+        .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 2)
+    }
+}
+
+// Simplified card for list items
+struct WishListCard: View {
+    let wish: Wish
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: WSSpacing.sm) {
+            HStack {
+                VStack(alignment: .leading, spacing: WSSpacing.xxs) {
+                    Text(wish.recipientName)
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundColor(.wsPrimaryText)
+
+                    HStack(spacing: WSSpacing.xs) {
+                        Text(wish.occasion)
+                        Text("•")
+                        Text(wish.tone)
+                    }
+                    .font(.system(size: 14))
+                    .foregroundColor(.wsSecondaryText)
+                }
+
+                Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.wsSecondaryText.opacity(0.5))
+            }
+
+            HStack(spacing: WSSpacing.xs) {
+                Image(systemName: "waveform")
+                    .font(.system(size: 12))
+                Text(wish.voiceGender.rawValue)
+                    .font(.system(size: 13))
+            }
+            .foregroundColor(.wsAccent)
+
+            Text(wish.generatedText.prefix(80) + (wish.generatedText.count > 80 ? "..." : ""))
+                .font(.system(size: 14))
+                .foregroundColor(.wsSecondaryText)
+                .lineLimit(2)
+        }
+        .padding(WSSpacing.sm)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.wsSecondaryBackground)
+        .cornerRadius(WSRadius.button)
     }
 }
 
 #Preview {
-    VStack {
-        WishCard(
-            wish: Wish(
-                recipientName: "Grzegorz",
-                occasion: "Birthday",
-                age: "40",
-                tone: "Funny",
-                fromPerson: "Marcin",
-                relation: "Brother-in-law",
-                note: "Runs a paving company",
-                voiceGender: .male,
-                generatedText: "Dear Grzegorz, on your 40th birthday I wish you all the best. May your paving business continue to thrive!",
-                selectedPackage: nil
-            ),
-            showFullDetails: false
-        )
+    ScrollView {
+        VStack(spacing: WSSpacing.md) {
+            WishCard(
+                wish: Wish(
+                    recipientName: "Gregory",
+                    occasion: "40th Birthday",
+                    age: "40",
+                    tone: "Funny",
+                    fromPerson: "Marcin",
+                    relation: "Brother-in-law",
+                    note: "Runs a paving company",
+                    voiceGender: .male,
+                    generatedText: "Gregory, on your 40th birthday I wish you that everything in life aligns as perfectly as the paving stones you lay every day. May your business grow, your projects succeed and your dream of owning a quad finally become reality. All the best from Marcin.",
+                    selectedPackage: nil
+                ),
+                showFullDetails: true
+            )
 
-        WishCard(
-            wish: Wish(
-                recipientName: "Grzegorz",
-                occasion: "Birthday",
-                age: "40",
-                tone: "Funny",
-                fromPerson: "Marcin",
-                relation: "Brother-in-law",
-                note: "Runs a paving company",
-                voiceGender: .male,
-                generatedText: "Dear Grzegorz, on your 40th birthday I wish you all the best. May your paving business continue to thrive!",
-                selectedPackage: nil
-            ),
-            showFullDetails: true
-        )
+            WishListCard(
+                wish: Wish(
+                    recipientName: "Gregory",
+                    occasion: "40th Birthday",
+                    age: "40",
+                    tone: "Funny",
+                    fromPerson: "Marcin",
+                    relation: "Brother-in-law",
+                    note: "Runs a paving company",
+                    voiceGender: .male,
+                    generatedText: "Gregory, on your 40th birthday I wish you that everything in life aligns as perfectly as the paving stones you lay every day.",
+                    selectedPackage: nil
+                )
+            )
+        }
+        .padding(.horizontal, WSSpacing.horizontalPadding)
     }
-    .padding()
 }

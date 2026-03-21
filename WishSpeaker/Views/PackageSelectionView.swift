@@ -7,31 +7,28 @@ struct PackageSelectionView: View {
     private let packages: [PremiumPackage] = [
         PremiumPackage(
             name: "Basic",
-            description: "Standard quality audio with basic voice options",
+            description: "Standard AI voice",
             price: 4.99,
             recommended: false
         ),
         PremiumPackage(
             name: "Premium",
-            description: "High quality audio with premium voice selection",
+            description: "Studio voice",
             price: 9.99,
             recommended: true
         ),
         PremiumPackage(
             name: "Premium Plus",
-            description: "Ultra quality audio with all voice options and priority processing",
+            description: "Studio voice + music",
             price: 14.99,
             recommended: false
         )
     ]
 
     var body: some View {
-        VStack(spacing: 24) {
-            Text("Select a Package")
-                .font(.headline)
-
+        VStack(spacing: 0) {
             ScrollView {
-                VStack(spacing: 16) {
+                VStack(spacing: WSSpacing.sm) {
                     ForEach(packages) { package in
                         PackageCard(
                             package: package,
@@ -42,24 +39,21 @@ struct PackageSelectionView: View {
                         )
                     }
                 }
+                .padding(.horizontal, WSSpacing.horizontalPadding)
+                .padding(.top, WSSpacing.sm)
             }
 
             Spacer()
 
-            Button(action: {
+            PrimaryButton(title: "Continue", action: {
                 navigateToFinal = true
-            }) {
-                Text("Continue")
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(appState.selectedPackage != nil ? Color.gray.opacity(0.3) : Color.gray.opacity(0.15))
-                    .cornerRadius(8)
-            }
-            .buttonStyle(.plain)
-            .disabled(appState.selectedPackage == nil)
+            }, isEnabled: appState.selectedPackage != nil)
+            .padding(.horizontal, WSSpacing.horizontalPadding)
+            .padding(.bottom, WSSpacing.lg)
         }
-        .padding()
-        .navigationTitle("Packages")
+        .background(Color.wsBackground)
+        .navigationTitle("Select a Package")
+        .navigationBarTitleDisplayMode(.large)
         .navigationDestination(isPresented: $navigateToFinal) {
             FinalWishView()
         }
@@ -73,41 +67,49 @@ struct PackageCard: View {
 
     var body: some View {
         Button(action: onSelect) {
-            VStack(alignment: .leading, spacing: 8) {
-                HStack {
-                    Text(package.name)
-                        .font(.headline)
+            VStack(alignment: .leading, spacing: WSSpacing.sm) {
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: WSSpacing.xxs) {
+                        Text(package.name)
+                            .font(.system(size: 20, weight: .semibold))
+                            .foregroundColor(.wsPrimaryText)
+
+                        Text(package.description)
+                            .font(.system(size: 15))
+                            .foregroundColor(.wsSecondaryText)
+                    }
 
                     Spacer()
 
                     if package.recommended {
                         Text("Recommended")
-                            .font(.caption)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(Color.gray.opacity(0.3))
-                            .cornerRadius(4)
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, WSSpacing.xs)
+                            .padding(.vertical, WSSpacing.xxs)
+                            .background(Color.wsAccent)
+                            .cornerRadius(6)
                     }
                 }
 
-                Text(package.description)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-
                 Text(String(format: "$%.2f", package.price))
-                    .font(.title2)
-                    .fontWeight(.semibold)
+                    .font(.system(size: 28, weight: .bold))
+                    .foregroundColor(.wsPrimaryText)
             }
-            .padding()
+            .padding(WSSpacing.md)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(isSelected ? Color.gray.opacity(0.2) : Color.gray.opacity(0.05))
-            .cornerRadius(12)
+            .background(Color.wsSecondaryBackground)
+            .cornerRadius(WSRadius.card)
             .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(isSelected ? Color.gray : Color.gray.opacity(0.2), lineWidth: isSelected ? 2 : 1)
+                RoundedRectangle(cornerRadius: WSRadius.card)
+                    .stroke(
+                        isSelected ? Color.wsAccent : (package.recommended ? Color.wsAccent.opacity(0.3) : Color.clear),
+                        lineWidth: isSelected ? 2.5 : 1.5
+                    )
             )
+            .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 2)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(ScaleButtonStyle())
     }
 }
 

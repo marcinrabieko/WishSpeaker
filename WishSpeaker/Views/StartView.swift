@@ -2,56 +2,94 @@ import SwiftUI
 
 struct StartView: View {
     @EnvironmentObject var appState: AppState
+    @State private var navigateToCreator = false
+    @State private var navigateToExamples = false
+    @State private var navigateToMyWishes = false
 
     var body: some View {
-        VStack(spacing: 32) {
+        VStack(spacing: 0) {
             Spacer()
+
+            // Icon
+            Image(systemName: "waveform.circle.fill")
+                .font(.system(size: 80))
+                .foregroundColor(.wsAccent)
+                .padding(.bottom, WSSpacing.md)
 
             // Title
             Text("WishSpeaker")
-                .font(.largeTitle)
-                .fontWeight(.bold)
+                .font(.system(size: 34, weight: .bold))
+                .foregroundColor(.wsPrimaryText)
+                .padding(.bottom, WSSpacing.xs)
+
+            // Subtitle
+            Text("Create AI voice wishes for any occasion")
+                .font(.system(size: 17))
+                .foregroundColor(.wsSecondaryText)
+                .multilineTextAlignment(.center)
 
             Spacer()
 
-            // Navigation buttons
-            VStack(spacing: 16) {
-                NavigationLink(destination: CreatorFormView()) {
-                    Text("Create Wishes")
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(8)
+            // Buttons
+            VStack(spacing: WSSpacing.sm) {
+                PrimaryButton(title: "Create a Wish") {
+                    navigateToCreator = true
                 }
-                .buttonStyle(.plain)
 
-                NavigationLink(destination: ExampleWishesView()) {
-                    Text("Example Wishes")
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(8)
+                SecondaryButton(title: "Hear Examples") {
+                    navigateToExamples = true
                 }
-                .buttonStyle(.plain)
 
-                // My Wishes button - only visible after generating at least one wish
                 if appState.hasGeneratedWish {
-                    NavigationLink(destination: MyWishesView()) {
-                        Text("My Wishes")
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.gray.opacity(0.2))
-                            .cornerRadius(8)
+                    SecondaryButton(title: "My Wishes") {
+                        navigateToMyWishes = true
                     }
-                    .buttonStyle(.plain)
                 }
             }
-            .padding(.horizontal)
+            .padding(.horizontal, WSSpacing.horizontalPadding)
+
+            Spacer()
+
+            // Feature list
+            VStack(spacing: WSSpacing.sm) {
+                FeatureRow(icon: "sparkles", text: "Personal voice messages")
+                FeatureRow(icon: "bolt.fill", text: "Generated in seconds")
+                FeatureRow(icon: "gift.fill", text: "Perfect for any occasion")
+            }
+            .padding(.horizontal, WSSpacing.horizontalPadding)
+            .padding(.bottom, WSSpacing.xl)
+        }
+        .background(Color.wsBackground)
+        .navigationBarHidden(true)
+        .navigationDestination(isPresented: $navigateToCreator) {
+            CreatorFormView()
+        }
+        .navigationDestination(isPresented: $navigateToExamples) {
+            ExampleWishesView()
+        }
+        .navigationDestination(isPresented: $navigateToMyWishes) {
+            MyWishesView()
+        }
+    }
+}
+
+struct FeatureRow: View {
+    let icon: String
+    let text: String
+
+    var body: some View {
+        HStack(spacing: WSSpacing.sm) {
+            Image(systemName: icon)
+                .font(.system(size: 16))
+                .foregroundColor(.wsAccent)
+                .frame(width: 24)
+
+            Text(text)
+                .font(.system(size: 15))
+                .foregroundColor(.wsSecondaryText)
 
             Spacer()
         }
-        .navigationTitle("")
-        .navigationBarHidden(true)
     }
 }
 

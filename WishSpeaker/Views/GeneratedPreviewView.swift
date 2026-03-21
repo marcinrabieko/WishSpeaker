@@ -5,44 +5,46 @@ struct GeneratedPreviewView: View {
     @State private var navigateToPackages = false
 
     var body: some View {
-        VStack(spacing: 24) {
-            // Generated text display
+        VStack(spacing: 0) {
             ScrollView {
-                Text(appState.generatedText)
-                    .font(.body)
-                    .padding()
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(12)
+                VStack(alignment: .leading, spacing: WSSpacing.md) {
+                    // Title
+                    Text("Your Generated Wish")
+                        .font(.system(size: 22, weight: .bold))
+                        .foregroundColor(.wsPrimaryText)
+                        .padding(.top, WSSpacing.sm)
+
+                    // Generated text card
+                    Text(appState.generatedText)
+                        .font(.system(size: 17))
+                        .foregroundColor(.wsPrimaryText)
+                        .lineSpacing(6)
+                        .padding(WSSpacing.md)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(Color.wsSecondaryBackground)
+                        .cornerRadius(WSRadius.card)
+                }
+                .padding(.horizontal, WSSpacing.horizontalPadding)
             }
 
             Spacer()
 
             // Action buttons
-            VStack(spacing: 12) {
-                Button(action: regenerateWish) {
-                    Text("Generate Again")
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(8)
+            VStack(spacing: WSSpacing.sm) {
+                SecondaryButton(title: "Generate Again") {
+                    regenerateWish()
                 }
-                .buttonStyle(.plain)
 
-                Button(action: {
+                PrimaryButton(title: "Continue") {
                     navigateToPackages = true
-                }) {
-                    Text("Continue")
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.gray.opacity(0.3))
-                        .cornerRadius(8)
                 }
-                .buttonStyle(.plain)
             }
+            .padding(.horizontal, WSSpacing.horizontalPadding)
+            .padding(.bottom, WSSpacing.lg)
         }
-        .padding()
+        .background(Color.wsBackground)
         .navigationTitle("Preview")
+        .navigationBarTitleDisplayMode(.large)
         .navigationDestination(isPresented: $navigateToPackages) {
             PackageSelectionView()
         }
@@ -55,7 +57,7 @@ struct GeneratedPreviewView: View {
 
 #Preview {
     let appState = AppState()
-    appState.generatedText = "Dear John, on your special Birthday, I wish you all the best. May this day bring you joy and happiness. With warm wishes, Jane (your friend)"
+    appState.generatedText = "Dear Gregory, on your 40th birthday I wish you that everything in life aligns as perfectly as the paving stones you lay every day. May your business grow, your projects succeed and your dream of owning a quad finally become reality. All the best from Marcin."
 
     return NavigationStack {
         GeneratedPreviewView()

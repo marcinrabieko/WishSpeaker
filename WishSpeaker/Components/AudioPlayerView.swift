@@ -8,19 +8,17 @@ class AudioPlayerViewModel: ObservableObject {
 
     private var player: AVPlayer?
     private var timeObserver: Any?
+    private var simulationTimer: Timer?
 
     init() {
         setupPlayer()
     }
 
     private func setupPlayer() {
-        // In a real app, this would load the actual audio file
-        // For the prototype, we use a mock implementation
         if let url = Bundle.main.url(forResource: "example_audio", withExtension: "mp4") {
             player = AVPlayer(url: url)
             setupTimeObserver()
         } else {
-            // Mock duration for prototype
             duration = 30.0
         }
     }
@@ -28,7 +26,7 @@ class AudioPlayerViewModel: ObservableObject {
     private func setupTimeObserver() {
         guard let player = player else { return }
 
-        let interval = CMTime(seconds: 0.5, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
+        let interval = CMTime(seconds: 0.1, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
         timeObserver = player.addPeriodicTimeObserver(forInterval: interval, queue: .main) { [weak self] time in
             self?.currentTime = time.seconds
         }
@@ -52,7 +50,6 @@ class AudioPlayerViewModel: ObservableObject {
         }
         isPlaying = true
 
-        // Mock playback for prototype without actual audio file
         if player == nil {
             simulatePlayback()
         }
@@ -61,11 +58,20 @@ class AudioPlayerViewModel: ObservableObject {
     func pause() {
         player?.pause()
         isPlaying = false
+        simulationTimer?.invalidate()
+    }
+
+    func seek(to progress: Double) {
+        let targetTime = progress * duration
+        currentTime = targetTime
+        if let player = player {
+            player.seek(to: CMTime(seconds: targetTime, preferredTimescale: CMTimeScale(NSEC_PER_SEC)))
+        }
     }
 
     private func simulatePlayback() {
-        // Simulate playback progress for prototype
-        Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] timer in
+        simulationTimer?.invalidate()
+        simulationTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] timer in
             guard let self = self else {
                 timer.invalidate()
                 return
@@ -76,7 +82,7 @@ class AudioPlayerViewModel: ObservableObject {
                 return
             }
 
-            self.currentTime += 0.5
+            self.currentTime += 0.1
             if self.currentTime >= self.duration {
                 self.currentTime = 0
                 self.isPlaying = false
@@ -89,6 +95,7 @@ class AudioPlayerViewModel: ObservableObject {
         if let observer = timeObserver {
             player?.removeTimeObserver(observer)
         }
+        simulationTimer?.invalidate()
     }
 }
 
@@ -96,36 +103,67 @@ struct AudioPlayerView: View {
     @StateObject private var viewModel = AudioPlayerViewModel()
 
     var body: some View {
-        VStack(spacing: 12) {
-            // Progress bar
-            ProgressView(value: viewModel.currentTime, total: viewModel.duration)
-
-            HStack {
-                Text(formatTime(viewModel.currentTime))
-                    .font(.caption)
-                Spacer()
-                Text(formatTime(viewModel.duration))
-                    .font(.caption)
-            }
-
+        HStack(spacing: WSSpacing.sm) {
             // Play/Pause button
             Button(action: {
                 viewModel.togglePlayPause()
             }) {
-                HStack {
+                ZStack {
+                    Circle()
+                        .fill(Color.wsAccent)
+                        .frame(width: 52, height: 52)
+
                     Image(systemName: viewModel.isPlaying ? "pause.fill" : "play.fill")
-                    Text(viewModel.isPlaying ? "Pause" : "Play")
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundColor(.white)
+                        .offset(x: viewModel.isPlaying ? 0 : 2)
                 }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(Color.gray.opacity(0.2))
-                .cornerRadius(8)
             }
-            .buttonStyle(.plain)
+            .buttonStyle(ScaleButtonStyle())
+
+            VStack(spacing: WSSpacing.xs) {
+                // Progress bar
+                GeometryReader { geometry in
+                    ZStack(alignment: .leading) {
+                        // Track
+                        Capsule()
+                            .fill(Color.gray.opacity(0.2))
+                            .frame(height: 4)
+
+                        // Progress
+                        Capsule()
+                            .fill(Color.wsAccent)
+                            .frame(width: max(0, geometry.size.width * (viewModel.currentTime / viewModel.duration)), height: 4)
+                    }
+                    .gesture(
+                        DragGesture(minimumDistance: 0)
+                            .onChanged { value in
+                                let progress = min(max(0, value.location.x / geometry.size.width), 1)
+                                viewModel.seek(to: progress)
+                            }
+                    )
+                }
+                .frame(height: 4)
+
+                // Time labels
+                HStack {
+                    Text(formatTime(viewModel.currentTime))
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundColor(.wsSecondaryText)
+                        .monospacedDigit()
+
+                    Spacer()
+
+                    Text(formatTime(viewModel.duration))
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundColor(.wsSecondaryText)
+                        .monospacedDigit()
+                }
+            }
         }
-        .padding()
-        .background(Color.gray.opacity(0.1))
-        .cornerRadius(12)
+        .padding(WSSpacing.sm)
+        .background(Color.wsSecondaryBackground)
+        .cornerRadius(WSRadius.button)
     }
 
     private func formatTime(_ time: TimeInterval) -> String {
@@ -137,5 +175,5 @@ struct AudioPlayerView: View {
 
 #Preview {
     AudioPlayerView()
-        .padding()
+        .padding(.horizontal, WSSpacing.horizontalPadding)
 }

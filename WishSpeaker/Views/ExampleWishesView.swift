@@ -3,20 +3,24 @@ import SwiftUI
 struct ExampleWishesView: View {
     var body: some View {
         ScrollView {
-            VStack(spacing: 24) {
-                Text("See how WishSpeaker works with these example wishes")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
+            VStack(spacing: WSSpacing.md) {
+                // Subtitle
+                Text("See how WishSpeaker works")
+                    .font(.system(size: 17))
+                    .foregroundColor(.wsSecondaryText)
+                    .padding(.top, WSSpacing.xs)
 
+                // Example cards
                 ForEach(ExampleData.exampleWishes) { wish in
                     ExampleWishCard(wish: wish)
                 }
             }
-            .padding()
+            .padding(.horizontal, WSSpacing.horizontalPadding)
+            .padding(.bottom, WSSpacing.lg)
         }
+        .background(Color.wsBackground)
         .navigationTitle("Example Wishes")
+        .navigationBarTitleDisplayMode(.large)
     }
 }
 
@@ -25,61 +29,75 @@ struct ExampleWishCard: View {
     @State private var showTranscript = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            // Header
-            VStack(alignment: .leading, spacing: 8) {
-                Text("To: \(wish.recipientName)")
-                    .font(.headline)
+        VStack(alignment: .leading, spacing: WSSpacing.sm) {
+            // Header info
+            VStack(alignment: .leading, spacing: WSSpacing.xs) {
+                Text("Wish for \(wish.recipientName)")
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundColor(.wsPrimaryText)
 
-                HStack {
-                    Text("Occasion: \(wish.occasion)")
-                    Spacer()
+                HStack(spacing: WSSpacing.xs) {
+                    Text(wish.occasion)
+                    Text("•")
+                    Text(wish.tone)
                 }
-                .font(.subheadline)
+                .font(.system(size: 15))
+                .foregroundColor(.wsSecondaryText)
 
-                HStack {
-                    Text("Tone: \(wish.tone)")
-                    Spacer()
-                    Text("From: \(wish.fromPerson)")
-                }
-                .font(.subheadline)
-
-                Text("Relation: \(wish.relation)")
-                    .font(.subheadline)
-
-                if !wish.note.isEmpty {
-                    Text("Note: \(wish.note)")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
+                Text("From \(wish.fromPerson)")
+                    .font(.system(size: 14))
+                    .foregroundColor(.wsSecondaryText)
             }
 
-            Divider()
+            // Divider
+            Rectangle()
+                .fill(Color.gray.opacity(0.15))
+                .frame(height: 1)
+                .padding(.vertical, WSSpacing.xs)
 
-            // Voice info
-            HStack {
+            // Voice indicator
+            HStack(spacing: WSSpacing.xs) {
                 Image(systemName: "waveform")
+                    .font(.system(size: 14))
                 Text("\(wish.voiceGender.rawValue) Voice")
+                    .font(.system(size: 14, weight: .medium))
             }
-            .font(.subheadline)
+            .foregroundColor(.wsAccent)
 
             // Audio player
             AudioPlayerView()
 
             // Transcript toggle
-            DisclosureGroup("Show Transcript", isExpanded: $showTranscript) {
+            Button(action: {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    showTranscript.toggle()
+                }
+            }) {
+                HStack {
+                    Text(showTranscript ? "Hide Transcript" : "Show Transcript")
+                        .font(.system(size: 15, weight: .medium))
+                        .foregroundColor(.wsAccent)
+
+                    Spacer()
+
+                    Image(systemName: showTranscript ? "chevron.up" : "chevron.down")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundColor(.wsAccent)
+                }
+                .padding(.vertical, WSSpacing.xs)
+            }
+
+            if showTranscript {
                 Text(wish.generatedText)
-                    .font(.body)
-                    .padding(.top, 8)
+                    .font(.system(size: 15))
+                    .foregroundColor(.wsPrimaryText)
+                    .lineSpacing(4)
             }
         }
-        .padding()
-        .background(Color.gray.opacity(0.05))
-        .cornerRadius(12)
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-        )
+        .padding(WSSpacing.md)
+        .background(Color.wsSecondaryBackground)
+        .cornerRadius(WSRadius.card)
+        .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 2)
     }
 }
 

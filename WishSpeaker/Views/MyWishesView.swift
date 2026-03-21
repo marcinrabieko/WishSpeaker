@@ -6,62 +6,43 @@ struct MyWishesView: View {
     var body: some View {
         Group {
             if appState.generatedWishes.isEmpty {
-                VStack {
-                    Text("No wishes yet")
-                        .foregroundColor(.secondary)
-                    Text("Create your first wish to see it here")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
+                EmptyWishesView()
             } else {
-                List(appState.generatedWishes) { wish in
-                    NavigationLink(destination: SavedWishDetailView(wish: wish)) {
-                        WishListItem(wish: wish)
+                ScrollView {
+                    VStack(spacing: WSSpacing.sm) {
+                        ForEach(appState.generatedWishes) { wish in
+                            NavigationLink(destination: SavedWishDetailView(wish: wish)) {
+                                WishListCard(wish: wish)
+                            }
+                            .buttonStyle(.plain)
+                        }
                     }
+                    .padding(.horizontal, WSSpacing.horizontalPadding)
+                    .padding(.vertical, WSSpacing.sm)
                 }
-                .listStyle(.plain)
             }
         }
+        .background(Color.wsBackground)
         .navigationTitle("My Wishes")
+        .navigationBarTitleDisplayMode(.large)
     }
 }
 
-struct WishListItem: View {
-    let wish: Wish
-
+struct EmptyWishesView: View {
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text(wish.recipientName)
-                    .font(.headline)
-                Spacer()
-                Text(wish.occasion)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
+        VStack(spacing: WSSpacing.sm) {
+            Image(systemName: "waveform.circle")
+                .font(.system(size: 60))
+                .foregroundColor(.wsSecondaryText.opacity(0.5))
 
-            HStack {
-                Text(wish.tone)
-                    .font(.caption)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 2)
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(4)
+            Text("No wishes yet")
+                .font(.system(size: 20, weight: .semibold))
+                .foregroundColor(.wsPrimaryText)
 
-                Text(wish.voiceGender.rawValue)
-                    .font(.caption)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 2)
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(4)
-            }
-
-            Text(wish.generatedText.prefix(80) + (wish.generatedText.count > 80 ? "..." : ""))
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .lineLimit(2)
+            Text("Create your first wish to see it here")
+                .font(.system(size: 15))
+                .foregroundColor(.wsSecondaryText)
         }
-        .padding(.vertical, 4)
     }
 }
 
@@ -69,27 +50,27 @@ struct WishListItem: View {
     let appState = AppState()
     appState.generatedWishes = [
         Wish(
-            recipientName: "Grzegorz",
-            occasion: "Birthday",
+            recipientName: "Gregory",
+            occasion: "40th Birthday",
             age: "40",
             tone: "Funny",
             fromPerson: "Marcin",
             relation: "Brother-in-law",
             note: "Runs a paving company",
             voiceGender: .male,
-            generatedText: "Dear Grzegorz, on your 40th birthday I wish you all the best!",
+            generatedText: "Gregory, on your 40th birthday I wish you that everything in life aligns as perfectly as the paving stones you lay every day.",
             selectedPackage: nil
         ),
         Wish(
             recipientName: "Alicja",
-            occasion: "Birthday",
+            occasion: "35th Birthday",
             age: "35",
             tone: "Elegant",
             fromPerson: "Ewelina",
             relation: "Boss",
             note: "Kind and professional",
             voiceGender: .female,
-            generatedText: "Dear Alicja, wishing you a wonderful birthday!",
+            generatedText: "Alicja, on your 35th birthday I wish you continued success, inspiration and fulfillment both professionally and personally.",
             selectedPackage: nil
         )
     ]
