@@ -4,10 +4,12 @@ import SwiftUI
 
 extension Color {
     static let wsAccent = Color(hex: "6B5CFF")
+    static let wsAccentLight = Color(hex: "8A7CFF")
     static let wsBackground = Color.white
-    static let wsSecondaryBackground = Color(hex: "F2F2F7")
+    static let wsSecondaryBackground = Color(.systemGray6)
     static let wsPrimaryText = Color(hex: "111111")
     static let wsSecondaryText = Color(hex: "6B6B6B")
+    static let wsCardBorder = Color(.systemGray5)
 }
 
 extension Color {
@@ -36,6 +38,22 @@ extension Color {
     }
 }
 
+// MARK: - Gradients
+
+struct WSGradient {
+    static let accent = LinearGradient(
+        colors: [Color(hex: "6B5CFF"), Color(hex: "8A7CFF")],
+        startPoint: .leading,
+        endPoint: .trailing
+    )
+
+    static let accentVertical = LinearGradient(
+        colors: [Color(hex: "6B5CFF"), Color(hex: "8A7CFF")],
+        startPoint: .top,
+        endPoint: .bottom
+    )
+}
+
 // MARK: - Spacing
 
 enum WSSpacing {
@@ -61,4 +79,5 @@ enum WSRadius {
 enum WSSize {
     static let buttonHeight: CGFloat = 56
     static let minTapTarget: CGFloat = 44
+    static let playButtonSize: CGFloat = 64
 }

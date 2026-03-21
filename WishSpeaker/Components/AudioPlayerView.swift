@@ -104,35 +104,36 @@ struct AudioPlayerView: View {
 
     var body: some View {
         HStack(spacing: WSSpacing.sm) {
-            // Play/Pause button
+            // Play/Pause button - larger and gradient
             Button(action: {
                 viewModel.togglePlayPause()
             }) {
                 ZStack {
                     Circle()
-                        .fill(Color.wsAccent)
-                        .frame(width: 52, height: 52)
+                        .fill(WSGradient.accent)
+                        .frame(width: WSSize.playButtonSize, height: WSSize.playButtonSize)
+                        .shadow(color: Color.wsAccent.opacity(0.3), radius: 8, x: 0, y: 4)
 
                     Image(systemName: viewModel.isPlaying ? "pause.fill" : "play.fill")
-                        .font(.system(size: 20, weight: .semibold))
+                        .font(.system(size: 24, weight: .semibold))
                         .foregroundColor(.white)
                         .offset(x: viewModel.isPlaying ? 0 : 2)
                 }
             }
-            .buttonStyle(ScaleButtonStyle())
+            .buttonStyle(PlayButtonStyle())
 
             VStack(spacing: WSSpacing.xs) {
-                // Progress bar
+                // Progress bar with gradient
                 GeometryReader { geometry in
                     ZStack(alignment: .leading) {
                         // Track
                         Capsule()
-                            .fill(Color.gray.opacity(0.2))
+                            .fill(Color(.systemGray5))
                             .frame(height: 4)
 
-                        // Progress
+                        // Progress with gradient
                         Capsule()
-                            .fill(Color.wsAccent)
+                            .fill(WSGradient.accent)
                             .frame(width: max(0, geometry.size.width * (viewModel.currentTime / viewModel.duration)), height: 4)
                     }
                     .gesture(
@@ -162,8 +163,7 @@ struct AudioPlayerView: View {
             }
         }
         .padding(WSSpacing.sm)
-        .background(Color.wsSecondaryBackground)
-        .cornerRadius(WSRadius.button)
+        .padding(.vertical, WSSpacing.xs)
     }
 
     private func formatTime(_ time: TimeInterval) -> String {
@@ -173,7 +173,19 @@ struct AudioPlayerView: View {
     }
 }
 
+struct PlayButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.92 : 1.0)
+            .animation(.spring(response: 0.3, dampingFraction: 0.6), value: configuration.isPressed)
+    }
+}
+
 #Preview {
-    AudioPlayerView()
-        .padding(.horizontal, WSSpacing.horizontalPadding)
+    VStack {
+        AudioPlayerView()
+    }
+    .padding(.horizontal, WSSpacing.horizontalPadding)
+    .padding()
+    .background(Color(.systemGray6))
 }

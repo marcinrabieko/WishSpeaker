@@ -11,12 +11,8 @@ struct SecondaryButton: View {
                 .foregroundColor(.wsPrimaryText)
                 .frame(maxWidth: .infinity)
                 .frame(height: WSSize.buttonHeight)
-                .background(Color.wsSecondaryBackground)
+                .background(Color(.systemGray5))
                 .cornerRadius(WSRadius.button)
-                .overlay(
-                    RoundedRectangle(cornerRadius: WSRadius.button)
-                        .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-                )
         }
         .buttonStyle(ScaleButtonStyle())
     }
@@ -25,6 +21,7 @@ struct SecondaryButton: View {
 #Preview {
     VStack(spacing: WSSpacing.sm) {
         SecondaryButton(title: "Hear Examples") {}
+        SecondaryButton(title: "Generate Again") {}
     }
     .padding(.horizontal, WSSpacing.horizontalPadding)
 }

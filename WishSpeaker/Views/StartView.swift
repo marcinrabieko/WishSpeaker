@@ -10,11 +10,18 @@ struct StartView: View {
         VStack(spacing: 0) {
             Spacer()
 
-            // Icon
-            Image(systemName: "waveform.circle.fill")
-                .font(.system(size: 80))
-                .foregroundColor(.wsAccent)
-                .padding(.bottom, WSSpacing.md)
+            // Icon with gradient
+            ZStack {
+                Circle()
+                    .fill(WSGradient.accent)
+                    .frame(width: 90, height: 90)
+                    .shadow(color: Color.wsAccent.opacity(0.3), radius: 20, x: 0, y: 10)
+
+                Image(systemName: "waveform")
+                    .font(.system(size: 40, weight: .medium))
+                    .foregroundColor(.white)
+            }
+            .padding(.bottom, WSSpacing.md)
 
             // Title
             Text("WishSpeaker")
@@ -80,8 +87,8 @@ struct FeatureRow: View {
     var body: some View {
         HStack(spacing: WSSpacing.sm) {
             Image(systemName: icon)
-                .font(.system(size: 16))
-                .foregroundColor(.wsAccent)
+                .font(.system(size: 16, weight: .medium))
+                .foregroundStyle(WSGradient.accent)
                 .frame(width: 24)
 
             Text(text)

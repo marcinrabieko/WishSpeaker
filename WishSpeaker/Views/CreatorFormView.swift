@@ -133,12 +133,16 @@ struct VoiceOption: View {
             .frame(maxWidth: .infinity)
             .padding(.vertical, WSSpacing.sm)
             .foregroundColor(isSelected ? .white : .wsPrimaryText)
-            .background(isSelected ? Color.wsAccent : Color.wsSecondaryBackground)
-            .cornerRadius(WSRadius.button)
-            .overlay(
-                RoundedRectangle(cornerRadius: WSRadius.button)
-                    .stroke(isSelected ? Color.clear : Color.gray.opacity(0.2), lineWidth: 1)
+            .background(
+                Group {
+                    if isSelected {
+                        WSGradient.accent
+                    } else {
+                        LinearGradient(colors: [Color(.systemGray5)], startPoint: .leading, endPoint: .trailing)
+                    }
+                }
             )
+            .cornerRadius(WSRadius.button)
         }
         .buttonStyle(ScaleButtonStyle())
     }

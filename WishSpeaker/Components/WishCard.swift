@@ -70,11 +70,14 @@ struct WishCard: View {
                     .lineLimit(2)
             }
         }
-        .padding(WSSpacing.md)
+        .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.wsSecondaryBackground)
+        .background(Color(.systemGray6))
         .cornerRadius(WSRadius.card)
-        .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 2)
+        .overlay(
+            RoundedRectangle(cornerRadius: WSRadius.card)
+                .stroke(Color(.systemGray5), lineWidth: 1)
+        )
     }
 }
 
@@ -121,8 +124,12 @@ struct WishListCard: View {
         }
         .padding(WSSpacing.sm)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.wsSecondaryBackground)
+        .background(Color(.systemGray6))
         .cornerRadius(WSRadius.button)
+        .overlay(
+            RoundedRectangle(cornerRadius: WSRadius.button)
+                .stroke(Color(.systemGray5), lineWidth: 1)
+        )
     }
 }
 

@@ -82,13 +82,17 @@ struct PackageCard: View {
                     Spacer()
 
                     if package.recommended {
-                        Text("Recommended")
-                            .font(.system(size: 12, weight: .semibold))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, WSSpacing.xs)
-                            .padding(.vertical, WSSpacing.xxs)
-                            .background(Color.wsAccent)
-                            .cornerRadius(6)
+                        HStack(spacing: 4) {
+                            Image(systemName: "sparkles")
+                                .font(.system(size: 10, weight: .semibold))
+                            Text("Recommended")
+                                .font(.system(size: 12, weight: .semibold))
+                        }
+                        .foregroundColor(.wsAccent)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 4)
+                        .background(Color.wsAccent.opacity(0.15))
+                        .cornerRadius(10)
                     }
                 }
 
@@ -98,16 +102,15 @@ struct PackageCard: View {
             }
             .padding(WSSpacing.md)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color.wsSecondaryBackground)
+            .background(Color(.systemGray6))
             .cornerRadius(WSRadius.card)
             .overlay(
                 RoundedRectangle(cornerRadius: WSRadius.card)
                     .stroke(
-                        isSelected ? Color.wsAccent : (package.recommended ? Color.wsAccent.opacity(0.3) : Color.clear),
-                        lineWidth: isSelected ? 2.5 : 1.5
+                        isSelected ? Color.wsAccent : (package.recommended ? Color.wsAccent : Color(.systemGray5)),
+                        lineWidth: isSelected ? 2 : (package.recommended ? 2 : 1)
                     )
             )
-            .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 2)
         }
         .buttonStyle(ScaleButtonStyle())
     }

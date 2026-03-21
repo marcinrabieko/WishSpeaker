@@ -44,25 +44,29 @@ struct ExampleWishCard: View {
                 .font(.system(size: 15))
                 .foregroundColor(.wsSecondaryText)
 
-                Text("From \(wish.fromPerson)")
-                    .font(.system(size: 14))
-                    .foregroundColor(.wsSecondaryText)
+                HStack(spacing: 4) {
+                    Image(systemName: "person.fill")
+                        .font(.system(size: 12))
+                    Text("From \(wish.fromPerson)")
+                        .font(.system(size: 14))
+                }
+                .foregroundColor(.wsSecondaryText)
             }
 
             // Divider
             Rectangle()
-                .fill(Color.gray.opacity(0.15))
+                .fill(Color(.systemGray5))
                 .frame(height: 1)
                 .padding(.vertical, WSSpacing.xs)
 
-            // Voice indicator
+            // Voice indicator with gradient
             HStack(spacing: WSSpacing.xs) {
                 Image(systemName: "waveform")
                     .font(.system(size: 14))
                 Text("\(wish.voiceGender.rawValue) Voice")
                     .font(.system(size: 14, weight: .medium))
             }
-            .foregroundColor(.wsAccent)
+            .foregroundStyle(WSGradient.accent)
 
             // Audio player
             AudioPlayerView()
@@ -74,9 +78,13 @@ struct ExampleWishCard: View {
                 }
             }) {
                 HStack {
-                    Text(showTranscript ? "Hide Transcript" : "Show Transcript")
-                        .font(.system(size: 15, weight: .medium))
-                        .foregroundColor(.wsAccent)
+                    HStack(spacing: 4) {
+                        Image(systemName: "text.alignleft")
+                            .font(.system(size: 13))
+                        Text(showTranscript ? "Hide Transcript" : "Show Transcript")
+                            .font(.system(size: 15, weight: .medium))
+                    }
+                    .foregroundColor(.wsAccent)
 
                     Spacer()
 
@@ -95,9 +103,12 @@ struct ExampleWishCard: View {
             }
         }
         .padding(WSSpacing.md)
-        .background(Color.wsSecondaryBackground)
+        .background(Color(.systemGray6))
         .cornerRadius(WSRadius.card)
-        .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 2)
+        .overlay(
+            RoundedRectangle(cornerRadius: WSRadius.card)
+                .stroke(Color(.systemGray5), lineWidth: 1)
+        )
     }
 }
 
