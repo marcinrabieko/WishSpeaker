@@ -52,6 +52,12 @@ struct WSGradient {
         startPoint: .top,
         endPoint: .bottom
     )
+	
+	static let sceneVertical = LinearGradient(
+		colors: [.white, Color(hex: "8A7CFF").opacity(0.2)],
+		startPoint: .top,
+		endPoint: .bottom
+	)
 }
 
 // MARK: - Spacing

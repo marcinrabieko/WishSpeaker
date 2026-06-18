@@ -24,7 +24,7 @@ struct OccasionSelectionView: View {
 				.padding(.horizontal, 20)
 				.padding(.bottom, 32)
 			}
-			.background(Color(.systemBackground))
+			.background(WSGradient.sceneVertical)
 			.navigationTitle("Wybierz okazję")
 			.navigationBarTitleDisplayMode(.large)
 		}
@@ -38,20 +38,20 @@ private struct OccasionRowView: View {
 		Button {
 			// TODO: Handle occasion selection.
 		} label: {
-			HStack(spacing: 16) {
+			HStack(spacing: 18) {
 				Image(occasion.iconName)
 					.resizable()
 					.scaledToFit()
-					.frame(width: 38, height: 38)
+					.frame(width: 40, height: 40)
 				
-				VStack(alignment: .leading, spacing: 4) {
+				VStack(alignment: .leading, spacing: 6) {
 					Text(occasion.title)
 						.font(.system(size: 18, weight: .semibold))
 						.foregroundStyle(.primary)
 					
 					Text(occasion.subtitle)
-						.font(.system(size: 15, weight: .regular))
-						.foregroundStyle(Color(.secondaryLabel))
+						.font(.system(size: 15, weight: .medium))
+						.foregroundStyle(.black.opacity(0.5))
 						.lineLimit(2)
 				}
 				
@@ -59,7 +59,7 @@ private struct OccasionRowView: View {
 			}
 			.padding(.horizontal, 16)
 			.frame(height: 68)
-			.background(Color.wsAccentLight.opacity(0.07))
+			.background(Color.wsAccentLight.opacity(0.09))
 			.clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
 		}
 		.buttonStyle(.plain)
