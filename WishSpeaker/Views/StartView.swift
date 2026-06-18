@@ -69,7 +69,7 @@ struct StartView: View {
         .background(Color.wsBackground)
         .navigationBarHidden(true)
         .navigationDestination(isPresented: $navigateToCreator) {
-            CreatorFormView()
+            OccasionSelectionView()
         }
         .navigationDestination(isPresented: $navigateToExamples) {
             ExampleWishesView()

@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		22EA15272FE3365700C519C7 /* OccasionSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22EA15262FE3365000C519C7 /* OccasionSelectionView.swift */; };
+		22EA15292FE3366100C519C7 /* OccasionSelectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22EA15282FE3365A00C519C7 /* OccasionSelectionViewModel.swift */; };
+		22EA152B2FE33DCB00C519C7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22EA152A2FE33DCB00C519C7 /* Assets.xcassets */; };
+		22EA152D2FE34B9D00C519C7 /* Occasion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22EA152C2FE34B9800C519C7 /* Occasion.swift */; };
 		A1000001 /* WishSpeakerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001 /* WishSpeakerApp.swift */; };
 		A1000002 /* Wish.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000002 /* Wish.swift */; };
 		A1000003 /* WishForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000003 /* WishForm.swift */; };
@@ -30,6 +34,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		22EA15262FE3365000C519C7 /* OccasionSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OccasionSelectionView.swift; sourceTree = "<group>"; };
+		22EA15282FE3365A00C519C7 /* OccasionSelectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OccasionSelectionViewModel.swift; sourceTree = "<group>"; };
+		22EA152A2FE33DCB00C519C7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		22EA152C2FE34B9800C519C7 /* Occasion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Occasion.swift; sourceTree = "<group>"; };
 		A2000001 /* WishSpeakerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishSpeakerApp.swift; sourceTree = "<group>"; };
 		A2000002 /* Wish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wish.swift; sourceTree = "<group>"; };
 		A2000003 /* WishForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishForm.swift; sourceTree = "<group>"; };
@@ -64,6 +72,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		22EA15252FE3360600C519C7 /* OccasionSelection */ = {
+			isa = PBXGroup;
+			children = (
+				22EA152C2FE34B9800C519C7 /* Occasion.swift */,
+				22EA15282FE3365A00C519C7 /* OccasionSelectionViewModel.swift */,
+				22EA15262FE3365000C519C7 /* OccasionSelectionView.swift */,
+			);
+			path = OccasionSelection;
+			sourceTree = "<group>";
+		};
 		A5000001 = {
 			isa = PBXGroup;
 			children = (
@@ -75,6 +93,7 @@
 		A5000002 /* WishSpeaker */ = {
 			isa = PBXGroup;
 			children = (
+				22EA15252FE3360600C519C7 /* OccasionSelection */,
 				A2000001 /* WishSpeakerApp.swift */,
 				A2000017 /* DesignSystem.swift */,
 				A5000004 /* Models */,
@@ -83,6 +102,7 @@
 				A5000007 /* Components */,
 				A5000008 /* Views */,
 				A5000009 /* Mock */,
+				22EA152A2FE33DCB00C519C7 /* Assets.xcassets */,
 			);
 			path = WishSpeaker;
 			sourceTree = "<group>";
@@ -213,6 +233,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22EA152B2FE33DCB00C519C7 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -229,13 +250,16 @@
 				A1000003 /* WishForm.swift in Sources */,
 				A1000004 /* PremiumPackage.swift in Sources */,
 				A1000005 /* AppState.swift in Sources */,
+				22EA152D2FE34B9D00C519C7 /* Occasion.swift in Sources */,
 				A1000006 /* MockWishGenerator.swift in Sources */,
+				22EA15272FE3365700C519C7 /* OccasionSelectionView.swift in Sources */,
 				A1000007 /* AudioPlayerView.swift in Sources */,
 				A1000008 /* WishCard.swift in Sources */,
 				A1000018 /* PrimaryButton.swift in Sources */,
 				A1000019 /* SecondaryButton.swift in Sources */,
 				A1000020 /* FormInput.swift in Sources */,
 				A1000009 /* StartView.swift in Sources */,
+				22EA15292FE3366100C519C7 /* OccasionSelectionViewModel.swift in Sources */,
 				A1000010 /* CreatorFormView.swift in Sources */,
 				A1000011 /* GeneratedPreviewView.swift in Sources */,
 				A1000012 /* PackageSelectionView.swift in Sources */,
