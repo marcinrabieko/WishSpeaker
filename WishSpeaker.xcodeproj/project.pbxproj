@@ -11,6 +11,8 @@
 		22EA15292FE3366100C519C7 /* OccasionSelectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22EA15282FE3365A00C519C7 /* OccasionSelectionViewModel.swift */; };
 		22EA152B2FE33DCB00C519C7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22EA152A2FE33DCB00C519C7 /* Assets.xcassets */; };
 		22EA152D2FE34B9D00C519C7 /* Occasion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22EA152C2FE34B9800C519C7 /* Occasion.swift */; };
+		22EA15302FE49DBF00C519C7 /* FormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22EA152F2FE49DBC00C519C7 /* FormViewModel.swift */; };
+		22EA15322FE49E9D00C519C7 /* WishStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22EA15312FE49E9400C519C7 /* WishStyle.swift */; };
 		A1000001 /* WishSpeakerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001 /* WishSpeakerApp.swift */; };
 		A1000002 /* Wish.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000002 /* Wish.swift */; };
 		A1000003 /* WishForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000003 /* WishForm.swift */; };
@@ -20,7 +22,7 @@
 		A1000007 /* AudioPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000007 /* AudioPlayerView.swift */; };
 		A1000008 /* WishCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000008 /* WishCard.swift */; };
 		A1000009 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000009 /* StartView.swift */; };
-		A1000010 /* CreatorFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000010 /* CreatorFormView.swift */; };
+		A1000010 /* FormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000010 /* FormView.swift */; };
 		A1000011 /* GeneratedPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000011 /* GeneratedPreviewView.swift */; };
 		A1000012 /* PackageSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000012 /* PackageSelectionView.swift */; };
 		A1000013 /* FinalWishView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000013 /* FinalWishView.swift */; };
@@ -38,6 +40,9 @@
 		22EA15282FE3365A00C519C7 /* OccasionSelectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OccasionSelectionViewModel.swift; sourceTree = "<group>"; };
 		22EA152A2FE33DCB00C519C7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		22EA152C2FE34B9800C519C7 /* Occasion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Occasion.swift; sourceTree = "<group>"; };
+		22EA152F2FE49DBC00C519C7 /* FormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormViewModel.swift; sourceTree = "<group>"; };
+		22EA15312FE49E9400C519C7 /* WishStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishStyle.swift; sourceTree = "<group>"; };
+		22EA15332FE4A14300C519C7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A2000001 /* WishSpeakerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishSpeakerApp.swift; sourceTree = "<group>"; };
 		A2000002 /* Wish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wish.swift; sourceTree = "<group>"; };
 		A2000003 /* WishForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishForm.swift; sourceTree = "<group>"; };
@@ -47,7 +52,7 @@
 		A2000007 /* AudioPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerView.swift; sourceTree = "<group>"; };
 		A2000008 /* WishCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishCard.swift; sourceTree = "<group>"; };
 		A2000009 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
-		A2000010 /* CreatorFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatorFormView.swift; sourceTree = "<group>"; };
+		A2000010 /* FormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormView.swift; sourceTree = "<group>"; };
 		A2000011 /* GeneratedPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratedPreviewView.swift; sourceTree = "<group>"; };
 		A2000012 /* PackageSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageSelectionView.swift; sourceTree = "<group>"; };
 		A2000013 /* FinalWishView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalWishView.swift; sourceTree = "<group>"; };
@@ -82,6 +87,16 @@
 			path = OccasionSelection;
 			sourceTree = "<group>";
 		};
+		22EA152E2FE497FE00C519C7 /* Form */ = {
+			isa = PBXGroup;
+			children = (
+				22EA15312FE49E9400C519C7 /* WishStyle.swift */,
+				22EA152F2FE49DBC00C519C7 /* FormViewModel.swift */,
+				A2000010 /* FormView.swift */,
+			);
+			path = Form;
+			sourceTree = "<group>";
+		};
 		A5000001 = {
 			isa = PBXGroup;
 			children = (
@@ -93,6 +108,8 @@
 		A5000002 /* WishSpeaker */ = {
 			isa = PBXGroup;
 			children = (
+				22EA15332FE4A14300C519C7 /* Info.plist */,
+				22EA152E2FE497FE00C519C7 /* Form */,
 				22EA15252FE3360600C519C7 /* OccasionSelection */,
 				A2000001 /* WishSpeakerApp.swift */,
 				A2000017 /* DesignSystem.swift */,
@@ -157,7 +174,6 @@
 			isa = PBXGroup;
 			children = (
 				A2000009 /* StartView.swift */,
-				A2000010 /* CreatorFormView.swift */,
 				A2000011 /* GeneratedPreviewView.swift */,
 				A2000012 /* PackageSelectionView.swift */,
 				A2000013 /* FinalWishView.swift */,
@@ -250,6 +266,7 @@
 				A1000003 /* WishForm.swift in Sources */,
 				A1000004 /* PremiumPackage.swift in Sources */,
 				A1000005 /* AppState.swift in Sources */,
+				22EA15302FE49DBF00C519C7 /* FormViewModel.swift in Sources */,
 				22EA152D2FE34B9D00C519C7 /* Occasion.swift in Sources */,
 				A1000006 /* MockWishGenerator.swift in Sources */,
 				22EA15272FE3365700C519C7 /* OccasionSelectionView.swift in Sources */,
@@ -260,12 +277,13 @@
 				A1000020 /* FormInput.swift in Sources */,
 				A1000009 /* StartView.swift in Sources */,
 				22EA15292FE3366100C519C7 /* OccasionSelectionViewModel.swift in Sources */,
-				A1000010 /* CreatorFormView.swift in Sources */,
+				A1000010 /* FormView.swift in Sources */,
 				A1000011 /* GeneratedPreviewView.swift in Sources */,
 				A1000012 /* PackageSelectionView.swift in Sources */,
 				A1000013 /* FinalWishView.swift in Sources */,
 				A1000014 /* MyWishesView.swift in Sources */,
 				A1000015 /* ExampleWishesView.swift in Sources */,
+				22EA15322FE49E9D00C519C7 /* WishStyle.swift in Sources */,
 				A1000016 /* ExampleData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -399,14 +417,15 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = AGWMLY37K7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WishSpeaker/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -427,14 +446,15 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = AGWMLY37K7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WishSpeaker/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

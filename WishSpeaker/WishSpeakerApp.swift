@@ -9,6 +9,7 @@ struct WishSpeakerApp: App {
             NavigationStack {
                 StartView()
             }
+			.preferredColorScheme(.light)
             .environmentObject(appState)
         }
     }

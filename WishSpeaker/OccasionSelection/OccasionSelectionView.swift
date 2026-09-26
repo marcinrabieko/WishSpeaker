@@ -3,6 +3,7 @@ import SwiftUI
 struct OccasionSelectionView: View {
 
 	@State private var viewModel = OccasionSelectionViewModel()
+	@State private var navigateToCreator = false
 	
 	var body: some View {
 		NavigationStack {
@@ -17,7 +18,9 @@ struct OccasionSelectionView: View {
 					
 					LazyVStack(spacing: 12) {
 						ForEach(viewModel.occasions) { occasion in
-							OccasionRowView(occasion: occasion)
+							OccasionRowView(occasion: occasion) {
+								navigateToCreator = true
+							}
 						}
 					}
 				}
@@ -27,16 +30,25 @@ struct OccasionSelectionView: View {
 			.background(WSGradient.sceneVertical)
 			.navigationTitle("Wybierz okazję")
 			.navigationBarTitleDisplayMode(.large)
+			.navigationDestination(isPresented: $navigateToCreator) {
+				FormView()
+			}
 		}
 	}
 }
 
 private struct OccasionRowView: View {
 	let occasion: Occasion
+	let didTap: () -> Void
+	
+	init(occasion: Occasion, didTap: @escaping () -> Void) {
+		self.occasion = occasion
+		self.didTap = didTap
+	}
 	
 	var body: some View {
 		Button {
-			// TODO: Handle occasion selection.
+			didTap()
 		} label: {
 			HStack(spacing: 18) {
 				Image(occasion.iconName)
@@ -47,7 +59,7 @@ private struct OccasionRowView: View {
 				VStack(alignment: .leading, spacing: 6) {
 					Text(occasion.title)
 						.font(.system(size: 18, weight: .semibold))
-						.foregroundStyle(.primary)
+						.foregroundStyle(.black)
 					
 					Text(occasion.subtitle)
 						.font(.system(size: 15, weight: .medium))
