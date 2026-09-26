@@ -5,11 +5,20 @@ import SwiftUI
 extension Color {
     static let wsAccent = Color(hex: "6B5CFF")
     static let wsAccentLight = Color(hex: "8A7CFF")
-    static let wsBackground = Color.white
+    static let wsBackground = Color(hex: "FFF8EB")
     static let wsSecondaryBackground = Color(.systemGray6)
-    static let wsPrimaryText = Color(hex: "111111")
-    static let wsSecondaryText = Color(hex: "6B6B6B")
-    static let wsCardBorder = Color(.systemGray5)
+    static let wsPrimaryText = Color(hex: "171412")
+    static let wsSecondaryText = Color(hex: "746F69")
+    static let wsCardBorder = Color(hex: "EDE5D9")
+
+    // Warm palette additions
+    static let wsSurface = Color(hex: "FFFCF7") // Paper
+    static let wsPrimary = Color(hex: "E50918") // Ribbon Red
+    static let wsPrimaryPressed = Color(hex: "C90816")
+    static let wsInk = Color(hex: "171412")
+    static let wsWarmGray = Color(hex: "746F69")
+    static let wsSoftBorder = Color(hex: "EDE5D9")
+    static let wsWarmGold = Color(hex: "E9A23B")
 }
 
 extension Color {
@@ -40,6 +49,7 @@ extension Color {
 
 // MARK: - Gradients
 
+// Note: Avoid gradients in new warm design; kept for legacy screens.
 struct WSGradient {
     static let accent = LinearGradient(
         colors: [Color(hex: "6B5CFF"), Color(hex: "8A7CFF")],
@@ -87,3 +97,12 @@ enum WSSize {
     static let minTapTarget: CGFloat = 44
     static let playButtonSize: CGFloat = 64
 }
+// MARK: - Typography
+
+enum WSFont {
+    // Brand title style using New York Semibold. Keep size flexible for reuse.
+    static func brandTitle(size: CGFloat = 34) -> Font {
+        Font.custom("NewYork-Semibold", size: size)
+    }
+}
+

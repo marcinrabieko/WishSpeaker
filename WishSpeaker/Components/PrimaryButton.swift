@@ -15,13 +15,9 @@ struct PrimaryButton: View {
                 .background(
                     Group {
                         if isEnabled {
-                            WSGradient.accent
+                            Color.wsPrimary
                         } else {
-                            LinearGradient(
-                                colors: [Color.wsAccent.opacity(0.5), Color.wsAccentLight.opacity(0.5)],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            )
+                            Color.wsPrimary.opacity(0.5)
                         }
                     }
                 )

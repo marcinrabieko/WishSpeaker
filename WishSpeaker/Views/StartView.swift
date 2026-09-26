@@ -7,64 +7,61 @@ struct StartView: View {
     @State private var navigateToMyWishes = false
 
     var body: some View {
-        VStack(spacing: 0) {
-            Spacer()
+        GeometryReader { proxy in
+            VStack {
+                Spacer(minLength: 0)
 
-            // Icon with gradient
-            ZStack {
-                Image(
-                    ImageResource(name: "icon_universal_transparent", bundle: .main)
-                )
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 140, height: 140)
-            }
-            .padding(.bottom, WSSpacing.md)
+                VStack(spacing: WSSpacing.sm) {
+                    // Hero image (180pt) with tight spacing to title
+                    Image(
+                        ImageResource(name: "icon_universal_transparent", bundle: .main)
+                    )
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 180)
 
-            // Title
-            Text("WishSpeaker")
-                .font(.system(size: 34, weight: .bold))
-                .foregroundColor(.wsPrimaryText)
-                .padding(.bottom, WSSpacing.xs)
-
-            // Subtitle
-            Text("Create AI voice wishes for any occasion")
-                .font(.system(size: 17))
-                .foregroundColor(.wsSecondaryText)
-                .multilineTextAlignment(.center)
-
-            Spacer()
-
-            // Buttons
-            VStack(spacing: WSSpacing.sm) {
-                PrimaryButton(title: "Create a Wish") {
-                    navigateToCreator = true
-                }
-
-                SecondaryButton(title: "Hear Examples") {
-                    navigateToExamples = true
-                }
-
-                if appState.hasGeneratedWish {
-                    SecondaryButton(title: "My Wishes") {
-                        navigateToMyWishes = true
+                    Group {
+                        Text("WishSpeaker")
+                            .font(WSFont.brandTitle(size: 34))
+                            .foregroundColor(.wsPrimaryText)
                     }
+
+                    // Subtitle
+                    Text("Make every wish sound personal.")
+                        .font(.system(size: 17))
+                        .foregroundColor(.wsSecondaryText)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 2)
+
+                    // Deliberate gap between subtitle and primary CTA (~32pt)
+                    Spacer().frame(height: 32)
+
+                    // Primary CTA
+                    PrimaryButton(title: "Create a Wish") {
+                        navigateToCreator = true
+                    }
+
+                    // Secondary action as text button (medium 16pt, Warm Gray)
+                    Button(action: { navigateToExamples = true }) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "play.fill")
+                                .font(.system(size: 15, weight: .medium))
+                            Text("Hear an example")
+                                .font(.system(size: 16, weight: .medium))
+                        }
+                        .foregroundColor(.wsSecondaryText)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: WSSize.minTapTarget)
+                    }
+                    .buttonStyle(.plain)
                 }
-            }
-            .padding(.horizontal, WSSpacing.horizontalPadding)
+                .padding(.horizontal, WSSpacing.horizontalPadding)
 
-            Spacer()
-
-            // Feature list
-            VStack(spacing: WSSpacing.sm) {
-                FeatureRow(icon: "sparkles", text: "Personal voice messages")
-                FeatureRow(icon: "bolt.fill", text: "Generated in seconds")
-                FeatureRow(icon: "gift.fill", text: "Perfect for any occasion")
+                Spacer(minLength: proxy.size.height * 0.12)
             }
-            .padding(.horizontal, WSSpacing.horizontalPadding)
-            .padding(.bottom, WSSpacing.xl)
         }
         .background(Color.wsBackground)
+        .ignoresSafeArea()
         .navigationBarHidden(true)
         .navigationDestination(isPresented: $navigateToCreator) {
             OccasionSelectionView()
@@ -74,26 +71,6 @@ struct StartView: View {
         }
         .navigationDestination(isPresented: $navigateToMyWishes) {
             MyWishesView()
-        }
-    }
-}
-
-struct FeatureRow: View {
-    let icon: String
-    let text: String
-
-    var body: some View {
-        HStack(spacing: WSSpacing.sm) {
-            Image(systemName: icon)
-                .font(.system(size: 16, weight: .medium))
-                .foregroundStyle(WSGradient.accent)
-                .frame(width: 24)
-
-            Text(text)
-                .font(.system(size: 15))
-                .foregroundColor(.wsSecondaryText)
-
-            Spacer()
         }
     }
 }
