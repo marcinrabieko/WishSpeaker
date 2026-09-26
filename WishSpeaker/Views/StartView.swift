@@ -12,14 +12,12 @@ struct StartView: View {
 
             // Icon with gradient
             ZStack {
-                Circle()
-                    .fill(WSGradient.accent)
-                    .frame(width: 90, height: 90)
-                    .shadow(color: Color.wsAccent.opacity(0.3), radius: 20, x: 0, y: 10)
-
-                Image(systemName: "waveform")
-                    .font(.system(size: 40, weight: .medium))
-                    .foregroundColor(.white)
+                Image(
+                    ImageResource(name: "icon_universal_transparent", bundle: .main)
+                )
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 140, height: 140)
             }
             .padding(.bottom, WSSpacing.md)
 
