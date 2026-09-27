@@ -57,33 +57,6 @@ private struct OccasionRowView: View {
 		self.occasion = occasion
 		self.didTap = didTap
 	}
-    
-    private func symbolName(for occasion: Occasion) -> String {
-        let title = occasion.title.lowercased()
-        // Urodziny / Imieniny
-        if title.contains("urodz") { return "birthday.cake.fill" } // prefer cake, fallback to gift
-        if title.contains("imien") { return "gift.fill" }
-        // Ślub
-        if title.contains("ślub") || title.contains("slub") { return "heart.fill" }
-        // Rocznica
-        if title.contains("rocznic") { return "heart.circle.fill" }
-        // Dzień Matki / Ojca / Kobiet
-        if title.contains("matk") { return "camera.macro" }
-        if title.contains("ojc") { return "mustache.fill" }
-        if title.contains("kobiet") { return "leaf.fill" } // flower-like stand-in
-        // Gratulacje
-        if title.contains("grat") { return "trophy.fill" }
-        // Podziękowania
-        if title.contains("dzi") && title.contains("kuj") { return "hands.clap.fill" }
-        if title.contains("podzięk") || title.contains("podziek") { return "hands.clap.fill" }
-        // Przeprosiny
-        if title.contains("przepro") { return "hand.raised.fill" }
-        // Święta / Nowy Rok
-        if title.contains("święta") || title.contains("swieta") { return "snowflake" }
-        if title.contains("nowy rok") { return "sparkles" }
-        // Fallback
-        return "sparkles"
-    }
 	
 	var body: some View {
 		Button {
@@ -94,7 +67,7 @@ private struct OccasionRowView: View {
 					RoundedRectangle(cornerRadius: 12, style: .continuous)
 						.fill(Color.wsPrimary.opacity(0.08))
 						.frame(width: 44, height: 44)
-					Image(systemName: symbolName(for: occasion))
+					Image(systemName: occasion.iconName)
 						.font(.system(size: 20, weight: .semibold))
 						.foregroundColor(.wsPrimary)
 				}
@@ -132,4 +105,3 @@ private struct OccasionRowView: View {
 #Preview {
 	OccasionSelectionView()
 }
-
