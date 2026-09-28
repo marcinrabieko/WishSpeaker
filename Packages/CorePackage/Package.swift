@@ -7,21 +7,28 @@ let package = Package(
         .iOS(.v17)
     ],
     products: [
-        .library(name: "Dependencies", targets: ["Dependencies"]),
         .library(name: "DesignSystem", targets: ["DesignSystem"]),
         .library(name: "Domain", targets: ["Domain"]),
         .library(name: "Feature", targets: ["Feature"])
     ],
+    dependencies: [
+        .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.9.0")
+    ],
     targets: [
-        .target(name: "Dependencies"),
         .target(name: "DesignSystem"),
         .target(
             name: "Domain",
-            dependencies: ["Dependencies"]
+            dependencies: [
+                .product(name: "Dependencies", package: "swift-dependencies")
+            ]
         ),
         .target(
             name: "Feature",
-            dependencies: ["Domain", "DesignSystem", "Dependencies"]
+            dependencies: [
+                "Domain",
+                "DesignSystem",
+                .product(name: "Dependencies", package: "swift-dependencies")
+            ]
         )
     ]
 )

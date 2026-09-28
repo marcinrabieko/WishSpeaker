@@ -26,17 +26,15 @@ public final class WishCreationManager {
     }
 }
 
-extension WishCreationManager: DependencyKey {
-    public static var defaultValue: WishCreationManager {
-        @MainActor get { shared }
+struct WishCreationManagerKey: DependencyKey {
+    static var liveValue: WishCreationManager {
+        @MainActor get { WishCreationManager() }
     }
-
-    @MainActor private static let shared = WishCreationManager()
 }
 
 public extension DependencyValues {
     var wishCreationManager: WishCreationManager {
-        get { self[WishCreationManager.self] }
-        set { self[WishCreationManager.self] = newValue }
+        get { self[WishCreationManagerKey.self] }
+        set { self[WishCreationManagerKey.self] = newValue }
     }
 }

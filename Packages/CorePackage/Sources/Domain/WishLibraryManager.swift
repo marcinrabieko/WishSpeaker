@@ -13,17 +13,15 @@ public final class WishLibraryManager {
     }
 }
 
-extension WishLibraryManager: DependencyKey {
-    public static var defaultValue: WishLibraryManager {
-        @MainActor get { shared }
+struct WishLibraryManagerKey: DependencyKey {
+    static var liveValue: WishLibraryManager {
+        @MainActor get { WishLibraryManager() }
     }
-
-    @MainActor private static let shared = WishLibraryManager()
 }
 
 public extension DependencyValues {
     var wishLibraryManager: WishLibraryManager {
-        get { self[WishLibraryManager.self] }
-        set { self[WishLibraryManager.self] = newValue }
+        get { self[WishLibraryManagerKey.self] }
+        set { self[WishLibraryManagerKey.self] = newValue }
     }
 }

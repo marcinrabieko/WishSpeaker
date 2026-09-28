@@ -7,31 +7,35 @@ See [README.md](README.md) for project setup, build environments, git convention
 
 ## Module Map
 
-`CorePackage` is split into four targets (flat for now — no per-feature split yet):
-- **Dependencies** — the `@Dependency`/`@LazyDependency` DI mechanism (ported from Pepco), no other dependencies
+`CorePackage` is split into three targets (flat for now — no per-feature split yet):
 - **DesignSystem** — reusable visual components with no domain-model knowledge
 - **Domain** — models and Managers (stateful orchestrators, e.g. `WishCreationManager`, `WishLibraryManager`)
 - **Feature** — SwiftUI views + view models
 
 ```
-Feature → Domain → Dependencies
+Feature → Domain
 Feature → DesignSystem
-Domain → Dependencies
 ```
 
+Both Domain and Feature also depend on the external `swift-dependencies` package (see DI below).
 Domain and Feature modules should have corresponding unit test targets.
 
 ## Key Technologies
 
 - **Language**: Swift 6.0 (strict concurrency)
 - **UI**: SwiftUI
-- **DI**: `@Dependency`/`@LazyDependency` property wrappers + `DependencyKey` (ported from Pepco's
-  `Dependencies` module — a small, self-contained mechanism, no external deps or macros). A `DependencyKey`
-  registers `defaultValue`/`testValue`/`previewValue`; VMs declare
-  `@ObservationIgnored @Dependency(\.wishCreationManager) private var creationManager`.
-  For a **stateful** dependency (a Manager that must stay the same instance across screens, unlike
-  Pepco's typical stateless API-client use case), the manager owns a `nonisolated(unsafe) static let
-  shared = MainActor.assumeIsolated { … }` and the `DependencyKey.defaultValue` just returns `.shared`
+- **DI**: [pointfreeco/swift-dependencies](https://github.com/pointfreeco/swift-dependencies) — the
+  real Point-Free package (matches what's used in production apps like Mapzu), not a custom
+  reimplementation. `@Dependency(\.wishCreationManager) private var creationManager` in a ViewModel;
+  a dependency is registered via a `DependencyKey` (`liveValue`/`testValue`/`previewValue`) + an
+  extension on `DependencyValues`.
+  For a **stateful** dependency (a `@MainActor` Manager that must stay the same instance across
+  screens, unlike the library's typical stateless-client use case): register the key on a **separate
+  `struct ...Key: DependencyKey`** (not `extension Manager: DependencyKey` directly on the
+  `@MainActor` class — that fails to compile with "conformance crosses into main actor-isolated
+  code"), with `static var liveValue: Manager { @MainActor get { Manager() } }`. The library caches
+  `liveValue` after first access, so this computed property still yields a singleton — no
+  `nonisolated(unsafe)` / `MainActor.assumeIsolated` needed anywhere
 - **Navigation**: System `NavigationStack` / `NavigationPath` / `navigationDestination`, system nav
   bar and back button (including collapsing header and Liquid Glass behavior) — no custom Router.
   Pepco's `@Routable`/`@Presentable` Router was deliberately not ported: it assumes a fully custom
@@ -48,9 +52,13 @@ Domain and Feature modules should have corresponding unit test targets.
   `$viewModel.navigateToX` to `.navigationDestination(isPresented:)` on the View — no router layer.
   A property bound two-way from the View (e.g. any `navigateToX`) must be plain `fileprivate var`,
   not `private(set) fileprivate var` — the View needs to write it back to `false` on pop
-- **Dependencies**: `@ObservationIgnored @Dependency(\.managerName) private var manager` in the ViewModel
-- **Managers**: Stateful orchestrators in Domain (`WishCreationManager` for the in-progress draft,
-  `WishLibraryManager` for saved wishes), each a singleton resolved through `@Dependency`
+- **Dependencies**: `@Dependency(\.managerName) private var manager` in the ViewModel (see DI above)
+- **Managers**: Stateful `@MainActor` orchestrators in Domain (`WishCreationManager` for the
+  in-progress draft, `WishLibraryManager` for saved wishes), each resolved through `@Dependency`.
+  Since they aren't `@Observable` (that would force the unsafe-singleton workaround above), a
+  ViewModel that displays a Manager's field must copy it into its own `@Observable` property on
+  `didAppear()`/mutation — reading `viewModel.creationManager.selectedPackage` directly in `body`
+  won't trigger a re-render
 - **State**: `enum ViewState` driven rendering where useful; simple `@Observable` state otherwise
 
 ## Common Commands
