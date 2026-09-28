@@ -1,12 +1,12 @@
 import SwiftUI
 import Domain
 import DesignSystem
+import Dependencies
 
-public struct PackageSelectionView: View {
-    @EnvironmentObject var appState: AppState
-    @State private var navigateToFinal = false
-
-    private let packages: [PremiumPackage] = [
+@MainActor
+@Observable
+public final class PackageSelectionViewModel {
+    let packages: [PremiumPackage] = [
         PremiumPackage(
             name: "Basic",
             description: "Standard AI voice",
@@ -27,18 +27,44 @@ public struct PackageSelectionView: View {
         )
     ]
 
+    fileprivate var navigateToFinal = false
+    fileprivate var selectedPackage: PremiumPackage?
+
+    @ObservationIgnored
+    @Dependency(\.wishCreationManager)
+    private var creationManager: WishCreationManager
+
+    public init() {}
+
+    func didAppear() {
+        selectedPackage = creationManager.selectedPackage
+    }
+
+    func didSelectPackage(_ package: PremiumPackage) {
+        selectedPackage = package
+        creationManager.selectedPackage = package
+    }
+
+    func didTapContinue() {
+        navigateToFinal = true
+    }
+}
+
+public struct PackageSelectionView: View {
+    @State private var viewModel = PackageSelectionViewModel()
+
     public init() {}
 
     public var body: some View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(spacing: WSSpacing.sm) {
-                    ForEach(packages) { package in
+                    ForEach(viewModel.packages) { package in
                         PackageCard(
                             package: package,
-                            isSelected: appState.selectedPackage?.id == package.id,
+                            isSelected: viewModel.selectedPackage?.id == package.id,
                             onSelect: {
-                                appState.selectedPackage = package
+                                viewModel.didSelectPackage(package)
                             }
                         )
                     }
@@ -50,15 +76,18 @@ public struct PackageSelectionView: View {
             Spacer()
 
             PrimaryButton(title: "Continue", action: {
-                navigateToFinal = true
-            }, isEnabled: appState.selectedPackage != nil)
+                viewModel.didTapContinue()
+            }, isEnabled: viewModel.selectedPackage != nil)
             .padding(.horizontal, WSSpacing.horizontalPadding)
             .padding(.bottom, WSSpacing.lg)
         }
         .background(Color.wsBackground)
         .navigationTitle("Select a Package")
         .navigationBarTitleDisplayMode(.large)
-        .navigationDestination(isPresented: $navigateToFinal) {
+        .onAppear {
+            viewModel.didAppear()
+        }
+        .navigationDestination(isPresented: $viewModel.navigateToFinal) {
             FinalWishView()
         }
     }
@@ -123,6 +152,5 @@ struct PackageCard: View {
 #Preview {
     NavigationStack {
         PackageSelectionView()
-            .environmentObject(AppState())
     }
 }

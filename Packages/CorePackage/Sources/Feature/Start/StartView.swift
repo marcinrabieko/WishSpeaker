@@ -2,13 +2,30 @@ import SwiftUI
 import Domain
 import DesignSystem
 
-public struct StartView: View {
-    @EnvironmentObject var appState: AppState
-    @State private var navigateToCreator = false
-    @State private var navigateToExamples = false
-    @State private var navigateToMyWishes = false
+@MainActor
+@Observable
+public final class StartViewModel {
+    fileprivate var navigateToCreator = false
+    fileprivate var navigateToExamples = false
+    fileprivate var navigateToMyWishes = false
 
     public init() {}
+
+    func didTapCreateWish() {
+        navigateToCreator = true
+    }
+
+    func didTapHearExample() {
+        navigateToExamples = true
+    }
+}
+
+public struct StartView: View {
+    @State private var viewModel: StartViewModel
+
+    public init(viewModel: StartViewModel = StartViewModel()) {
+        self.viewModel = viewModel
+    }
 
     public var body: some View {
         GeometryReader { proxy in
@@ -42,11 +59,11 @@ public struct StartView: View {
 
                     // Primary CTA
                     PrimaryButton(title: "Create a Wish") {
-                        navigateToCreator = true
+                        viewModel.didTapCreateWish()
                     }
 
                     // Secondary action as text button (medium 16pt, Warm Gray)
-                    Button(action: { navigateToExamples = true }) {
+                    Button(action: { viewModel.didTapHearExample() }) {
                         HStack(spacing: 6) {
                             Image(systemName: "play.fill")
                                 .font(.system(size: 15, weight: .medium))
@@ -67,13 +84,13 @@ public struct StartView: View {
         .background(Color.wsBackground)
         .ignoresSafeArea()
         .navigationBarHidden(true)
-        .navigationDestination(isPresented: $navigateToCreator) {
+        .navigationDestination(isPresented: $viewModel.navigateToCreator) {
             OccasionSelectionView()
         }
-        .navigationDestination(isPresented: $navigateToExamples) {
+        .navigationDestination(isPresented: $viewModel.navigateToExamples) {
             ExampleWishesView()
         }
-        .navigationDestination(isPresented: $navigateToMyWishes) {
+        .navigationDestination(isPresented: $viewModel.navigateToMyWishes) {
             MyWishesView()
         }
     }
@@ -82,6 +99,5 @@ public struct StartView: View {
 #Preview {
     NavigationStack {
         StartView()
-            .environmentObject(AppState())
     }
 }

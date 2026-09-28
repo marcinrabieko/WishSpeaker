@@ -1,13 +1,38 @@
 import SwiftUI
 import Domain
 import DesignSystem
+import Dependencies
+
+@MainActor
+@Observable
+public final class FormViewModel {
+	fileprivate var relationText = ""
+	fileprivate var detailsText = ""
+	fileprivate var selectedStyle: WishStyle = .classic
+	fileprivate var navigateToPreview = false
+
+	@ObservationIgnored
+	@Dependency(\.wishCreationManager)
+	private var creationManager: WishCreationManager
+
+	public init() {}
+
+	func didSelectStyle(_ style: WishStyle) {
+		selectedStyle = style
+	}
+
+	func didTapGenerate() {
+		creationManager.currentForm.relation = relationText
+		creationManager.currentForm.note = detailsText
+		creationManager.currentForm.tone = selectedStyle.title
+
+		creationManager.generatedText = MockWishGenerator.shared.generateMockWish(form: creationManager.currentForm)
+		navigateToPreview = true
+	}
+}
 
 public struct FormView: View {
-	@EnvironmentObject var appState: AppState
-	@State private var navigateToPreview = false
-	@State private var relationText = ""
-	@State private var detailsText = ""
-	@State private var selectedStyle: WishStyle = .classic
+	@State private var viewModel = FormViewModel()
 
 	@FocusState private var isRelationFocused: Bool
 	@FocusState private var isDetailsFocused: Bool
@@ -21,10 +46,10 @@ public struct FormView: View {
 					Text("Dla kogo są życzenia?")
 						.font(.system(size: 18, weight: .semibold))
 						.foregroundStyle(Color.wsPrimaryText)
-					
+
 					TextField(
 						"Np. dla siostry, najlepszego przyjaciela, męża...",
-						text: $relationText
+						text: $viewModel.relationText
 					)
 					.font(.system(size: 17))
 					.padding(.horizontal, 18)
@@ -37,7 +62,7 @@ public struct FormView: View {
 					.clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
 					.focused($isRelationFocused)
 				}
-				
+
 				VStack(alignment: .leading, spacing: 8) {
 					Text("Opowiedz coś o tej osobie")
 						.font(.system(size: 18, weight: .semibold))
@@ -45,18 +70,18 @@ public struct FormView: View {
 					Text("Opcjonalnie, ale pomoże nam stworzyć bardziej osobiste życzenia.")
 						.font(.system(size: 14))
 						.foregroundStyle(Color.wsSecondaryText)
-					
+
 					VStack(alignment: .leading, spacing: 0) {
 						ZStack(alignment: .topLeading) {
-							if detailsText.isEmpty {
+							if viewModel.detailsText.isEmpty {
 								Text("Np. wspólne wspomnienia, charakter, pasje...")
 									.font(.system(size: 17))
 									.foregroundStyle(Color(.placeholderText))
 									.padding(.horizontal, 18)
 									.padding(.vertical, 16)
 							}
-							
-							TextEditor(text: $detailsText)
+
+							TextEditor(text: $viewModel.detailsText)
 								.font(.system(size: 17))
 								.scrollContentBackground(.hidden)
 								.padding(.horizontal, 14)
@@ -64,11 +89,11 @@ public struct FormView: View {
 								.background(Color.clear)
 								.focused($isDetailsFocused)
 						}
-						
+
 						HStack {
 							Spacer()
-							
-							Text("\(detailsText.count)/300")
+
+							Text("\(viewModel.detailsText.count)/300")
 								.font(.system(size: 14))
 								.foregroundStyle(Color(.secondaryLabel))
 								.padding(.trailing, 16)
@@ -82,12 +107,12 @@ public struct FormView: View {
 					}
 					.clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
 				}
-				
+
 				VStack(alignment: .leading, spacing: 16) {
 					Text("Styl życzeń")
 						.font(.system(size: 18, weight: .semibold))
 						.foregroundStyle(Color.wsPrimaryText)
-					
+
 					LazyVGrid(
 						columns: [
 							GridItem(.flexible()),
@@ -99,16 +124,16 @@ public struct FormView: View {
 						ForEach(WishStyle.allCases, id: \.self) { style in
 							StyleChip(
 								title: style.title,
-								isSelected: selectedStyle == style
+								isSelected: viewModel.selectedStyle == style
 							) {
-								selectedStyle = style
+								viewModel.didSelectStyle(style)
 							}
 						}
 					}
 				}
-				
+
 				PrimaryButton(title: "Generuj życzenia") {
-					generateWish()
+					viewModel.didTapGenerate()
 				}
 				.padding(.top, 8)
 			}
@@ -118,18 +143,9 @@ public struct FormView: View {
 		.background(Color.wsBackground)
 		.navigationTitle("Szczegóły")
 		.navigationBarTitleDisplayMode(.large)
-		.navigationDestination(isPresented: $navigateToPreview) {
+		.navigationDestination(isPresented: $viewModel.navigateToPreview) {
 			GeneratedPreviewView()
 		}
-	}
-	
-	private func generateWish() {
-		appState.currentForm.relation = relationText
-		appState.currentForm.note = detailsText
-		appState.currentForm.tone = selectedStyle.title
-		
-		appState.generatedText = MockWishGenerator.shared.generateMockWish(form: appState.currentForm)
-		navigateToPreview = true
 	}
 }
 
@@ -137,7 +153,7 @@ private struct StyleChip: View {
 	let title: String
 	let isSelected: Bool
 	let action: () -> Void
-	
+
 	var body: some View {
 		Button(action: action) {
 			Text(title)
@@ -164,6 +180,5 @@ private struct StyleChip: View {
 #Preview {
 	NavigationStack {
 		FormView()
-			.environmentObject(AppState())
 	}
 }

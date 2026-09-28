@@ -7,14 +7,16 @@ See [README.md](README.md) for project setup, build environments, git convention
 
 ## Module Map
 
-`CorePackage` is split into three tiers:
-- **Infrastructure** — business-agnostic utilities (Storage, Networking, Navigation, UI, …)
-- **Domain** — models, client protocols, business rules, and Managers (stateful orchestrators) per feature area
-- **Feature** — SwiftUI views, view models
+`CorePackage` is split into four targets (flat for now — no per-feature split yet):
+- **Dependencies** — the `@Dependency`/`@LazyDependency` DI mechanism (ported from Pepco), no other dependencies
+- **DesignSystem** — reusable visual components with no domain-model knowledge
+- **Domain** — models and Managers (stateful orchestrators, e.g. `WishCreationManager`, `WishLibraryManager`)
+- **Feature** — SwiftUI views + view models
 
 ```
-Feature → Domain → Infrastructure
+Feature → Domain → Dependencies
 Feature → DesignSystem
+Domain → Dependencies
 ```
 
 Domain and Feature modules should have corresponding unit test targets.
@@ -22,27 +24,34 @@ Domain and Feature modules should have corresponding unit test targets.
 ## Key Technologies
 
 - **Language**: Swift 6.0 (strict concurrency)
-- **UI**: SwiftUI + Combine
-- **DI**: swift-dependencies (`@Dependency` macro)
-- **Navigation**: Custom `@Routable` / `@Presentable` macros + Router — `router` and presentation
-  context are `weak` optionals by design; they are always set by the navigation system before the
-  view appears, so `router?.push()` optional chaining is idiomatic and guard-unwrapping is not required
-- **Storage**: `StorageClient` (UserDefaults / Keychain / Memory / Ephemeral backends)
-- **Networking**: Custom `Networking` module
-- **Testing**: XCTest unit tests + snapshot tests (`PreviewSnapshotTesting`)
-- **Code Quality**: SwiftLint plugin (per-target)
+- **UI**: SwiftUI
+- **DI**: `@Dependency`/`@LazyDependency` property wrappers + `DependencyKey` (ported from Pepco's
+  `Dependencies` module — a small, self-contained mechanism, no external deps or macros). A `DependencyKey`
+  registers `defaultValue`/`testValue`/`previewValue`; VMs declare
+  `@ObservationIgnored @Dependency(\.wishCreationManager) private var creationManager`.
+  For a **stateful** dependency (a Manager that must stay the same instance across screens, unlike
+  Pepco's typical stateless API-client use case), the manager owns a `nonisolated(unsafe) static let
+  shared = MainActor.assumeIsolated { … }` and the `DependencyKey.defaultValue` just returns `.shared`
+- **Navigation**: System `NavigationStack` / `NavigationPath` / `navigationDestination`, system nav
+  bar and back button (including collapsing header and Liquid Glass behavior) — no custom Router.
+  Pepco's `@Routable`/`@Presentable` Router was deliberately not ported: it assumes a fully custom
+  nav bar/toolbar (its `NavigationPageView` hides the system nav bar) plus Snackbar/TabBar
+  infrastructure this app doesn't have — adopting it would fight the system navigation this app wants
+- **Testing**: XCTest unit tests
+- **Code Quality**: none configured yet
 
 ## Architecture Quick Reference
 
 - **ViewModels**: `@MainActor @Observable final class {Feature}ViewModel`
-- **Views**: `struct {Feature}View: View` — co-located with their ViewModel
-- **Navigation**: `@Routable` (push) or `@Presentable` (sheet) on ViewModel → `router?.push()` / `router?.presentInSheet()`
-- **Dependencies**: `@ObservationIgnored @Dependency(\.clientName) private var client`
-- **Clients**: Struct-based, defined in Domain modules; injected via `DependencyKey` (analogous to
-  SwiftUI's `EnvironmentKey` — register a default/live value, override in tests or previews)
-- **Managers**: Stateful orchestrators in Domain modules — injected into ViewModels from Feature modules
-- **State**: `enum ViewState` driven rendering; optimistic updates for write operations
-- **Errors**: Propagate via `throw`; present to user via snackbar or `StateView`
+- **Views**: `struct {Feature}View: View` — co-located with their ViewModel in the same file
+- **Navigation**: `@State`/`fileprivate var navigateToX` on the ViewModel, bound via
+  `$viewModel.navigateToX` to `.navigationDestination(isPresented:)` on the View — no router layer.
+  A property bound two-way from the View (e.g. any `navigateToX`) must be plain `fileprivate var`,
+  not `private(set) fileprivate var` — the View needs to write it back to `false` on pop
+- **Dependencies**: `@ObservationIgnored @Dependency(\.managerName) private var manager` in the ViewModel
+- **Managers**: Stateful orchestrators in Domain (`WishCreationManager` for the in-progress draft,
+  `WishLibraryManager` for saved wishes), each a singleton resolved through `@Dependency`
+- **State**: `enum ViewState` driven rendering where useful; simple `@Observable` state otherwise
 
 ## Common Commands
 

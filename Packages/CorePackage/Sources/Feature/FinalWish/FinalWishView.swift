@@ -1,30 +1,56 @@
 import SwiftUI
 import Domain
 import DesignSystem
+import Dependencies
+
+@MainActor
+@Observable
+public final class FinalWishViewModel {
+    fileprivate var wish: Wish?
+    fileprivate var selectedPackage: PremiumPackage?
+
+    private var hasBeenSaved = false
+
+    @ObservationIgnored
+    @Dependency(\.wishCreationManager)
+    private var creationManager: WishCreationManager
+
+    @ObservationIgnored
+    @Dependency(\.wishLibraryManager)
+    private var libraryManager: WishLibraryManager
+
+    public init() {}
+
+    func didAppear() {
+        guard !hasBeenSaved else {
+            return
+        }
+        hasBeenSaved = true
+
+        let finalizedWish = creationManager.finalizeWish()
+        wish = finalizedWish
+        selectedPackage = finalizedWish.selectedPackage
+
+        libraryManager.save(finalizedWish)
+    }
+}
 
 public struct FinalWishView: View {
-    @EnvironmentObject var appState: AppState
-    @State private var hasBeenSaved = false
-
-    var wish: Wish {
-        Wish(
-            form: appState.currentForm,
-            generatedText: appState.generatedText,
-            selectedPackage: appState.selectedPackage
-        )
-    }
+    @State private var viewModel = FinalWishViewModel()
 
     public init() {}
 
     public var body: some View {
         ScrollView {
             VStack(spacing: WSSpacing.md) {
-                // WishCard with full details
-                WishCard(wish: wish, showFullDetails: true)
+                if let wish = viewModel.wish {
+                    // WishCard with full details
+                    WishCard(wish: wish, showFullDetails: true)
 
-                // Package summary
-                if let package = appState.selectedPackage {
-                    PackageSummaryCard(package: package)
+                    // Package summary
+                    if let package = viewModel.selectedPackage {
+                        PackageSummaryCard(package: package)
+                    }
                 }
             }
             .padding(.horizontal, WSSpacing.horizontalPadding)
@@ -34,10 +60,7 @@ public struct FinalWishView: View {
         .navigationTitle("Your Wish")
         .navigationBarTitleDisplayMode(.large)
         .onAppear {
-            if !hasBeenSaved {
-                appState.saveWish()
-                hasBeenSaved = true
-            }
+            viewModel.didAppear()
         }
     }
 }
@@ -110,22 +133,7 @@ struct SavedWishDetailView: View {
 }
 
 #Preview {
-    let appState = AppState()
-    appState.currentForm = WishForm(
-        recipientName: "Gregory",
-        occasion: "40th Birthday",
-        age: "40",
-        tone: "Funny",
-        fromPerson: "Marcin",
-        relation: "Brother-in-law",
-        note: "Runs a paving company",
-        voiceGender: .male
-    )
-    appState.generatedText = "Gregory, on your 40th birthday I wish you that everything in life aligns as perfectly as the paving stones you lay every day. May your business grow, your projects succeed and your dream of owning a quad finally become reality. All the best from Marcin."
-    appState.selectedPackage = PremiumPackage(name: "Premium", description: "Studio voice", price: 9.99, recommended: true)
-
-    return NavigationStack {
+    NavigationStack {
         FinalWishView()
-            .environmentObject(appState)
     }
 }

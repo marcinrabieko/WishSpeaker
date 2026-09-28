@@ -7,16 +7,21 @@ let package = Package(
         .iOS(.v17)
     ],
     products: [
+        .library(name: "Dependencies", targets: ["Dependencies"]),
         .library(name: "DesignSystem", targets: ["DesignSystem"]),
         .library(name: "Domain", targets: ["Domain"]),
         .library(name: "Feature", targets: ["Feature"])
     ],
     targets: [
+        .target(name: "Dependencies"),
         .target(name: "DesignSystem"),
-        .target(name: "Domain"),
+        .target(
+            name: "Domain",
+            dependencies: ["Dependencies"]
+        ),
         .target(
             name: "Feature",
-            dependencies: ["Domain", "DesignSystem"]
+            dependencies: ["Domain", "DesignSystem", "Dependencies"]
         )
     ]
 )

@@ -1,10 +1,37 @@
 import SwiftUI
 import Domain
 import DesignSystem
+import Dependencies
+
+@MainActor
+@Observable
+public final class GeneratedPreviewViewModel {
+	fileprivate var navigateToPackages = false
+	fileprivate var generatedText = ""
+
+	@ObservationIgnored
+	@Dependency(\.wishCreationManager)
+	private var creationManager: WishCreationManager
+
+	public init() {}
+
+	func didAppear() {
+		generatedText = creationManager.generatedText
+	}
+
+	func didTapGenerateAgain() {
+		let text = MockWishGenerator.shared.generateMockWish(form: creationManager.currentForm)
+		creationManager.generatedText = text
+		generatedText = text
+	}
+
+	func didTapContinue() {
+		navigateToPackages = true
+	}
+}
 
 public struct GeneratedPreviewView: View {
-    @EnvironmentObject var appState: AppState
-    @State private var navigateToPackages = false
+    @State private var viewModel = GeneratedPreviewViewModel()
 
     public init() {}
 
@@ -19,7 +46,7 @@ public struct GeneratedPreviewView: View {
                         .padding(.top, WSSpacing.sm)
 
                     // Generated text card
-                    Text(appState.generatedText)
+                    Text(viewModel.generatedText)
                         .font(.system(size: 17))
                         .foregroundColor(.wsPrimaryText)
                         .lineSpacing(6)
@@ -36,11 +63,11 @@ public struct GeneratedPreviewView: View {
             // Action buttons
             VStack(spacing: WSSpacing.sm) {
                 SecondaryButton(title: "Generate Again") {
-                    regenerateWish()
+                    viewModel.didTapGenerateAgain()
                 }
 
                 PrimaryButton(title: "Continue") {
-                    navigateToPackages = true
+                    viewModel.didTapContinue()
                 }
             }
             .padding(.horizontal, WSSpacing.horizontalPadding)
@@ -49,22 +76,17 @@ public struct GeneratedPreviewView: View {
         .background(Color.wsBackground)
         .navigationTitle("Preview")
         .navigationBarTitleDisplayMode(.large)
-        .navigationDestination(isPresented: $navigateToPackages) {
+        .onAppear {
+            viewModel.didAppear()
+        }
+        .navigationDestination(isPresented: $viewModel.navigateToPackages) {
             PackageSelectionView()
         }
-    }
-
-    private func regenerateWish() {
-        appState.generatedText = MockWishGenerator.shared.generateMockWish(form: appState.currentForm)
     }
 }
 
 #Preview {
-    let appState = AppState()
-    appState.generatedText = "Dear Gregory, on your 40th birthday I wish you that everything in life aligns as perfectly as the paving stones you lay every day. May your business grow, your projects succeed and your dream of owning a quad finally become reality. All the best from Marcin."
-
-    return NavigationStack {
+    NavigationStack {
         GeneratedPreviewView()
-            .environmentObject(appState)
     }
 }
