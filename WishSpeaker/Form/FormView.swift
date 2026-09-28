@@ -7,13 +7,16 @@ struct FormView: View {
 	@State private var detailsText = ""
 	@State private var selectedStyle: WishStyle = .classic
 	
+	@FocusState private var isRelationFocused: Bool
+	@FocusState private var isDetailsFocused: Bool
+	
 	var body: some View {
 		ScrollView(showsIndicators: false) {
 			VStack(alignment: .leading, spacing: 28) {
 				VStack(alignment: .leading, spacing: 12) {
 					Text("Dla kogo są życzenia?")
 						.font(.system(size: 18, weight: .semibold))
-						.foregroundStyle(.black)
+						.foregroundStyle(Color.wsPrimaryText)
 					
 					TextField(
 						"Np. dla siostry, najlepszego przyjaciela, męża...",
@@ -22,23 +25,27 @@ struct FormView: View {
 					.font(.system(size: 17))
 					.padding(.horizontal, 18)
 					.frame(height: 58)
-					.background(Color.white)
+					.background(Color.wsSurface)
 					.overlay {
 						RoundedRectangle(cornerRadius: 18, style: .continuous)
-							.stroke(Color.black.opacity(0.08), lineWidth: 3)
+							.stroke(isRelationFocused ? Color.wsPrimary : Color.wsSoftBorder, lineWidth: isRelationFocused ? 2 : 1)
 					}
 					.clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+					.focused($isRelationFocused)
 				}
 				
-				VStack(alignment: .leading, spacing: 12) {
-					Text("Dodaj kilka informacji (opcjonalnie)")
+				VStack(alignment: .leading, spacing: 8) {
+					Text("Opowiedz coś o tej osobie")
 						.font(.system(size: 18, weight: .semibold))
-						.foregroundStyle(.black)
+						.foregroundStyle(Color.wsPrimaryText)
+					Text("Opcjonalnie, ale pomoże nam stworzyć bardziej osobiste życzenia.")
+						.font(.system(size: 14))
+						.foregroundStyle(Color.wsSecondaryText)
 					
 					VStack(alignment: .leading, spacing: 0) {
 						ZStack(alignment: .topLeading) {
 							if detailsText.isEmpty {
-								Text("Napisz o osobie, Waszej relacji, wspólnych wspomnieniach, pasjach...\nIm więcej napiszesz, tym lepsze życzenia przygotujemy.")
+								Text("Np. wspólne wspomnienia, charakter, pasje...")
 									.font(.system(size: 17))
 									.foregroundStyle(Color(.placeholderText))
 									.padding(.horizontal, 18)
@@ -51,6 +58,7 @@ struct FormView: View {
 								.padding(.horizontal, 14)
 								.padding(.vertical, 12)
 								.background(Color.clear)
+								.focused($isDetailsFocused)
 						}
 						
 						HStack {
@@ -63,10 +71,10 @@ struct FormView: View {
 								.padding(.bottom, 14)
 						}
 					}
-					.background(Color.white)
+					.background(Color.wsSurface)
 					.overlay {
 						RoundedRectangle(cornerRadius: 18, style: .continuous)
-							.stroke(Color.black.opacity(0.1), lineWidth: 3)
+							.stroke(isDetailsFocused ? Color.wsPrimary : Color.wsSoftBorder, lineWidth: isDetailsFocused ? 2 : 1)
 					}
 					.clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
 				}
@@ -74,7 +82,7 @@ struct FormView: View {
 				VStack(alignment: .leading, spacing: 16) {
 					Text("Styl życzeń")
 						.font(.system(size: 18, weight: .semibold))
-						.foregroundStyle(.black)
+						.foregroundStyle(Color.wsPrimaryText)
 					
 					LazyVGrid(
 						columns: [
@@ -95,23 +103,9 @@ struct FormView: View {
 					}
 				}
 				
-				Button {
+				PrimaryButton(title: "Generuj życzenia") {
 					generateWish()
-				} label: {
-					HStack(spacing: 10) {
-						Image(systemName: "sparkles")
-							.font(.system(size: 18, weight: .semibold))
-						
-						Text("Generuj życzenia")
-							.font(.system(size: 19, weight: .semibold))
-					}
-					.foregroundStyle(.white)
-					.frame(maxWidth: .infinity)
-					.frame(height: 60)
-					.background(WSGradient.accent)
-					.clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
 				}
-				.buttonStyle(.plain)
 				.padding(.top, 8)
 			}
 			.padding(.horizontal, 18)
@@ -144,17 +138,17 @@ private struct StyleChip: View {
 		Button(action: action) {
 			Text(title)
 				.font(.system(size: 15, weight: .semibold))
-				.foregroundStyle(isSelected ? Color.wsAccent : Color.black)
+				.foregroundStyle(isSelected ? Color.wsPrimary : Color.wsPrimaryText)
 				.frame(maxWidth: .infinity)
 				.frame(height: 46)
-				.background(isSelected ? Color.wsAccent.opacity(0.06) : Color.white)
+				.background(isSelected ? Color.wsPrimary.opacity(0.06) : Color.wsSurface)
 				.overlay {
 					RoundedRectangle(cornerRadius: 16, style: .continuous)
 						.stroke(
 							isSelected
-							? Color.wsAccent.opacity(0.7)
-							: Color.black.opacity(0.08),
-							lineWidth: isSelected ? 4 : 3
+								? Color.wsPrimary
+								: Color.wsSoftBorder,
+							lineWidth: isSelected ? 2 : 1
 						)
 				}
 				.clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
