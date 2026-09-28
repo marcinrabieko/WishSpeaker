@@ -1,14 +1,16 @@
 import AVFoundation
 import SwiftUI
 
-public class AudioPlayerViewModel: ObservableObject {
-    @Published public var isPlaying: Bool = false
-    @Published public var currentTime: TimeInterval = 0
-    @Published public var duration: TimeInterval = 30.0
+@MainActor
+@Observable
+public final class AudioPlayerViewModel {
+    public var isPlaying: Bool = false
+    public var currentTime: TimeInterval = 0
+    public var duration: TimeInterval = 30.0
 
     private var player: AVPlayer?
     private var timeObserver: Any?
-    private var simulationTimer: Timer?
+    private var simulationTask: Task<Void, Never>?
 
     public init() {
         setupPlayer()
@@ -31,7 +33,9 @@ public class AudioPlayerViewModel: ObservableObject {
 
         let interval = CMTime(seconds: 0.1, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
         timeObserver = player.addPeriodicTimeObserver(forInterval: interval, queue: .main) { [weak self] time in
-            self?.currentTime = time.seconds
+            Task { @MainActor in
+                self?.currentTime = time.seconds
+            }
         }
 
         if let duration = player.currentItem?.asset.duration {
@@ -61,7 +65,7 @@ public class AudioPlayerViewModel: ObservableObject {
     public func pause() {
         player?.pause()
         isPlaying = false
-        simulationTimer?.invalidate()
+        simulationTask?.cancel()
     }
 
     public func seek(to progress: Double) {
@@ -73,37 +77,26 @@ public class AudioPlayerViewModel: ObservableObject {
     }
 
     private func simulatePlayback() {
-        simulationTimer?.invalidate()
-        simulationTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] timer in
-            guard let self else {
-                timer.invalidate()
-                return
-            }
+        simulationTask?.cancel()
+        simulationTask = Task { [weak self] in
+            while let strongSelf = self, strongSelf.isPlaying {
+                try? await Task.sleep(for: .seconds(0.1))
+                guard let strongSelf = self, strongSelf.isPlaying else {
+                    return
+                }
 
-            if !self.isPlaying {
-                timer.invalidate()
-                return
-            }
-
-            self.currentTime += 0.1
-            if self.currentTime >= self.duration {
-                self.currentTime = 0
-                self.isPlaying = false
-                timer.invalidate()
+                strongSelf.currentTime += 0.1
+                if strongSelf.currentTime >= strongSelf.duration {
+                    strongSelf.currentTime = 0
+                    strongSelf.isPlaying = false
+                }
             }
         }
-    }
-
-    deinit {
-        if let observer = timeObserver {
-            player?.removeTimeObserver(observer)
-        }
-        simulationTimer?.invalidate()
     }
 }
 
 public struct AudioPlayerView: View {
-    @StateObject private var viewModel = AudioPlayerViewModel()
+    @State private var viewModel = AudioPlayerViewModel()
 
     public init() {}
 
