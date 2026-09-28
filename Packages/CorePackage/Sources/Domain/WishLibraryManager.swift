@@ -1,5 +1,5 @@
-import Foundation
 import Dependencies
+import Foundation
 
 /// Holds the persistent library of wishes the user has already created.
 @MainActor

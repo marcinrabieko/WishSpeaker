@@ -1,5 +1,5 @@
-import Foundation
 import Dependencies
+import Foundation
 
 /// Holds the state of the wish currently being drafted, shared across the
 /// Occasion → Form → GeneratedPreview → PackageSelection → FinalWish flow.

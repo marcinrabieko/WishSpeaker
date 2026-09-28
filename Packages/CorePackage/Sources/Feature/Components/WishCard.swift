@@ -1,6 +1,6 @@
-import SwiftUI
-import Domain
 import DesignSystem
+import Domain
+import SwiftUI
 
 public struct WishCard: View {
     let wish: Wish
@@ -43,11 +43,11 @@ public struct WishCard: View {
                     .padding(.top, WSSpacing.xs)
 
                 // Transcript toggle
-                Button(action: {
+                Button {
                     withAnimation(.easeInOut(duration: 0.2)) {
                         showTranscript.toggle()
                     }
-                }) {
+                } label: {
                     HStack {
                         Text(showTranscript ? "Hide Transcript" : "Show Transcript")
                             .font(.system(size: 15, weight: .medium))
@@ -158,7 +158,12 @@ public struct WishListCard: View {
                     relation: "Brother-in-law",
                     note: "Runs a paving company",
                     voiceGender: .male,
-                    generatedText: "Gregory, on your 40th birthday I wish you that everything in life aligns as perfectly as the paving stones you lay every day. May your business grow, your projects succeed and your dream of owning a quad finally become reality. All the best from Marcin.",
+                    generatedText: """
+                    Gregory, on your 40th birthday I wish you that everything in life aligns as \
+                    perfectly as the paving stones you lay every day. May your business grow, \
+                    your projects succeed and your dream of owning a quad finally become \
+                    reality. All the best from Marcin.
+                    """,
                     selectedPackage: nil
                 ),
                 showFullDetails: true
@@ -174,7 +179,10 @@ public struct WishListCard: View {
                     relation: "Brother-in-law",
                     note: "Runs a paving company",
                     voiceGender: .male,
-                    generatedText: "Gregory, on your 40th birthday I wish you that everything in life aligns as perfectly as the paving stones you lay every day.",
+                    generatedText: """
+                    Gregory, on your 40th birthday I wish you that everything in life aligns as \
+                    perfectly as the paving stones you lay every day.
+                    """,
                     selectedPackage: nil
                 )
             )

@@ -1,5 +1,5 @@
-import SwiftUI
 import AVFoundation
+import SwiftUI
 
 public class AudioPlayerViewModel: ObservableObject {
     @Published public var isPlaying: Bool = false
@@ -24,7 +24,10 @@ public class AudioPlayerViewModel: ObservableObject {
     }
 
     private func setupTimeObserver() {
-        guard let player = player else { return }
+        guard let player
+        else {
+            return
+        }
 
         let interval = CMTime(seconds: 0.1, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
         timeObserver = player.addPeriodicTimeObserver(forInterval: interval, queue: .main) { [weak self] time in
@@ -64,7 +67,7 @@ public class AudioPlayerViewModel: ObservableObject {
     public func seek(to progress: Double) {
         let targetTime = progress * duration
         currentTime = targetTime
-        if let player = player {
+        if let player {
             player.seek(to: CMTime(seconds: targetTime, preferredTimescale: CMTimeScale(NSEC_PER_SEC)))
         }
     }
@@ -72,7 +75,7 @@ public class AudioPlayerViewModel: ObservableObject {
     private func simulatePlayback() {
         simulationTimer?.invalidate()
         simulationTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] timer in
-            guard let self = self else {
+            guard let self else {
                 timer.invalidate()
                 return
             }
@@ -107,9 +110,9 @@ public struct AudioPlayerView: View {
     public var body: some View {
         HStack(spacing: WSSpacing.sm) {
             // Play/Pause button - larger and gradient
-            Button(action: {
+            Button {
                 viewModel.togglePlayPause()
-            }) {
+            } label: {
                 ZStack {
                     Circle()
                         .fill(WSGradient.accent)

@@ -50,7 +50,7 @@ public extension Color {
 // MARK: - Gradients
 
 // Note: Avoid gradients in new warm design; kept for legacy screens.
-public struct WSGradient {
+public enum WSGradient {
     public static let accent = LinearGradient(
         colors: [Color(hex: "6B5CFF"), Color(hex: "8A7CFF")],
         startPoint: .leading,
@@ -63,11 +63,11 @@ public struct WSGradient {
         endPoint: .bottom
     )
 
-	public static let sceneVertical = LinearGradient(
-		colors: [.white, Color(hex: "8A7CFF").opacity(0.2)],
-		startPoint: .top,
-		endPoint: .bottom
-	)
+    public static let sceneVertical = LinearGradient(
+        colors: [.white, Color(hex: "8A7CFF").opacity(0.2)],
+        startPoint: .top,
+        endPoint: .bottom
+    )
 }
 
 // MARK: - Spacing
@@ -105,4 +105,3 @@ public enum WSFont {
         Font.custom("NewYork-Semibold", size: size)
     }
 }
-

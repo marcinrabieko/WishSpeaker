@@ -1,6 +1,6 @@
-import SwiftUI
-import Domain
 import DesignSystem
+import Domain
+import SwiftUI
 
 @MainActor
 @Observable
@@ -29,7 +29,7 @@ final class OccasionSelectionViewModel {
 public struct OccasionSelectionView: View {
 
 	@State private var viewModel = OccasionSelectionViewModel()
-    @Environment(\.dismiss) private var dismiss
+	@Environment(\.dismiss) private var dismiss
 
 	public init() {}
 
@@ -37,11 +37,11 @@ public struct OccasionSelectionView: View {
 		NavigationStack {
 			ScrollView(showsIndicators: false) {
 				VStack(spacing: 18) {
-                    Text("Dla kogo przygotowujesz życzenia?")
-                        .font(.system(size: 17))
-                        .foregroundColor(.wsSecondaryText)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-					
+					Text("Dla kogo przygotowujesz życzenia?")
+						.font(.system(size: 17))
+						.foregroundColor(.wsSecondaryText)
+						.frame(maxWidth: .infinity, alignment: .leading)
+
 					LazyVStack(spacing: 8) {
 						ForEach(viewModel.occasions) { occasion in
 							OccasionRowView(occasion: occasion) {
@@ -56,12 +56,12 @@ public struct OccasionSelectionView: View {
 			.background(Color.wsBackground)
 			.navigationTitle("Wybierz okazję")
 			.navigationBarTitleDisplayMode(.large)
-            .navigationBarBackButtonHidden(true)
+			.navigationBarBackButtonHidden(true)
 			.toolbar {
 				ToolbarItem(placement: .topBarLeading) {
 					Button {
-                        dismiss()
-                    } label: {
+						dismiss()
+					} label: {
 						Image(systemName: "chevron.left")
 							.font(.system(size: 17, weight: .semibold))
 							.foregroundColor(.wsPrimaryText)
@@ -79,12 +79,12 @@ public struct OccasionSelectionView: View {
 private struct OccasionRowView: View {
 	let occasion: Occasion
 	let didTap: () -> Void
-	
+
 	init(occasion: Occasion, didTap: @escaping () -> Void) {
 		self.occasion = occasion
 		self.didTap = didTap
 	}
-	
+
 	var body: some View {
 		Button {
 			didTap()

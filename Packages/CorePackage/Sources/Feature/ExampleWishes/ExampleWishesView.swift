@@ -1,6 +1,6 @@
-import SwiftUI
-import Domain
 import DesignSystem
+import Domain
+import SwiftUI
 
 public struct ExampleWishesView: View {
     public init() {}
@@ -76,11 +76,11 @@ struct ExampleWishCard: View {
             AudioPlayerView()
 
             // Transcript toggle
-            Button(action: {
+            Button {
                 withAnimation(.easeInOut(duration: 0.2)) {
                     showTranscript.toggle()
                 }
-            }) {
+            } label: {
                 HStack {
                     HStack(spacing: 4) {
                         Image(systemName: "text.alignleft")

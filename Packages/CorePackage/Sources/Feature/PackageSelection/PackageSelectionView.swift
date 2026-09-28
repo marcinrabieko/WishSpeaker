@@ -1,7 +1,7 @@
-import SwiftUI
-import Domain
-import DesignSystem
 import Dependencies
+import DesignSystem
+import Domain
+import SwiftUI
 
 @MainActor
 @Observable
@@ -75,9 +75,13 @@ public struct PackageSelectionView: View {
 
             Spacer()
 
-            PrimaryButton(title: "Continue", action: {
-                viewModel.didTapContinue()
-            }, isEnabled: viewModel.selectedPackage != nil)
+            PrimaryButton(
+                title: "Continue",
+                action: {
+                    viewModel.didTapContinue()
+                },
+                isEnabled: viewModel.selectedPackage != nil
+            )
             .padding(.horizontal, WSSpacing.horizontalPadding)
             .padding(.bottom, WSSpacing.lg)
         }

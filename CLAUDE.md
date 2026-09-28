@@ -42,7 +42,10 @@ Domain and Feature modules should have corresponding unit test targets.
   nav bar/toolbar (its `NavigationPageView` hides the system nav bar) plus Snackbar/TabBar
   infrastructure this app doesn't have — adopting it would fight the system navigation this app wants
 - **Testing**: XCTest unit tests
-- **Code Quality**: none configured yet
+- **Code Quality**: SwiftLint via the `SwiftLintBuildToolPlugin` plugin (from
+  [SimplyDanny/SwiftLintPlugins](https://github.com/SimplyDanny/SwiftLintPlugins)), attached to
+  every `CorePackage` target in `Package.swift`. Config lives at `Packages/CorePackage/.swiftlint.yml`
+  (ported from Pepco's ruleset). Runs automatically as part of every build — no separate command needed
 
 ## Architecture Quick Reference
 

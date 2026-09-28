@@ -1,6 +1,6 @@
-import SwiftUI
-import Domain
 import DesignSystem
+import Domain
+import SwiftUI
 
 @MainActor
 @Observable
@@ -38,7 +38,7 @@ public struct StartView: View {
                         ImageResource(name: "icon_universal_transparent", bundle: .main)
                     )
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .scaledToFit()
                     .frame(width: 180)
 
                     Group {
@@ -63,7 +63,9 @@ public struct StartView: View {
                     }
 
                     // Secondary action as text button (medium 16pt, Warm Gray)
-                    Button(action: { viewModel.didTapHearExample() }) {
+                    Button {
+                        viewModel.didTapHearExample()
+                    } label: {
                         HStack(spacing: 6) {
                             Image(systemName: "play.fill")
                                 .font(.system(size: 15, weight: .medium))

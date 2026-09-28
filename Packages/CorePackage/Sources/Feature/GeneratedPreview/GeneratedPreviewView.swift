@@ -1,7 +1,7 @@
-import SwiftUI
-import Domain
-import DesignSystem
 import Dependencies
+import DesignSystem
+import Domain
+import SwiftUI
 
 @MainActor
 @Observable

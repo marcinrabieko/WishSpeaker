@@ -5,7 +5,7 @@ public enum WishStyle: CaseIterable {
 	case short
 	case poetic
 	case religic
-	
+
 	var title: String {
 		switch self {
 		case .classic:
