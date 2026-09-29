@@ -23,12 +23,12 @@ public struct FormView: View {
 				}
 
 				VStack(alignment: .leading, spacing: 12) {
-					Text(L10n.formRecipientQuestion)
+					Text(viewModel.recipientTitle)
 						.font(.system(size: 18, weight: .semibold))
 						.foregroundStyle(Color.wsPrimaryText)
 
 					TextField(
-						L10n.formRecipientPlaceholder,
+						viewModel.recipientPlaceholder,
 						text: $viewModel.relationText
 					)
 					.font(.system(size: 17))
@@ -54,7 +54,7 @@ public struct FormView: View {
 					VStack(alignment: .leading, spacing: 0) {
 						ZStack(alignment: .topLeading) {
 							if viewModel.detailsText.isEmpty {
-								Text(L10n.formDetailsPlaceholder)
+								Text(viewModel.detailsPlaceholder)
 									.font(.system(size: 17))
 									.foregroundStyle(Color(.placeholderText))
 									.padding(.horizontal, 18)

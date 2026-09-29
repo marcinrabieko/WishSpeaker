@@ -1,5 +1,6 @@
 import Dependencies
 import Domain
+import Localizations
 import Observation
 
 @MainActor
@@ -10,6 +11,18 @@ public final class FormViewModel {
 	var selectedStyle: WishStyle = .classic
 	var navigateToPreview = false
 	var selectedOccasion: Occasion?
+
+	var recipientTitle: String {
+		selectedOccasion?.formCopy.recipientTitle ?? L10n.formRecipientQuestion
+	}
+
+	var recipientPlaceholder: String {
+		selectedOccasion?.formCopy.recipientPlaceholder ?? L10n.formRecipientPlaceholder
+	}
+
+	var detailsPlaceholder: String {
+		selectedOccasion?.formCopy.detailsPlaceholder ?? L10n.formDetailsPlaceholder
+	}
 
 	@ObservationIgnored
 	@Dependency(\.wishCreationManager)
