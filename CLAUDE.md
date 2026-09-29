@@ -97,6 +97,27 @@ targets should have corresponding unit test targets.
   won't trigger a re-render
 - **State**: `enum ViewState` driven rendering where useful; simple `@Observable` state otherwise
 
+## xcodegen Gotcha: Resources
+
+There is no top-level `resources:` key on an xcodegen target — that key is silently ignored (no
+error, no warning). Resource files/folders (`Assets.xcassets`, fonts, etc.) must be listed under
+`sources:` with an explicit `buildPhase: resources`:
+```yaml
+sources:
+  - path: Targets/MobileApp/Sources
+  - path: Targets/MobileApp/Resources/Assets.xcassets
+    buildPhase: resources
+  - path: Targets/MobileApp/Resources/Fonts/NewYork.ttf
+    buildPhase: resources
+```
+Point at the `.xcassets` folder directly with no `type:` override — xcodegen infers
+`folder.assetcatalog` from the extension, which is required for `actool` to actually compile it
+(forcing `type: folder` copies it as a raw, uncompiled folder instead — the app builds but the
+asset catalog silently doesn't work, e.g. the app icon never renders). Point at individual font
+files, not their containing folder, matching how `UIAppFonts` in `Info.plist` expects a flat
+filename — pointing at the folder copies it as `Fonts/NewYork.ttf` in the bundle, one level
+deeper than `UIAppFonts: [NewYork.ttf]` expects.
+
 ## Common Commands
 
 ```bash

@@ -44,8 +44,10 @@ targets:
     productName: WishSpeaker
     sources:
       - path: Targets/MobileApp/Sources
-    resources:
-      - path: Targets/MobileApp/Resources
+      - path: Targets/MobileApp/Resources/Assets.xcassets
+        buildPhase: resources
+      - path: Targets/MobileApp/Resources/Fonts/NewYork.ttf
+        buildPhase: resources
     dependencies:
       - package: CorePackage
         product: Domain
