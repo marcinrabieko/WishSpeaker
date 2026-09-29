@@ -4,6 +4,7 @@ import ExampleWishesFeature
 import Localizations
 import MyWishesFeature
 import OccasionSelectionFeature
+import Resources
 import SwiftUI
 
 public struct StartView: View {
@@ -19,12 +20,10 @@ public struct StartView: View {
                 Spacer(minLength: 0)
 
                 VStack(spacing: WSSpacing.sm) {
-                    Image(
-                        ImageResource(name: "icon_universal_transparent", bundle: .main)
-                    )
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 180)
+                    Resource.iconUniversalTransparent.swiftUIImage
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 180)
 
                     Group {
                         Text(L10n.startTitle)

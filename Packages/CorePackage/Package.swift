@@ -15,6 +15,7 @@ let package = Package(
         .library(name: "DesignSystem", targets: ["DesignSystem"]),
         .library(name: "Domain", targets: ["Domain"]),
         .library(name: "Localizations", targets: ["Localizations"]),
+        .library(name: "Resources", targets: ["Resources"]),
         .library(name: "SharedFeatureComponents", targets: ["SharedFeatureComponents"]),
         .library(name: "StartFeature", targets: ["StartFeature"]),
         .library(name: "OccasionSelectionFeature", targets: ["OccasionSelectionFeature"]),
@@ -35,6 +36,7 @@ let package = Package(
 
         .target(
             name: "DesignSystem",
+            dependencies: ["Resources"],
             plugins: [swiftLintPlugin]
         ),
         .target(
@@ -47,6 +49,13 @@ let package = Package(
             resources: [
                 .process("en.lproj"),
                 .process("pl.lproj")
+            ],
+            plugins: [swiftGenPlugin, swiftLintPlugin]
+        ),
+        .target(
+            name: "Resources",
+            resources: [
+                .process("Fonts")
             ],
             plugins: [swiftGenPlugin, swiftLintPlugin]
         ),
@@ -71,6 +80,7 @@ let package = Package(
                 "Domain",
                 "DesignSystem",
                 "Localizations",
+                "Resources",
                 "OccasionSelectionFeature",
                 "ExampleWishesFeature",
                 "MyWishesFeature",

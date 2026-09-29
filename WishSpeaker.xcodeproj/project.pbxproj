@@ -12,7 +12,6 @@
 		3D86EBC3DF2A2C44FE223CD6 /* OccasionSelectionFeature in Frameworks */ = {isa = PBXBuildFile; productRef = E784AA2910E71566435D7C0A /* OccasionSelectionFeature */; };
 		46B672AF80ADB1DEAEDD50F5 /* WishSpeakerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F375D255DC2D1FFC8147A4F /* WishSpeakerApp.swift */; };
 		7AAFB174217A231096E2EC6C /* ExampleWishesFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 7389B349A52DDAB5AB9D845C /* ExampleWishesFeature */; };
-		8473E20A468D5D2BD50179AA /* NewYork.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9D5F83F905ABA2009D2F85E6 /* NewYork.ttf */; };
 		8727F1239ACDD65F1249CFD8 /* FinalWishFeature in Frameworks */ = {isa = PBXBuildFile; productRef = E70698A6B5B24F5175375071 /* FinalWishFeature */; };
 		89C9FE4203777E2EBBE03E45 /* StartFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 30DB3FBA9029DAD9FF445A40 /* StartFeature */; };
 		AA670CA5568B241ED463BC95 /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = 08E554592AC0872150E5FE0F /* Domain */; };
@@ -28,7 +27,6 @@
 		30E5035B2C6C46FFC253524F /* WishSpeaker.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = WishSpeaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		82026C25CEA0F735B325B770 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		970C696EDBF10CA27E86ED65 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
-		9D5F83F905ABA2009D2F85E6 /* NewYork.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = NewYork.ttf; sourceTree = "<group>"; };
 		D6D01DD174A2150EFCADFE25 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -53,14 +51,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		07DDC10D301EA7A674BB5FEB /* Fonts */ = {
-			isa = PBXGroup;
-			children = (
-				9D5F83F905ABA2009D2F85E6 /* NewYork.ttf */,
-			);
-			path = Fonts;
-			sourceTree = "<group>";
-		};
 		213F1EBB96AE41272268DE8F /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -81,7 +71,6 @@
 			isa = PBXGroup;
 			children = (
 				D6D01DD174A2150EFCADFE25 /* Assets.xcassets */,
-				07DDC10D301EA7A674BB5FEB /* Fonts */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -197,7 +186,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D6CE02BFCC182B5119DABDFF /* Assets.xcassets in Resources */,
-				8473E20A468D5D2BD50179AA /* NewYork.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

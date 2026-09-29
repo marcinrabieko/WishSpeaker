@@ -1,3 +1,4 @@
+import Resources
 import SwiftUI
 
 // MARK: - Colors
@@ -81,7 +82,7 @@ public enum WSSize {
 
 public enum WSFont {
     // Brand title style using New York Semibold. Keep size flexible for reuse.
-    public static func brandTitle(size: CGFloat = 34) -> Font {
-        Font.custom("NewYork-Semibold", size: size)
+    public static func brandTitle(size: CGFloat = 34) -> SwiftUI.Font {
+        FontFamily.NewYork.semibold.swiftUIFont(size: size)
     }
 }
