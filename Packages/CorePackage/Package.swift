@@ -41,7 +41,10 @@ let package = Package(
         ),
         .target(
             name: "Domain",
-            dependencies: [dependenciesProduct],
+            dependencies: [
+                "Localizations",
+                dependenciesProduct
+            ],
             plugins: [swiftLintPlugin]
         ),
         .target(

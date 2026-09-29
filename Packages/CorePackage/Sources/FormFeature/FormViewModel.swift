@@ -9,12 +9,17 @@ public final class FormViewModel {
 	var detailsText = ""
 	var selectedStyle: WishStyle = .classic
 	var navigateToPreview = false
+	var selectedOccasion: Occasion?
 
 	@ObservationIgnored
 	@Dependency(\.wishCreationManager)
 	private var creationManager: WishCreationManager
 
 	public init() {}
+
+	func didAppear() {
+		selectedOccasion = creationManager.selectedOccasion
+	}
 
 	func didSelectStyle(_ style: WishStyle) {
 		selectedStyle = style

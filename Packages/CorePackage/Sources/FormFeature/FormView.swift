@@ -6,6 +6,7 @@ import SwiftUI
 
 public struct FormView: View {
 	@State private var viewModel = FormViewModel()
+	@Environment(\.dismiss) private var dismiss
 
 	@FocusState private var isRelationFocused: Bool
 	@FocusState private var isDetailsFocused: Bool
@@ -15,6 +16,12 @@ public struct FormView: View {
 	public var body: some View {
 		ScrollView(showsIndicators: false) {
 			VStack(alignment: .leading, spacing: 28) {
+				if let occasion = viewModel.selectedOccasion {
+					SelectedOccasionChip(occasion: occasion) {
+						dismiss()
+					}
+				}
+
 				VStack(alignment: .leading, spacing: 12) {
 					Text(L10n.formRecipientQuestion)
 						.font(.system(size: 18, weight: .semibold))
@@ -120,6 +127,33 @@ public struct FormView: View {
 		.navigationDestination(isPresented: $viewModel.navigateToPreview) {
 			GeneratedPreviewView()
 		}
+		.onAppear {
+			viewModel.didAppear()
+		}
+	}
+}
+
+private struct SelectedOccasionChip: View {
+	let occasion: Occasion
+	let action: () -> Void
+
+	var body: some View {
+		Button(action: action) {
+			HStack(spacing: 6) {
+				Image(systemName: occasion.iconName)
+					.font(.system(size: 14, weight: .semibold))
+					.foregroundStyle(Color.wsPrimary)
+
+				Text(occasion.title)
+					.font(.system(size: 15, weight: .semibold))
+					.foregroundStyle(Color.wsPrimary)
+			}
+			.padding(.horizontal, 14)
+			.padding(.vertical, 8)
+			.background(Color.wsPrimary.opacity(0.1))
+			.clipShape(Capsule())
+		}
+		.buttonStyle(.plain)
 	}
 }
 

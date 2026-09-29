@@ -8,6 +8,7 @@ public final class WishCreationManager {
     public var currentForm = WishForm()
     public var generatedText = ""
     public var selectedPackage: PremiumPackage?
+    public var selectedOccasion: Occasion?
 
     public init() {}
 
@@ -15,6 +16,7 @@ public final class WishCreationManager {
         currentForm = WishForm()
         generatedText = ""
         selectedPackage = nil
+        selectedOccasion = nil
     }
 
     public func finalizeWish() -> Wish {
