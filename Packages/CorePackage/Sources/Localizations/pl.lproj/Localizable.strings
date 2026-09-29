@@ -36,7 +36,6 @@
 "form_details_question" = "Opowiedz coś o tej osobie";
 "form_details_hint" = "Opcjonalnie, ale pomoże nam stworzyć bardziej osobiste życzenia.";
 "form_details_placeholder" = "Np. wspólne wspomnienia, charakter, pasje...";
-"form_style_question" = "Styl życzeń";
 
 /* Form - Occasion-specific copy */
 "form_occasion_birthday_recipient_title" = "Dla kogo są życzenia?";
@@ -72,12 +71,6 @@
 "form_occasion_other_recipient_title" = "Dla kogo są życzenia?";
 "form_occasion_other_recipient_placeholder" = "Np. Ewelina, moja przyjaciółka";
 "form_occasion_other_details_placeholder" = "Np. napisz, co sprawia, że ta osoba jest wyjątkowa...";
-"form_style_classic" = "Klasyczne";
-"form_style_touching" = "Wzruszające";
-"form_style_funny" = "Zabawne";
-"form_style_short" = "Krótkie";
-"form_style_poetic" = "Poetyckie";
-"form_style_religious" = "Religijne";
 "form_generate_button" = "Generuj życzenia";
 "form_title" = "Szczegóły";
 

@@ -36,7 +36,6 @@
 "form_details_question" = "Tell us about this person";
 "form_details_hint" = "Optional, but it will help us create more personal wishes.";
 "form_details_placeholder" = "e.g. shared memories, personality, hobbies...";
-"form_style_question" = "Wish Style";
 
 /* Form - Occasion-specific copy */
 "form_occasion_birthday_recipient_title" = "Who is this wish for?";
@@ -72,12 +71,6 @@
 "form_occasion_other_recipient_title" = "Who is this wish for?";
 "form_occasion_other_recipient_placeholder" = "e.g. Emma, my friend";
 "form_occasion_other_details_placeholder" = "e.g. tell us what makes this person special...";
-"form_style_classic" = "Classic";
-"form_style_touching" = "Touching";
-"form_style_funny" = "Funny";
-"form_style_short" = "Short";
-"form_style_poetic" = "Poetic";
-"form_style_religious" = "Religious";
 "form_generate_button" = "Generate Wishes";
 "form_title" = "Details";
 

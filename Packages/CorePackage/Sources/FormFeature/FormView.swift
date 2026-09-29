@@ -88,34 +88,10 @@ public struct FormView: View {
 					.clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
 				}
 
-				VStack(alignment: .leading, spacing: 16) {
-					Text(L10n.formStyleQuestion)
-						.font(.system(size: 18, weight: .semibold))
-						.foregroundStyle(Color.wsPrimaryText)
-
-					LazyVGrid(
-						columns: [
-							GridItem(.flexible()),
-							GridItem(.flexible()),
-							GridItem(.flexible())
-						],
-						spacing: 12
-					) {
-						ForEach(WishStyle.allCases, id: \.self) { style in
-							StyleChip(
-								title: style.title,
-								isSelected: viewModel.selectedStyle == style
-							) {
-								viewModel.didSelectStyle(style)
-							}
-						}
-					}
-				}
-
 				PrimaryButton(title: L10n.formGenerateButton, icon: "sparkles") {
 					viewModel.didTapGenerate()
 				}
-				.padding(.top, 8)
+				.padding(.top, 24)
 			}
 			.padding(.horizontal, 18)
 			.padding(.vertical, 18)
@@ -152,34 +128,6 @@ private struct SelectedOccasionChip: View {
 			.padding(.vertical, 8)
 			.background(Color.wsPrimary.opacity(0.1))
 			.clipShape(Capsule())
-		}
-		.buttonStyle(.plain)
-	}
-}
-
-private struct StyleChip: View {
-	let title: String
-	let isSelected: Bool
-	let action: () -> Void
-
-	var body: some View {
-		Button(action: action) {
-			Text(title)
-				.font(.system(size: 15, weight: .semibold))
-				.foregroundStyle(isSelected ? Color.wsPrimary : Color.wsPrimaryText)
-				.frame(maxWidth: .infinity)
-				.frame(height: 46)
-				.background(isSelected ? Color.wsPrimary.opacity(0.06) : Color.wsSurface)
-				.overlay {
-					RoundedRectangle(cornerRadius: 16, style: .continuous)
-						.stroke(
-							isSelected
-								? Color.wsPrimary
-								: Color.wsSoftBorder,
-							lineWidth: isSelected ? 2 : 1
-						)
-				}
-				.clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
 		}
 		.buttonStyle(.plain)
 	}
