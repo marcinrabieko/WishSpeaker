@@ -1,40 +1,7 @@
-import Dependencies
 import DesignSystem
 import Domain
 import SharedFeatureComponents
 import SwiftUI
-
-@MainActor
-@Observable
-public final class FinalWishViewModel {
-    fileprivate var wish: Wish?
-    fileprivate var selectedPackage: PremiumPackage?
-
-    private var hasBeenSaved = false
-
-    @ObservationIgnored
-    @Dependency(\.wishCreationManager)
-    private var creationManager: WishCreationManager
-
-    @ObservationIgnored
-    @Dependency(\.wishLibraryManager)
-    private var libraryManager: WishLibraryManager
-
-    public init() {}
-
-    func didAppear() {
-        guard !hasBeenSaved else {
-            return
-        }
-        hasBeenSaved = true
-
-        let finalizedWish = creationManager.finalizeWish()
-        wish = finalizedWish
-        selectedPackage = finalizedWish.selectedPackage
-
-        libraryManager.save(finalizedWish)
-    }
-}
 
 public struct FinalWishView: View {
     @State private var viewModel = FinalWishViewModel()
@@ -130,11 +97,5 @@ public struct SavedWishDetailView: View {
         .background(Color.wsBackground)
         .navigationTitle("Your Wish")
         .navigationBarTitleDisplayMode(.large)
-    }
-}
-
-#Preview {
-    NavigationStack {
-        FinalWishView()
     }
 }

@@ -1,36 +1,7 @@
-import Dependencies
 import DesignSystem
 import Domain
 import GeneratedPreviewFeature
 import SwiftUI
-
-@MainActor
-@Observable
-public final class FormViewModel {
-	fileprivate var relationText = ""
-	fileprivate var detailsText = ""
-	fileprivate var selectedStyle: WishStyle = .classic
-	fileprivate var navigateToPreview = false
-
-	@ObservationIgnored
-	@Dependency(\.wishCreationManager)
-	private var creationManager: WishCreationManager
-
-	public init() {}
-
-	func didSelectStyle(_ style: WishStyle) {
-		selectedStyle = style
-	}
-
-	func didTapGenerate() {
-		creationManager.currentForm.relation = relationText
-		creationManager.currentForm.note = detailsText
-		creationManager.currentForm.tone = selectedStyle.title
-
-		creationManager.generatedText = MockWishGenerator.shared.generateMockWish(form: creationManager.currentForm)
-		navigateToPreview = true
-	}
-}
 
 public struct FormView: View {
 	@State private var viewModel = FormViewModel()
@@ -175,11 +146,5 @@ private struct StyleChip: View {
 				.clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
 		}
 		.buttonStyle(.plain)
-	}
-}
-
-#Preview {
-	NavigationStack {
-		FormView()
 	}
 }

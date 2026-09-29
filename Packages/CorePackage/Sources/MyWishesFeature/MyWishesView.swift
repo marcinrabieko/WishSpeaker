@@ -1,25 +1,8 @@
-import Dependencies
 import DesignSystem
 import Domain
 import FinalWishFeature
 import SharedFeatureComponents
 import SwiftUI
-
-@MainActor
-@Observable
-public final class MyWishesViewModel {
-    fileprivate var savedWishes: [Wish] = []
-
-    @ObservationIgnored
-    @Dependency(\.wishLibraryManager)
-    private var libraryManager: WishLibraryManager
-
-    public init() {}
-
-    func didAppear() {
-        savedWishes = libraryManager.savedWishes
-    }
-}
 
 public struct MyWishesView: View {
     @State private var viewModel = MyWishesViewModel()
@@ -69,11 +52,5 @@ struct EmptyWishesView: View {
                 .font(.system(size: 15))
                 .foregroundColor(.wsSecondaryText)
         }
-    }
-}
-
-#Preview {
-    NavigationStack {
-        MyWishesView()
     }
 }

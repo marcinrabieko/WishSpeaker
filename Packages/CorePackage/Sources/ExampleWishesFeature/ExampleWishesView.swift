@@ -115,9 +115,3 @@ struct ExampleWishCard: View {
         )
     }
 }
-
-#Preview {
-    NavigationStack {
-        ExampleWishesView()
-    }
-}

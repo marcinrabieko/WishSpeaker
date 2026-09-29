@@ -63,12 +63,17 @@ below). Domain and Feature targets should have corresponding unit test targets.
 
 ## Architecture Quick Reference
 
-- **ViewModels**: `@MainActor @Observable final class {Feature}ViewModel`
-- **Views**: `struct {Feature}View: View` — co-located with their ViewModel in the same file
-- **Navigation**: `@State`/`fileprivate var navigateToX` on the ViewModel, bound via
-  `$viewModel.navigateToX` to `.navigationDestination(isPresented:)` on the View — no router layer.
-  A property bound two-way from the View (e.g. any `navigateToX`) must be plain `fileprivate var`,
-  not `private(set) fileprivate var` — the View needs to write it back to `false` on pop
+- **ViewModels**: `@MainActor @Observable final class {Feature}ViewModel`, own file
+  (`{Feature}ViewModel.swift`) — needs `import Observation` explicitly since it's no longer
+  co-located with a file that imports `SwiftUI`
+- **Views**: `struct {Feature}View: View`, own file (`{Feature}View.swift`)
+- **Previews**: `#Preview` blocks live in their own file (`{Feature}View+Preview.swift`), never
+  inside the View or ViewModel file
+- **Navigation**: `var navigateToX` on the ViewModel, bound via `$viewModel.navigateToX` to
+  `.navigationDestination(isPresented:)` on the View — no router layer. Since View and ViewModel
+  are separate files now, `fileprivate` can't be the access boundary between them (that was the
+  old co-located-file convention) — VM properties the View binds to are plain `internal var`
+  (no access modifier)
 - **Dependencies**: `@Dependency(\.managerName) private var manager` in the ViewModel (see DI above)
 - **Managers**: Stateful `@MainActor` orchestrators in Domain (`WishCreationManager` for the
   in-progress draft, `WishLibraryManager` for saved wishes), each resolved through `@Dependency`.
@@ -129,12 +134,15 @@ logic or write a `private` extension in the same file.
 ## Conventions
 
 - ViewModel action handlers are named `did{Something}` (e.g. `didTapButton`, `didPullToRefresh`)
-  and are `internal` (for testability) or `fileprivate`
-- View and ViewModel are colocated in the same file; `fileprivate` is the access boundary:
-  - `fileprivate var` — View can read and write
-  - `private(set) fileprivate var` — View can read, only ViewModel writes
-  - `fileprivate let` — constant readable by the View
-- Views use `{View}_Preview: PreviewProvider` for previews (migration to `#Preview` macros is planned but not yet started)
+  and are `internal` (no access modifier) for testability
+- View, ViewModel, and Preview are three separate files per screen:
+  `{Feature}View.swift`, `{Feature}ViewModel.swift`, `{Feature}View+Preview.swift`. A screen
+  without ViewModel-worthy state (no domain data, no navigation, e.g. `ExampleWishesFeature`) can
+  skip the ViewModel file — don't manufacture an empty one for consistency's sake
+- Small, private helper views used only by one screen (e.g. `PackageCard`, `EmptyWishesView`,
+  `PackageSummaryCard`) stay in that screen's `{Feature}View.swift` — they aren't split into their
+  own file unless reused elsewhere (in which case they belong in `SharedFeatureComponents`)
+- Views use `#Preview` macros (not `{View}_Preview: PreviewProvider`)
 
 ## Code Review
 

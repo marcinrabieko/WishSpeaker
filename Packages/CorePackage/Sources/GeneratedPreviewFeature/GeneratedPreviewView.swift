@@ -1,35 +1,7 @@
-import Dependencies
 import DesignSystem
 import Domain
 import PackageSelectionFeature
 import SwiftUI
-
-@MainActor
-@Observable
-public final class GeneratedPreviewViewModel {
-	fileprivate var navigateToPackages = false
-	fileprivate var generatedText = ""
-
-	@ObservationIgnored
-	@Dependency(\.wishCreationManager)
-	private var creationManager: WishCreationManager
-
-	public init() {}
-
-	func didAppear() {
-		generatedText = creationManager.generatedText
-	}
-
-	func didTapGenerateAgain() {
-		let text = MockWishGenerator.shared.generateMockWish(form: creationManager.currentForm)
-		creationManager.generatedText = text
-		generatedText = text
-	}
-
-	func didTapContinue() {
-		navigateToPackages = true
-	}
-}
 
 public struct GeneratedPreviewView: View {
     @State private var viewModel = GeneratedPreviewViewModel()
@@ -83,11 +55,5 @@ public struct GeneratedPreviewView: View {
         .navigationDestination(isPresented: $viewModel.navigateToPackages) {
             PackageSelectionView()
         }
-    }
-}
-
-#Preview {
-    NavigationStack {
-        GeneratedPreviewView()
     }
 }

@@ -5,24 +5,6 @@ import MyWishesFeature
 import OccasionSelectionFeature
 import SwiftUI
 
-@MainActor
-@Observable
-public final class StartViewModel {
-    fileprivate var navigateToCreator = false
-    fileprivate var navigateToExamples = false
-    fileprivate var navigateToMyWishes = false
-
-    public init() {}
-
-    func didTapCreateWish() {
-        navigateToCreator = true
-    }
-
-    func didTapHearExample() {
-        navigateToExamples = true
-    }
-}
-
 public struct StartView: View {
     @State private var viewModel: StartViewModel
 
@@ -98,11 +80,5 @@ public struct StartView: View {
         .navigationDestination(isPresented: $viewModel.navigateToMyWishes) {
             MyWishesView()
         }
-    }
-}
-
-#Preview {
-    NavigationStack {
-        StartView()
     }
 }
