@@ -8,7 +8,7 @@ import Observation
 public final class FormViewModel {
 	var relationText = ""
 	var detailsText = ""
-	var navigateToPreview = false
+	var navigateToWishes = false
 	var selectedOccasion: Occasion?
 
 	var recipientTitle: String {
@@ -37,7 +37,10 @@ public final class FormViewModel {
 		creationManager.currentForm.relation = relationText
 		creationManager.currentForm.note = detailsText
 
-		creationManager.generatedText = MockWishGenerator.shared.generateMockWish(form: creationManager.currentForm)
-		navigateToPreview = true
+		// Clear stale candidates so WishesView always regenerates for this submission.
+		creationManager.generatedWishes = nil
+		creationManager.selectedVariant = nil
+
+		navigateToWishes = true
 	}
 }

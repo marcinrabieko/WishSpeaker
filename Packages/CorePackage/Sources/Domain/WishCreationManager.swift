@@ -2,13 +2,18 @@ import Dependencies
 import Foundation
 
 /// Holds the state of the wish currently being drafted, shared across the
-/// Occasion → Form → GeneratedPreview → PackageSelection → FinalWish flow.
+/// Occasion → Form → Wishes → PackageSelection → FinalWish flow.
 @MainActor
 public final class WishCreationManager {
     public var currentForm = WishForm()
     public var generatedText = ""
     public var selectedPackage: PremiumPackage?
     public var selectedOccasion: Occasion?
+
+    /// Temporary, session-only generated candidates. Never persisted automatically —
+    /// see WishLibraryManager for the explicit, user-initiated Save action.
+    public var generatedWishes: WishGenerationResult?
+    public var selectedVariant: WishVariant?
 
     public init() {}
 
@@ -17,6 +22,8 @@ public final class WishCreationManager {
         generatedText = ""
         selectedPackage = nil
         selectedOccasion = nil
+        generatedWishes = nil
+        selectedVariant = nil
     }
 
     public func finalizeWish() -> Wish {

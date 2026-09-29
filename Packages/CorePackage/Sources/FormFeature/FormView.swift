@@ -1,8 +1,8 @@
 import DesignSystem
 import Domain
-import GeneratedPreviewFeature
 import Localizations
 import SwiftUI
+import WishesFeature
 
 public struct FormView: View {
 	@State private var viewModel = FormViewModel()
@@ -100,8 +100,8 @@ public struct FormView: View {
 		.navigationTitle(L10n.formTitle)
 		.navigationBarTitleDisplayMode(.large)
 		.wsBackButton()
-		.navigationDestination(isPresented: $viewModel.navigateToPreview) {
-			GeneratedPreviewView()
+		.navigationDestination(isPresented: $viewModel.navigateToWishes) {
+			WishesView()
 		}
 		.onAppear {
 			viewModel.didAppear()

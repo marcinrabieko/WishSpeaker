@@ -20,7 +20,7 @@ let package = Package(
         .library(name: "StartFeature", targets: ["StartFeature"]),
         .library(name: "OccasionSelectionFeature", targets: ["OccasionSelectionFeature"]),
         .library(name: "FormFeature", targets: ["FormFeature"]),
-        .library(name: "GeneratedPreviewFeature", targets: ["GeneratedPreviewFeature"]),
+        .library(name: "WishesFeature", targets: ["WishesFeature"]),
         .library(name: "PackageSelectionFeature", targets: ["PackageSelectionFeature"]),
         .library(name: "FinalWishFeature", targets: ["FinalWishFeature"]),
         .library(name: "MyWishesFeature", targets: ["MyWishesFeature"]),
@@ -108,13 +108,13 @@ let package = Package(
                 "Domain",
                 "DesignSystem",
                 "Localizations",
-                "GeneratedPreviewFeature",
+                "WishesFeature",
                 dependenciesProduct
             ],
             plugins: [swiftLintPlugin]
         ),
         .target(
-            name: "GeneratedPreviewFeature",
+            name: "WishesFeature",
             dependencies: [
                 "Domain",
                 "DesignSystem",

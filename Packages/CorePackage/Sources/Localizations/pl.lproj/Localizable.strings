@@ -74,11 +74,25 @@
 "form_generate_button" = "Generuj życzenia";
 "form_title" = "Szczegóły";
 
-/* Generated Preview */
-"generated_preview_title" = "Podgląd";
-"generated_preview_heading" = "Twoje wygenerowane życzenia";
-"generated_preview_generate_again_button" = "Generuj ponownie";
-"generated_preview_continue_button" = "Kontynuuj";
+/* Wish Variant */
+"wish_variant_warm" = "Ciepłe";
+"wish_variant_natural" = "Naturalne";
+"wish_variant_light" = "Lekkie";
+
+/* Wishes */
+"wishes_title" = "Twoje życzenia";
+"wishes_subtitle" = "Wybierz te, które najlepiej pasują.";
+"wishes_loading_message" = "Piszemy Twoje życzenia...";
+"wishes_generation_error_title" = "Coś poszło nie tak";
+"wishes_generation_error_message" = "Nie udało się wygenerować życzeń. Twoje dane wciąż tu są, możesz spróbować ponownie.";
+"wishes_retry_button" = "Spróbuj ponownie";
+"wishes_regenerate_error_message" = "Nie udało się wygenerować nowej wersji. Spróbuj ponownie.";
+"wishes_copy_button" = "Kopiuj";
+"wishes_copied_confirmation" = "Skopiowano";
+"wishes_save_button" = "Zapisz";
+"wishes_saved_confirmation" = "Zapisano";
+"wishes_regenerate_button" = "Wygeneruj ponownie";
+"wishes_use_this_wish_button" = "Użyj tych życzeń";
 
 /* Package Selection */
 "package_selection_title" = "Wybierz pakiet";

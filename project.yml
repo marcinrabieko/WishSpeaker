@@ -58,7 +58,7 @@ targets:
       - package: CorePackage
         product: FormFeature
       - package: CorePackage
-        product: GeneratedPreviewFeature
+        product: WishesFeature
       - package: CorePackage
         product: PackageSelectionFeature
       - package: CorePackage
