@@ -1,5 +1,5 @@
+import StartFeature
 import SwiftUI
-import Feature
 
 @main
 struct WishSpeakerApp: App {

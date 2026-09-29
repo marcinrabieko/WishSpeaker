@@ -7,18 +7,32 @@ See [README.md](README.md) for project setup, build environments, git convention
 
 ## Module Map
 
-`CorePackage` is split into three targets (flat for now — no per-feature split yet):
+`CorePackage` is split per-feature, mirroring Pepco's `{X}Domain`/`{X}Feature` convention:
 - **DesignSystem** — reusable visual components with no domain-model knowledge
 - **Domain** — models and Managers (stateful orchestrators, e.g. `WishCreationManager`, `WishLibraryManager`)
-- **Feature** — SwiftUI views + view models
+- **SharedFeatureComponents** — feature-level UI that needs Domain models (e.g. `WishCard`,
+  `WishListCard`, which render a `Wish`) but is reused by more than one Feature — kept out of
+  `DesignSystem` on purpose, since DesignSystem must stay domain-agnostic
+- **`{X}Feature`** — one target per screen/flow: `StartFeature`, `OccasionSelectionFeature`,
+  `FormFeature`, `GeneratedPreviewFeature`, `PackageSelectionFeature`, `FinalWishFeature`,
+  `MyWishesFeature`, `ExampleWishesFeature`
+
+Feature-to-feature dependencies follow the actual navigation graph (a Feature imports the next
+screen it can navigate to):
 
 ```
-Feature → Domain
-Feature → DesignSystem
+StartFeature → OccasionSelectionFeature, ExampleWishesFeature, MyWishesFeature
+OccasionSelectionFeature → FormFeature
+FormFeature → GeneratedPreviewFeature
+GeneratedPreviewFeature → PackageSelectionFeature
+PackageSelectionFeature → FinalWishFeature
+MyWishesFeature → FinalWishFeature (for SavedWishDetailView)
+{every Feature} → Domain, DesignSystem
+FinalWishFeature, MyWishesFeature → SharedFeatureComponents
 ```
 
-Both Domain and Feature also depend on the external `swift-dependencies` package (see DI below).
-Domain and Feature modules should have corresponding unit test targets.
+Every Feature target and Domain also depend on the external `swift-dependencies` package (see DI
+below). Domain and Feature targets should have corresponding unit test targets.
 
 ## Key Technologies
 

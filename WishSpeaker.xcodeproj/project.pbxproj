@@ -7,10 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		21D11BC06BEABD987274481C /* MyWishesFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 3F757995FF5B3AA53B26AF99 /* MyWishesFeature */; };
 		2B63765D2BEE2A475FB8C9D0 /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 9C4EBF1A36781F70E0F43D15 /* DesignSystem */; };
+		3D86EBC3DF2A2C44FE223CD6 /* OccasionSelectionFeature in Frameworks */ = {isa = PBXBuildFile; productRef = E784AA2910E71566435D7C0A /* OccasionSelectionFeature */; };
 		46B672AF80ADB1DEAEDD50F5 /* WishSpeakerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F375D255DC2D1FFC8147A4F /* WishSpeakerApp.swift */; };
-		89C9FE4203777E2EBBE03E45 /* Feature in Frameworks */ = {isa = PBXBuildFile; productRef = 7F5B225172AA522B60A563A2 /* Feature */; };
+		7AAFB174217A231096E2EC6C /* ExampleWishesFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 7389B349A52DDAB5AB9D845C /* ExampleWishesFeature */; };
+		8727F1239ACDD65F1249CFD8 /* FinalWishFeature in Frameworks */ = {isa = PBXBuildFile; productRef = E70698A6B5B24F5175375071 /* FinalWishFeature */; };
+		89C9FE4203777E2EBBE03E45 /* StartFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 30DB3FBA9029DAD9FF445A40 /* StartFeature */; };
 		AA670CA5568B241ED463BC95 /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = 08E554592AC0872150E5FE0F /* Domain */; };
+		AC654AF3AE67F10ED977ABAF /* PackageSelectionFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 1A0736C78C5761C88C867468 /* PackageSelectionFeature */; };
+		C3FD41F0EA0C2370827B97DE /* GeneratedPreviewFeature in Frameworks */ = {isa = PBXBuildFile; productRef = C9E5ECC4DF51881AEFEA38B3 /* GeneratedPreviewFeature */; };
+		CEC0D105C88006A85387F804 /* FormFeature in Frameworks */ = {isa = PBXBuildFile; productRef = DEF6499717BF3D2F842B96D2 /* FormFeature */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,7 +35,14 @@
 			files = (
 				AA670CA5568B241ED463BC95 /* Domain in Frameworks */,
 				2B63765D2BEE2A475FB8C9D0 /* DesignSystem in Frameworks */,
-				89C9FE4203777E2EBBE03E45 /* Feature in Frameworks */,
+				89C9FE4203777E2EBBE03E45 /* StartFeature in Frameworks */,
+				3D86EBC3DF2A2C44FE223CD6 /* OccasionSelectionFeature in Frameworks */,
+				CEC0D105C88006A85387F804 /* FormFeature in Frameworks */,
+				C3FD41F0EA0C2370827B97DE /* GeneratedPreviewFeature in Frameworks */,
+				AC654AF3AE67F10ED977ABAF /* PackageSelectionFeature in Frameworks */,
+				8727F1239ACDD65F1249CFD8 /* FinalWishFeature in Frameworks */,
+				21D11BC06BEABD987274481C /* MyWishesFeature in Frameworks */,
+				7AAFB174217A231096E2EC6C /* ExampleWishesFeature in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -105,7 +119,14 @@
 			packageProductDependencies = (
 				08E554592AC0872150E5FE0F /* Domain */,
 				9C4EBF1A36781F70E0F43D15 /* DesignSystem */,
-				7F5B225172AA522B60A563A2 /* Feature */,
+				30DB3FBA9029DAD9FF445A40 /* StartFeature */,
+				E784AA2910E71566435D7C0A /* OccasionSelectionFeature */,
+				DEF6499717BF3D2F842B96D2 /* FormFeature */,
+				C9E5ECC4DF51881AEFEA38B3 /* GeneratedPreviewFeature */,
+				1A0736C78C5761C88C867468 /* PackageSelectionFeature */,
+				E70698A6B5B24F5175375071 /* FinalWishFeature */,
+				3F757995FF5B3AA53B26AF99 /* MyWishesFeature */,
+				7389B349A52DDAB5AB9D845C /* ExampleWishesFeature */,
 			);
 			productName = MobileApp;
 			productReference = 30E5035B2C6C46FFC253524F /* WishSpeaker.app */;
@@ -377,13 +398,41 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = Domain;
 		};
-		7F5B225172AA522B60A563A2 /* Feature */ = {
+		1A0736C78C5761C88C867468 /* PackageSelectionFeature */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Feature;
+			productName = PackageSelectionFeature;
+		};
+		30DB3FBA9029DAD9FF445A40 /* StartFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = StartFeature;
+		};
+		3F757995FF5B3AA53B26AF99 /* MyWishesFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MyWishesFeature;
+		};
+		7389B349A52DDAB5AB9D845C /* ExampleWishesFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ExampleWishesFeature;
 		};
 		9C4EBF1A36781F70E0F43D15 /* DesignSystem */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DesignSystem;
+		};
+		C9E5ECC4DF51881AEFEA38B3 /* GeneratedPreviewFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = GeneratedPreviewFeature;
+		};
+		DEF6499717BF3D2F842B96D2 /* FormFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FormFeature;
+		};
+		E70698A6B5B24F5175375071 /* FinalWishFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FinalWishFeature;
+		};
+		E784AA2910E71566435D7C0A /* OccasionSelectionFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = OccasionSelectionFeature;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

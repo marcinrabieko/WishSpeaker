@@ -52,7 +52,21 @@ targets:
       - package: CorePackage
         product: DesignSystem
       - package: CorePackage
-        product: Feature
+        product: StartFeature
+      - package: CorePackage
+        product: OccasionSelectionFeature
+      - package: CorePackage
+        product: FormFeature
+      - package: CorePackage
+        product: GeneratedPreviewFeature
+      - package: CorePackage
+        product: PackageSelectionFeature
+      - package: CorePackage
+        product: FinalWishFeature
+      - package: CorePackage
+        product: MyWishesFeature
+      - package: CorePackage
+        product: ExampleWishesFeature
     settings:
       base:
         PRODUCT_NAME: WishSpeaker

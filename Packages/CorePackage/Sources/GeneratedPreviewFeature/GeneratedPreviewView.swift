@@ -1,6 +1,7 @@
 import Dependencies
 import DesignSystem
 import Domain
+import PackageSelectionFeature
 import SwiftUI
 
 @MainActor

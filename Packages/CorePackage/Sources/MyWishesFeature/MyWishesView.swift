@@ -1,6 +1,8 @@
 import Dependencies
 import DesignSystem
 import Domain
+import FinalWishFeature
+import SharedFeatureComponents
 import SwiftUI
 
 @MainActor

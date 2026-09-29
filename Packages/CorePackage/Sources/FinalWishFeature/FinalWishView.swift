@@ -1,6 +1,7 @@
 import Dependencies
 import DesignSystem
 import Domain
+import SharedFeatureComponents
 import SwiftUI
 
 @MainActor
@@ -95,14 +96,14 @@ struct PackageSummaryCard: View {
 }
 
 // Variant for viewing existing wishes from library
-struct SavedWishDetailView: View {
+public struct SavedWishDetailView: View {
     let wish: Wish
 
-    init(wish: Wish) {
+    public init(wish: Wish) {
         self.wish = wish
     }
 
-    var body: some View {
+    public var body: some View {
         ScrollView {
             VStack(spacing: WSSpacing.md) {
                 // WishCard with full details
