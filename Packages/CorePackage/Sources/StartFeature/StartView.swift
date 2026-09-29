@@ -1,6 +1,7 @@
 import DesignSystem
 import Domain
 import ExampleWishesFeature
+import Localizations
 import MyWishesFeature
 import OccasionSelectionFeature
 import SwiftUI
@@ -18,7 +19,6 @@ public struct StartView: View {
                 Spacer(minLength: 0)
 
                 VStack(spacing: WSSpacing.sm) {
-                    // Hero image (180pt) with tight spacing to title
                     Image(
                         ImageResource(name: "icon_universal_transparent", bundle: .main)
                     )
@@ -27,13 +27,12 @@ public struct StartView: View {
                     .frame(width: 180)
 
                     Group {
-                        Text("WishSpeaker")
+                        Text(L10n.startTitle)
                             .font(WSFont.brandTitle(size: 34))
                             .foregroundColor(.wsPrimaryText)
                     }
 
-                    // Subtitle
-                    Text("Make every wish sound personal.")
+                    Text(L10n.startSubtitle)
                         .font(.system(size: 17))
                         .foregroundColor(.wsSecondaryText)
                         .multilineTextAlignment(.center)
@@ -42,19 +41,17 @@ public struct StartView: View {
                     // Deliberate gap between subtitle and primary CTA (~32pt)
                     Spacer().frame(height: 32)
 
-                    // Primary CTA
-                    PrimaryButton(title: "Create a Wish") {
+                    PrimaryButton(title: L10n.startCreateWishButton) {
                         viewModel.didTapCreateWish()
                     }
 
-                    // Secondary action as text button (medium 16pt, Warm Gray)
                     Button {
                         viewModel.didTapHearExample()
                     } label: {
                         HStack(spacing: 6) {
                             Image(systemName: "play.fill")
                                 .font(.system(size: 15, weight: .medium))
-                            Text("Hear an example")
+                            Text(L10n.startHearExampleButton)
                                 .font(.system(size: 16, weight: .medium))
                         }
                         .foregroundColor(.wsSecondaryText)

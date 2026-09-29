@@ -1,6 +1,7 @@
 import DesignSystem
 import Domain
 import FormFeature
+import Localizations
 import SwiftUI
 
 public struct OccasionSelectionView: View {
@@ -14,7 +15,7 @@ public struct OccasionSelectionView: View {
 		NavigationStack {
 			ScrollView(showsIndicators: false) {
 				VStack(spacing: 18) {
-					Text("Dla kogo przygotowujesz życzenia?")
+					Text(L10n.occasionSelectionQuestion)
 						.font(.system(size: 17))
 						.foregroundColor(.wsSecondaryText)
 						.frame(maxWidth: .infinity, alignment: .leading)
@@ -31,7 +32,7 @@ public struct OccasionSelectionView: View {
 				.padding(.bottom, WSSpacing.lg)
 			}
 			.background(Color.wsBackground)
-			.navigationTitle("Wybierz okazję")
+			.navigationTitle(L10n.occasionSelectionTitle)
 			.navigationBarTitleDisplayMode(.large)
 			.navigationBarBackButtonHidden(true)
 			.toolbar {

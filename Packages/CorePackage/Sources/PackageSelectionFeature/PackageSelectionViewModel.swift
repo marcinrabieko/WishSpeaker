@@ -1,5 +1,6 @@
 import Dependencies
 import Domain
+import Localizations
 import Observation
 
 @MainActor
@@ -7,20 +8,20 @@ import Observation
 public final class PackageSelectionViewModel {
     let packages: [PremiumPackage] = [
         PremiumPackage(
-            name: "Basic",
-            description: "Standard AI voice",
+            name: L10n.packageBasicName,
+            description: L10n.packageBasicDescription,
             price: 4.99,
             recommended: false
         ),
         PremiumPackage(
-            name: "Premium",
-            description: "Studio voice",
+            name: L10n.packagePremiumName,
+            description: L10n.packagePremiumDescription,
             price: 9.99,
             recommended: true
         ),
         PremiumPackage(
-            name: "Premium Plus",
-            description: "Studio voice + music",
+            name: L10n.packagePremiumPlusName,
+            description: L10n.packagePremiumPlusDescription,
             price: 14.99,
             recommended: false
         )

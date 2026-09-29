@@ -1,0 +1,88 @@
+/* Start */
+"start_title" = "WishSpeaker";
+"start_subtitle" = "Make every wish sound personal.";
+"start_create_wish_button" = "Create a Wish";
+"start_hear_example_button" = "Hear an example";
+
+/* Occasion Selection */
+"occasion_selection_question" = "Who are you preparing wishes for?";
+"occasion_selection_title" = "Choose an Occasion";
+"occasion_birthday_title" = "Birthday";
+"occasion_birthday_subtitle" = "For the birthday person";
+"occasion_anniversary_title" = "Anniversary";
+"occasion_anniversary_subtitle" = "For couples, spouses, relationships";
+"occasion_name_day_title" = "Name Day";
+"occasion_name_day_subtitle" = "Classic name day wishes";
+"occasion_wedding_title" = "Wedding";
+"occasion_wedding_subtitle" = "For newlyweds and couples in love";
+"occasion_mothers_day_title" = "Mother's Day";
+"occasion_mothers_day_subtitle" = "Show how much you appreciate her";
+"occasion_fathers_day_title" = "Father's Day";
+"occasion_fathers_day_subtitle" = "Thank your dad";
+"occasion_womens_day_title" = "Women's Day";
+"occasion_womens_day_subtitle" = "For an exceptional woman";
+"occasion_congratulations_title" = "Congratulations";
+"occasion_congratulations_subtitle" = "For a new job, success, promotion";
+"occasion_apology_title" = "Apology";
+"occasion_apology_subtitle" = "Say it the right way";
+"occasion_thanks_title" = "Thanks";
+"occasion_thanks_subtitle" = "For help, support, or presence";
+"occasion_other_title" = "Other Occasion";
+"occasion_other_subtitle" = "Create your own wishes";
+
+/* Form */
+"form_recipient_question" = "Who is this wish for?";
+"form_recipient_placeholder" = "e.g. sister, best friend, husband...";
+"form_details_question" = "Tell us about this person";
+"form_details_hint" = "Optional, but it will help us create more personal wishes.";
+"form_details_placeholder" = "e.g. shared memories, personality, hobbies...";
+"form_style_question" = "Wish Style";
+"form_style_classic" = "Classic";
+"form_style_touching" = "Touching";
+"form_style_funny" = "Funny";
+"form_style_short" = "Short";
+"form_style_poetic" = "Poetic";
+"form_style_religious" = "Religious";
+"form_generate_button" = "Generate Wishes";
+"form_title" = "Details";
+
+/* Generated Preview */
+"generated_preview_title" = "Preview";
+"generated_preview_heading" = "Your Generated Wish";
+"generated_preview_generate_again_button" = "Generate Again";
+"generated_preview_continue_button" = "Continue";
+
+/* Package Selection */
+"package_selection_title" = "Select a Package";
+"package_selection_continue_button" = "Continue";
+"package_recommended_badge" = "Recommended";
+"package_basic_name" = "Basic";
+"package_basic_description" = "Standard AI voice";
+"package_premium_name" = "Premium";
+"package_premium_description" = "Studio voice";
+"package_premium_plus_name" = "Premium Plus";
+"package_premium_plus_description" = "Studio voice + music";
+
+/* Final Wish */
+"final_wish_title" = "Your Wish";
+"final_wish_package_label" = "Package";
+"final_wish_created_at" = "Created %@";
+
+/* My Wishes */
+"my_wishes_title" = "My Wishes";
+"my_wishes_empty_title" = "No wishes yet";
+"my_wishes_empty_subtitle" = "Create your first wish to see it here";
+
+/* Example Wishes */
+"example_wishes_title" = "Example Wishes";
+"example_wishes_subtitle" = "See how WishSpeaker works";
+"example_wishes_wish_for" = "Wish for %@";
+"example_wishes_from" = "From %@";
+"example_wishes_hide_transcript_button" = "Hide Transcript";
+"example_wishes_show_transcript_button" = "Show Transcript";
+"example_wishes_voice_suffix" = "Voice";
+
+/* Wish Card (shared) */
+"wish_card_wish_for" = "Wish for %@";
+"wish_card_hide_transcript_button" = "Hide Transcript";
+"wish_card_show_transcript_button" = "Show Transcript";

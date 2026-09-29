@@ -1,3 +1,5 @@
+import Localizations
+
 public enum WishStyle: CaseIterable {
 	case classic
 	case touching
@@ -9,17 +11,17 @@ public enum WishStyle: CaseIterable {
 	var title: String {
 		switch self {
 		case .classic:
-			"Klasyczne"
+			L10n.formStyleClassic
 		case .touching:
-			"Wzruszające"
+			L10n.formStyleTouching
 		case .funny:
-			"Zabawne"
+			L10n.formStyleFunny
 		case .short:
-			"Krótkie"
+			L10n.formStyleShort
 		case .poetic:
-			"Poetyckie"
+			L10n.formStylePoetic
 		case .religic:
-			"Religijne"
+			L10n.formStyleReligious
 		}
 	}
 }

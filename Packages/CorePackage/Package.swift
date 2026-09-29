@@ -2,16 +2,19 @@
 import PackageDescription
 
 let swiftLintPlugin: Target.PluginUsage = .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")
+let swiftGenPlugin: Target.PluginUsage = .plugin(name: "SwiftGenPlugin", package: "SwiftGenPlugin")
 let dependenciesProduct: Target.Dependency = .product(name: "Dependencies", package: "swift-dependencies")
 
 let package = Package(
     name: "CorePackage",
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v17)
     ],
     products: [
         .library(name: "DesignSystem", targets: ["DesignSystem"]),
         .library(name: "Domain", targets: ["Domain"]),
+        .library(name: "Localizations", targets: ["Localizations"]),
         .library(name: "SharedFeatureComponents", targets: ["SharedFeatureComponents"]),
         .library(name: "StartFeature", targets: ["StartFeature"]),
         .library(name: "OccasionSelectionFeature", targets: ["OccasionSelectionFeature"]),
@@ -24,7 +27,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.9.0"),
-        .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.59.1")
+        .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.59.1"),
+        .package(url: "https://github.com/SwiftGen/SwiftGenPlugin", from: "6.6.0")
     ],
     targets: [
         // MARK: - Infrastructure / Domain
@@ -38,6 +42,14 @@ let package = Package(
             dependencies: [dependenciesProduct],
             plugins: [swiftLintPlugin]
         ),
+        .target(
+            name: "Localizations",
+            resources: [
+                .process("en.lproj"),
+                .process("pl.lproj")
+            ],
+            plugins: [swiftGenPlugin, swiftLintPlugin]
+        ),
 
         // MARK: - Shared Feature Components
 
@@ -45,7 +57,8 @@ let package = Package(
             name: "SharedFeatureComponents",
             dependencies: [
                 "Domain",
-                "DesignSystem"
+                "DesignSystem",
+                "Localizations"
             ],
             plugins: [swiftLintPlugin]
         ),
@@ -57,6 +70,7 @@ let package = Package(
             dependencies: [
                 "Domain",
                 "DesignSystem",
+                "Localizations",
                 "OccasionSelectionFeature",
                 "ExampleWishesFeature",
                 "MyWishesFeature",
@@ -69,6 +83,7 @@ let package = Package(
             dependencies: [
                 "Domain",
                 "DesignSystem",
+                "Localizations",
                 "FormFeature",
                 dependenciesProduct
             ],
@@ -79,6 +94,7 @@ let package = Package(
             dependencies: [
                 "Domain",
                 "DesignSystem",
+                "Localizations",
                 "GeneratedPreviewFeature",
                 dependenciesProduct
             ],
@@ -89,6 +105,7 @@ let package = Package(
             dependencies: [
                 "Domain",
                 "DesignSystem",
+                "Localizations",
                 "PackageSelectionFeature",
                 dependenciesProduct
             ],
@@ -99,6 +116,7 @@ let package = Package(
             dependencies: [
                 "Domain",
                 "DesignSystem",
+                "Localizations",
                 "FinalWishFeature",
                 dependenciesProduct
             ],
@@ -109,6 +127,7 @@ let package = Package(
             dependencies: [
                 "Domain",
                 "DesignSystem",
+                "Localizations",
                 "SharedFeatureComponents",
                 dependenciesProduct
             ],
@@ -119,6 +138,7 @@ let package = Package(
             dependencies: [
                 "Domain",
                 "DesignSystem",
+                "Localizations",
                 "SharedFeatureComponents",
                 "FinalWishFeature",
                 dependenciesProduct
@@ -130,6 +150,7 @@ let package = Package(
             dependencies: [
                 "Domain",
                 "DesignSystem",
+                "Localizations",
                 dependenciesProduct
             ],
             plugins: [swiftLintPlugin]

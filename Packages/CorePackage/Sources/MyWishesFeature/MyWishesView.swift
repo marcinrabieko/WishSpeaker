@@ -1,6 +1,7 @@
 import DesignSystem
 import Domain
 import FinalWishFeature
+import Localizations
 import SharedFeatureComponents
 import SwiftUI
 
@@ -29,7 +30,7 @@ public struct MyWishesView: View {
             }
         }
         .background(Color.wsBackground)
-        .navigationTitle("My Wishes")
+        .navigationTitle(L10n.myWishesTitle)
         .navigationBarTitleDisplayMode(.large)
         .onAppear {
             viewModel.didAppear()
@@ -44,11 +45,11 @@ struct EmptyWishesView: View {
                 .font(.system(size: 60))
                 .foregroundColor(.wsSecondaryText.opacity(0.5))
 
-            Text("No wishes yet")
+            Text(L10n.myWishesEmptyTitle)
                 .font(.system(size: 20, weight: .semibold))
                 .foregroundColor(.wsPrimaryText)
 
-            Text("Create your first wish to see it here")
+            Text(L10n.myWishesEmptySubtitle)
                 .font(.system(size: 15))
                 .foregroundColor(.wsSecondaryText)
         }

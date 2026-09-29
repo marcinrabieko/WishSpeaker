@@ -102,7 +102,6 @@ public struct AudioPlayerView: View {
 
     public var body: some View {
         HStack(spacing: WSSpacing.sm) {
-            // Play/Pause button - larger and gradient
             Button {
                 viewModel.togglePlayPause()
             } label: {
@@ -121,15 +120,12 @@ public struct AudioPlayerView: View {
             .buttonStyle(PlayButtonStyle())
 
             VStack(spacing: WSSpacing.xs) {
-                // Progress bar with gradient
                 GeometryReader { geometry in
                     ZStack(alignment: .leading) {
-                        // Track
                         Capsule()
                             .fill(Color(.systemGray5))
                             .frame(height: 4)
 
-                        // Progress with gradient
                         Capsule()
                             .fill(WSGradient.accent)
                             .frame(width: max(0, geometry.size.width * (viewModel.currentTime / viewModel.duration)), height: 4)
@@ -144,7 +140,6 @@ public struct AudioPlayerView: View {
                 }
                 .frame(height: 4)
 
-                // Time labels
                 HStack {
                     Text(formatTime(viewModel.currentTime))
                         .font(.system(size: 12, weight: .medium))

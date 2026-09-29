@@ -1,5 +1,6 @@
 import DesignSystem
 import Domain
+import Localizations
 import PackageSelectionFeature
 import SwiftUI
 
@@ -12,13 +13,11 @@ public struct GeneratedPreviewView: View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(alignment: .leading, spacing: WSSpacing.md) {
-                    // Title
-                    Text("Your Generated Wish")
+                    Text(L10n.generatedPreviewHeading)
                         .font(.system(size: 22, weight: .bold))
                         .foregroundColor(.wsPrimaryText)
                         .padding(.top, WSSpacing.sm)
 
-                    // Generated text card
                     Text(viewModel.generatedText)
                         .font(.system(size: 17))
                         .foregroundColor(.wsPrimaryText)
@@ -33,13 +32,12 @@ public struct GeneratedPreviewView: View {
 
             Spacer()
 
-            // Action buttons
             VStack(spacing: WSSpacing.sm) {
-                SecondaryButton(title: "Generate Again") {
+                SecondaryButton(title: L10n.generatedPreviewGenerateAgainButton) {
                     viewModel.didTapGenerateAgain()
                 }
 
-                PrimaryButton(title: "Continue") {
+                PrimaryButton(title: L10n.generatedPreviewContinueButton) {
                     viewModel.didTapContinue()
                 }
             }
@@ -47,7 +45,7 @@ public struct GeneratedPreviewView: View {
             .padding(.bottom, WSSpacing.lg)
         }
         .background(Color.wsBackground)
-        .navigationTitle("Preview")
+        .navigationTitle(L10n.generatedPreviewTitle)
         .navigationBarTitleDisplayMode(.large)
         .onAppear {
             viewModel.didAppear()

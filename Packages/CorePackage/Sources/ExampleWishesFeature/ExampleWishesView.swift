@@ -1,5 +1,6 @@
 import DesignSystem
 import Domain
+import Localizations
 import SwiftUI
 
 public struct ExampleWishesView: View {
@@ -8,13 +9,11 @@ public struct ExampleWishesView: View {
     public var body: some View {
         ScrollView {
             VStack(spacing: WSSpacing.md) {
-                // Subtitle
-                Text("See how WishSpeaker works")
+                Text(L10n.exampleWishesSubtitle)
                     .font(.system(size: 17))
                     .foregroundColor(.wsSecondaryText)
                     .padding(.top, WSSpacing.xs)
 
-                // Example cards
                 ForEach(ExampleData.exampleWishes) { wish in
                     ExampleWishCard(wish: wish)
                 }
@@ -23,7 +22,7 @@ public struct ExampleWishesView: View {
             .padding(.bottom, WSSpacing.lg)
         }
         .background(Color.wsBackground)
-        .navigationTitle("Example Wishes")
+        .navigationTitle(L10n.exampleWishesTitle)
         .navigationBarTitleDisplayMode(.large)
     }
 }
@@ -34,9 +33,8 @@ struct ExampleWishCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: WSSpacing.sm) {
-            // Header info
             VStack(alignment: .leading, spacing: WSSpacing.xs) {
-                Text("Wish for \(wish.recipientName)")
+                Text(L10n.exampleWishesWishFor(wish.recipientName))
                     .font(.system(size: 20, weight: .semibold))
                     .foregroundColor(.wsPrimaryText)
 
@@ -51,31 +49,27 @@ struct ExampleWishCard: View {
                 HStack(spacing: 4) {
                     Image(systemName: "person.fill")
                         .font(.system(size: 12))
-                    Text("From \(wish.fromPerson)")
+                    Text(L10n.exampleWishesFrom(wish.fromPerson))
                         .font(.system(size: 14))
                 }
                 .foregroundColor(.wsSecondaryText)
             }
 
-            // Divider
             Rectangle()
                 .fill(Color(.systemGray5))
                 .frame(height: 1)
                 .padding(.vertical, WSSpacing.xs)
 
-            // Voice indicator with gradient
             HStack(spacing: WSSpacing.xs) {
                 Image(systemName: "waveform")
                     .font(.system(size: 14))
-                Text("\(wish.voiceGender.rawValue) Voice")
+                Text("\(wish.voiceGender.rawValue) \(L10n.exampleWishesVoiceSuffix)")
                     .font(.system(size: 14, weight: .medium))
             }
             .foregroundStyle(WSGradient.accent)
 
-            // Audio player
             AudioPlayerView()
 
-            // Transcript toggle
             Button {
                 withAnimation(.easeInOut(duration: 0.2)) {
                     showTranscript.toggle()
@@ -85,7 +79,7 @@ struct ExampleWishCard: View {
                     HStack(spacing: 4) {
                         Image(systemName: "text.alignleft")
                             .font(.system(size: 13))
-                        Text(showTranscript ? "Hide Transcript" : "Show Transcript")
+                        Text(showTranscript ? L10n.exampleWishesHideTranscriptButton : L10n.exampleWishesShowTranscriptButton)
                             .font(.system(size: 15, weight: .medium))
                     }
                     .foregroundColor(.wsAccent)

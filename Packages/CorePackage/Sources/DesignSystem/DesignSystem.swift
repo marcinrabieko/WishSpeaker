@@ -4,21 +4,13 @@ import SwiftUI
 
 public extension Color {
     static let wsAccent = Color(hex: "6B5CFF")
-    static let wsAccentLight = Color(hex: "8A7CFF")
     static let wsBackground = Color(hex: "FFF8EB")
     static let wsSecondaryBackground = Color(.systemGray6)
     static let wsPrimaryText = Color(hex: "171412")
     static let wsSecondaryText = Color(hex: "746F69")
-    static let wsCardBorder = Color(hex: "EDE5D9")
-
-    // Warm palette additions
-    static let wsSurface = Color(hex: "FFFCF7") // Paper
-    static let wsPrimary = Color(hex: "E50918") // Ribbon Red
-    static let wsPrimaryPressed = Color(hex: "C90816")
-    static let wsInk = Color(hex: "171412")
-    static let wsWarmGray = Color(hex: "746F69")
+    static let wsSurface = Color(hex: "FFFCF7")
+    static let wsPrimary = Color(hex: "E50918")
     static let wsSoftBorder = Color(hex: "EDE5D9")
-    static let wsWarmGold = Color(hex: "E9A23B")
 }
 
 public extension Color {
@@ -55,18 +47,6 @@ public enum WSGradient {
         colors: [Color(hex: "6B5CFF"), Color(hex: "8A7CFF")],
         startPoint: .leading,
         endPoint: .trailing
-    )
-
-    public static let accentVertical = LinearGradient(
-        colors: [Color(hex: "6B5CFF"), Color(hex: "8A7CFF")],
-        startPoint: .top,
-        endPoint: .bottom
-    )
-
-    public static let sceneVertical = LinearGradient(
-        colors: [.white, Color(hex: "8A7CFF").opacity(0.2)],
-        startPoint: .top,
-        endPoint: .bottom
     )
 }
 

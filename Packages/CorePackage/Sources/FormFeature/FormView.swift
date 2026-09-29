@@ -1,6 +1,7 @@
 import DesignSystem
 import Domain
 import GeneratedPreviewFeature
+import Localizations
 import SwiftUI
 
 public struct FormView: View {
@@ -15,12 +16,12 @@ public struct FormView: View {
 		ScrollView(showsIndicators: false) {
 			VStack(alignment: .leading, spacing: 28) {
 				VStack(alignment: .leading, spacing: 12) {
-					Text("Dla kogo są życzenia?")
+					Text(L10n.formRecipientQuestion)
 						.font(.system(size: 18, weight: .semibold))
 						.foregroundStyle(Color.wsPrimaryText)
 
 					TextField(
-						"Np. dla siostry, najlepszego przyjaciela, męża...",
+						L10n.formRecipientPlaceholder,
 						text: $viewModel.relationText
 					)
 					.font(.system(size: 17))
@@ -36,17 +37,17 @@ public struct FormView: View {
 				}
 
 				VStack(alignment: .leading, spacing: 8) {
-					Text("Opowiedz coś o tej osobie")
+					Text(L10n.formDetailsQuestion)
 						.font(.system(size: 18, weight: .semibold))
 						.foregroundStyle(Color.wsPrimaryText)
-					Text("Opcjonalnie, ale pomoże nam stworzyć bardziej osobiste życzenia.")
+					Text(L10n.formDetailsHint)
 						.font(.system(size: 14))
 						.foregroundStyle(Color.wsSecondaryText)
 
 					VStack(alignment: .leading, spacing: 0) {
 						ZStack(alignment: .topLeading) {
 							if viewModel.detailsText.isEmpty {
-								Text("Np. wspólne wspomnienia, charakter, pasje...")
+								Text(L10n.formDetailsPlaceholder)
 									.font(.system(size: 17))
 									.foregroundStyle(Color(.placeholderText))
 									.padding(.horizontal, 18)
@@ -81,7 +82,7 @@ public struct FormView: View {
 				}
 
 				VStack(alignment: .leading, spacing: 16) {
-					Text("Styl życzeń")
+					Text(L10n.formStyleQuestion)
 						.font(.system(size: 18, weight: .semibold))
 						.foregroundStyle(Color.wsPrimaryText)
 
@@ -104,7 +105,7 @@ public struct FormView: View {
 					}
 				}
 
-				PrimaryButton(title: "Generuj życzenia") {
+				PrimaryButton(title: L10n.formGenerateButton) {
 					viewModel.didTapGenerate()
 				}
 				.padding(.top, 8)
@@ -113,7 +114,7 @@ public struct FormView: View {
 			.padding(.vertical, 18)
 		}
 		.background(Color.wsBackground)
-		.navigationTitle("Szczegóły")
+		.navigationTitle(L10n.formTitle)
 		.navigationBarTitleDisplayMode(.large)
 		.navigationDestination(isPresented: $viewModel.navigateToPreview) {
 			GeneratedPreviewView()

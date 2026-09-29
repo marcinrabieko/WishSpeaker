@@ -1,6 +1,7 @@
 import DesignSystem
 import Domain
 import FinalWishFeature
+import Localizations
 import SwiftUI
 
 public struct PackageSelectionView: View {
@@ -29,7 +30,7 @@ public struct PackageSelectionView: View {
             Spacer()
 
             PrimaryButton(
-                title: "Continue",
+                title: L10n.packageSelectionContinueButton,
                 action: {
                     viewModel.didTapContinue()
                 },
@@ -39,7 +40,7 @@ public struct PackageSelectionView: View {
             .padding(.bottom, WSSpacing.lg)
         }
         .background(Color.wsBackground)
-        .navigationTitle("Select a Package")
+        .navigationTitle(L10n.packageSelectionTitle)
         .navigationBarTitleDisplayMode(.large)
         .onAppear {
             viewModel.didAppear()
@@ -75,7 +76,7 @@ struct PackageCard: View {
                         HStack(spacing: 4) {
                             Image(systemName: "sparkles")
                                 .font(.system(size: 10, weight: .semibold))
-                            Text("Recommended")
+                            Text(L10n.packageRecommendedBadge)
                                 .font(.system(size: 12, weight: .semibold))
                         }
                         .foregroundColor(.wsAccent)

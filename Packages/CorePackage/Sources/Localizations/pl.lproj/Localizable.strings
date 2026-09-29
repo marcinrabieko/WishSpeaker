@@ -1,0 +1,88 @@
+/* Start */
+"start_title" = "WishSpeaker";
+"start_subtitle" = "Spraw, by każde życzenie brzmiało osobiście.";
+"start_create_wish_button" = "Stwórz życzenia";
+"start_hear_example_button" = "Posłuchaj przykładu";
+
+/* Occasion Selection */
+"occasion_selection_question" = "Dla kogo przygotowujesz życzenia?";
+"occasion_selection_title" = "Wybierz okazję";
+"occasion_birthday_title" = "Urodziny";
+"occasion_birthday_subtitle" = "Dla solenizanta lub solenizantki";
+"occasion_anniversary_title" = "Rocznica";
+"occasion_anniversary_subtitle" = "Dla par, małżonków, związku";
+"occasion_name_day_title" = "Imieniny";
+"occasion_name_day_subtitle" = "Klasyczne imieninowe życzenia";
+"occasion_wedding_title" = "Ślub";
+"occasion_wedding_subtitle" = "Dla nowożeńców i zakochanych";
+"occasion_mothers_day_title" = "Dzień Matki";
+"occasion_mothers_day_subtitle" = "Pokaż, jak bardzo cenisz";
+"occasion_fathers_day_title" = "Dzień Ojca";
+"occasion_fathers_day_subtitle" = "Podziękuj swojemu tacie";
+"occasion_womens_day_title" = "Dzień Kobiet";
+"occasion_womens_day_subtitle" = "Dla wyjątkowej kobiety";
+"occasion_congratulations_title" = "Gratulacje";
+"occasion_congratulations_subtitle" = "Na nową pracę, sukces, awans";
+"occasion_apology_title" = "Przeprosiny";
+"occasion_apology_subtitle" = "Powiedz to w dobry sposób";
+"occasion_thanks_title" = "Podziękowania";
+"occasion_thanks_subtitle" = "Za pomoc, wsparcie lub obecność";
+"occasion_other_title" = "Inna okazja";
+"occasion_other_subtitle" = "Stwórz własne życzenia";
+
+/* Form */
+"form_recipient_question" = "Dla kogo są życzenia?";
+"form_recipient_placeholder" = "Np. dla siostry, najlepszego przyjaciela, męża...";
+"form_details_question" = "Opowiedz coś o tej osobie";
+"form_details_hint" = "Opcjonalnie, ale pomoże nam stworzyć bardziej osobiste życzenia.";
+"form_details_placeholder" = "Np. wspólne wspomnienia, charakter, pasje...";
+"form_style_question" = "Styl życzeń";
+"form_style_classic" = "Klasyczne";
+"form_style_touching" = "Wzruszające";
+"form_style_funny" = "Zabawne";
+"form_style_short" = "Krótkie";
+"form_style_poetic" = "Poetyckie";
+"form_style_religious" = "Religijne";
+"form_generate_button" = "Generuj życzenia";
+"form_title" = "Szczegóły";
+
+/* Generated Preview */
+"generated_preview_title" = "Podgląd";
+"generated_preview_heading" = "Twoje wygenerowane życzenia";
+"generated_preview_generate_again_button" = "Generuj ponownie";
+"generated_preview_continue_button" = "Kontynuuj";
+
+/* Package Selection */
+"package_selection_title" = "Wybierz pakiet";
+"package_selection_continue_button" = "Kontynuuj";
+"package_recommended_badge" = "Polecane";
+"package_basic_name" = "Podstawowy";
+"package_basic_description" = "Standardowy głos AI";
+"package_premium_name" = "Premium";
+"package_premium_description" = "Głos studyjny";
+"package_premium_plus_name" = "Premium Plus";
+"package_premium_plus_description" = "Głos studyjny + muzyka";
+
+/* Final Wish */
+"final_wish_title" = "Twoje życzenia";
+"final_wish_package_label" = "Pakiet";
+"final_wish_created_at" = "Utworzono %@";
+
+/* My Wishes */
+"my_wishes_title" = "Moje życzenia";
+"my_wishes_empty_title" = "Brak życzeń";
+"my_wishes_empty_subtitle" = "Stwórz swoje pierwsze życzenia, aby zobaczyć je tutaj";
+
+/* Example Wishes */
+"example_wishes_title" = "Przykładowe życzenia";
+"example_wishes_subtitle" = "Zobacz, jak działa WishSpeaker";
+"example_wishes_wish_for" = "Życzenia dla %@";
+"example_wishes_from" = "Od %@";
+"example_wishes_hide_transcript_button" = "Ukryj transkrypcję";
+"example_wishes_show_transcript_button" = "Pokaż transkrypcję";
+"example_wishes_voice_suffix" = "Głos";
+
+/* Wish Card (shared) */
+"wish_card_wish_for" = "Życzenia dla %@";
+"wish_card_hide_transcript_button" = "Ukryj transkrypcję";
+"wish_card_show_transcript_button" = "Pokaż transkrypcję";

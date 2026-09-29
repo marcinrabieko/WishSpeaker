@@ -1,5 +1,6 @@
 import DesignSystem
 import Domain
+import Localizations
 import SharedFeatureComponents
 import SwiftUI
 
@@ -12,10 +13,8 @@ public struct FinalWishView: View {
         ScrollView {
             VStack(spacing: WSSpacing.md) {
                 if let wish = viewModel.wish {
-                    // WishCard with full details
                     WishCard(wish: wish, showFullDetails: true)
 
-                    // Package summary
                     if let package = viewModel.selectedPackage {
                         PackageSummaryCard(package: package)
                     }
@@ -25,7 +24,7 @@ public struct FinalWishView: View {
             .padding(.vertical, WSSpacing.md)
         }
         .background(Color.wsBackground)
-        .navigationTitle("Your Wish")
+        .navigationTitle(L10n.finalWishTitle)
         .navigationBarTitleDisplayMode(.large)
         .onAppear {
             viewModel.didAppear()
@@ -39,7 +38,7 @@ struct PackageSummaryCard: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: WSSpacing.xxs) {
-                Text("Package")
+                Text(L10n.finalWishPackageLabel)
                     .font(.system(size: 13, weight: .medium))
                     .foregroundColor(.wsSecondaryText)
                     .textCase(.uppercase)
@@ -73,19 +72,16 @@ public struct SavedWishDetailView: View {
     public var body: some View {
         ScrollView {
             VStack(spacing: WSSpacing.md) {
-                // WishCard with full details
                 WishCard(wish: wish, showFullDetails: true)
 
-                // Package info
                 if let package = wish.selectedPackage {
                     PackageSummaryCard(package: package)
                 }
 
-                // Creation date
                 HStack {
                     Image(systemName: "calendar")
                         .font(.system(size: 14))
-                    Text("Created \(wish.createdAt.formatted(date: .abbreviated, time: .shortened))")
+                    Text(L10n.finalWishCreatedAt(wish.createdAt.formatted(date: .abbreviated, time: .shortened)))
                         .font(.system(size: 14))
                 }
                 .foregroundColor(.wsSecondaryText)
@@ -95,7 +91,7 @@ public struct SavedWishDetailView: View {
             .padding(.vertical, WSSpacing.md)
         }
         .background(Color.wsBackground)
-        .navigationTitle("Your Wish")
+        .navigationTitle(L10n.finalWishTitle)
         .navigationBarTitleDisplayMode(.large)
     }
 }

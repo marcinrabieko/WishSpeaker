@@ -1,26 +1,24 @@
 import DesignSystem
 import Domain
+import Localizations
 import SwiftUI
 
 public struct WishCard: View {
     let wish: Wish
     var showFullDetails: Bool = false
-    var isCompact: Bool = false
 
     @State private var showTranscript: Bool = false
 
-    public init(wish: Wish, showFullDetails: Bool = false, isCompact: Bool = false) {
+    public init(wish: Wish, showFullDetails: Bool = false) {
         self.wish = wish
         self.showFullDetails = showFullDetails
-        self.isCompact = isCompact
     }
 
     public var body: some View {
         VStack(alignment: .leading, spacing: WSSpacing.sm) {
-            // Header
             VStack(alignment: .leading, spacing: WSSpacing.xs) {
-                Text("Wish for \(wish.recipientName)")
-                    .font(.system(size: isCompact ? 17 : 20, weight: .semibold))
+                Text(L10n.wishCardWishFor(wish.recipientName))
+                    .font(.system(size: 20, weight: .semibold))
                     .foregroundColor(.wsPrimaryText)
 
                 HStack(spacing: WSSpacing.xs) {
@@ -38,18 +36,16 @@ public struct WishCard: View {
             }
 
             if showFullDetails {
-                // Audio player
                 AudioPlayerView()
                     .padding(.top, WSSpacing.xs)
 
-                // Transcript toggle
                 Button {
                     withAnimation(.easeInOut(duration: 0.2)) {
                         showTranscript.toggle()
                     }
                 } label: {
                     HStack {
-                        Text(showTranscript ? "Hide Transcript" : "Show Transcript")
+                        Text(showTranscript ? L10n.wishCardHideTranscriptButton : L10n.wishCardShowTranscriptButton)
                             .font(.system(size: 15, weight: .medium))
                             .foregroundColor(.wsAccent)
 
@@ -70,7 +66,6 @@ public struct WishCard: View {
                         .padding(.top, WSSpacing.xs)
                 }
             } else {
-                // Preview text for list view
                 Text(wish.generatedText.prefix(100) + (wish.generatedText.count > 100 ? "..." : ""))
                     .font(.system(size: 15))
                     .foregroundColor(.wsSecondaryText)
@@ -89,7 +84,6 @@ public struct WishCard: View {
     }
 }
 
-// Simplified card for list items
 public struct WishListCard: View {
     let wish: Wish
 
