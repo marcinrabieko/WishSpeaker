@@ -7,49 +7,34 @@ import SwiftUI
 public struct OccasionSelectionView: View {
 
 	@State private var viewModel = OccasionSelectionViewModel()
-	@Environment(\.dismiss) private var dismiss
 
 	public init() {}
 
 	public var body: some View {
-		NavigationStack {
-			ScrollView(showsIndicators: false) {
-				VStack(spacing: 18) {
-					Text(L10n.occasionSelectionQuestion)
-						.font(.system(size: 17))
-						.foregroundColor(.wsSecondaryText)
-						.frame(maxWidth: .infinity, alignment: .leading)
+		ScrollView(showsIndicators: false) {
+			VStack(spacing: 18) {
+				Text(L10n.occasionSelectionQuestion)
+					.font(.system(size: 17))
+					.foregroundColor(.wsSecondaryText)
+					.frame(maxWidth: .infinity, alignment: .leading)
 
-					LazyVStack(spacing: 8) {
-						ForEach(viewModel.occasions) { occasion in
-							OccasionRowView(occasion: occasion) {
-								viewModel.didSelectOccasion(occasion)
-							}
+				LazyVStack(spacing: 8) {
+					ForEach(viewModel.occasions) { occasion in
+						OccasionRowView(occasion: occasion) {
+							viewModel.didSelectOccasion(occasion)
 						}
 					}
 				}
-				.padding(.horizontal, WSSpacing.horizontalPadding)
-				.padding(.bottom, WSSpacing.lg)
 			}
-			.background(Color.wsBackground)
-			.navigationTitle(L10n.occasionSelectionTitle)
-			.navigationBarTitleDisplayMode(.large)
-			.navigationBarBackButtonHidden(true)
-			.toolbar {
-				ToolbarItem(placement: .topBarLeading) {
-					Button {
-						dismiss()
-					} label: {
-						Image(systemName: "chevron.left")
-							.font(.system(size: 17, weight: .semibold))
-							.foregroundColor(.wsPrimaryText)
-							.frame(width: 44, height: 44)
-					}
-				}
-			}
-			.navigationDestination(isPresented: $viewModel.navigateToCreator) {
-				FormView()
-			}
+			.padding(.horizontal, WSSpacing.horizontalPadding)
+			.padding(.bottom, WSSpacing.lg)
+		}
+		.background(Color.wsBackground)
+		.navigationTitle(L10n.occasionSelectionTitle)
+		.navigationBarTitleDisplayMode(.large)
+		.wsBackButton()
+		.navigationDestination(isPresented: $viewModel.navigateToCreator) {
+			FormView()
 		}
 	}
 }

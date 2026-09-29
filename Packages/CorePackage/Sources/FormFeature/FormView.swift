@@ -116,6 +116,7 @@ public struct FormView: View {
 		.background(Color.wsBackground)
 		.navigationTitle(L10n.formTitle)
 		.navigationBarTitleDisplayMode(.large)
+		.wsBackButton()
 		.navigationDestination(isPresented: $viewModel.navigateToPreview) {
 			GeneratedPreviewView()
 		}

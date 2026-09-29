@@ -26,6 +26,7 @@ public struct FinalWishView: View {
         .background(Color.wsBackground)
         .navigationTitle(L10n.finalWishTitle)
         .navigationBarTitleDisplayMode(.large)
+        .wsBackButton()
         .onAppear {
             viewModel.didAppear()
         }
@@ -93,5 +94,6 @@ public struct SavedWishDetailView: View {
         .background(Color.wsBackground)
         .navigationTitle(L10n.finalWishTitle)
         .navigationBarTitleDisplayMode(.large)
+        .wsBackButton()
     }
 }

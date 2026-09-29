@@ -42,6 +42,7 @@ public struct PackageSelectionView: View {
         .background(Color.wsBackground)
         .navigationTitle(L10n.packageSelectionTitle)
         .navigationBarTitleDisplayMode(.large)
+        .wsBackButton()
         .onAppear {
             viewModel.didAppear()
         }

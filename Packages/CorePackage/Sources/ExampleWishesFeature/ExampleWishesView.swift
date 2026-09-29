@@ -24,6 +24,7 @@ public struct ExampleWishesView: View {
         .background(Color.wsBackground)
         .navigationTitle(L10n.exampleWishesTitle)
         .navigationBarTitleDisplayMode(.large)
+        .wsBackButton()
     }
 }
 

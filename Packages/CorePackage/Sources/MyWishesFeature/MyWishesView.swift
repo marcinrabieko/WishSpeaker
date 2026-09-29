@@ -32,6 +32,7 @@ public struct MyWishesView: View {
         .background(Color.wsBackground)
         .navigationTitle(L10n.myWishesTitle)
         .navigationBarTitleDisplayMode(.large)
+        .wsBackButton()
         .onAppear {
             viewModel.didAppear()
         }

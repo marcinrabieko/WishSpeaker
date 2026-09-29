@@ -47,6 +47,7 @@ public struct GeneratedPreviewView: View {
         .background(Color.wsBackground)
         .navigationTitle(L10n.generatedPreviewTitle)
         .navigationBarTitleDisplayMode(.large)
+        .wsBackButton()
         .onAppear {
             viewModel.didAppear()
         }
