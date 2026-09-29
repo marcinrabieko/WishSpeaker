@@ -30,7 +30,7 @@ public struct FormView: View {
 					.background(Color.wsSurface)
 					.overlay {
 						RoundedRectangle(cornerRadius: 18, style: .continuous)
-							.stroke(isRelationFocused ? Color.wsPrimary : Color.wsSoftBorder, lineWidth: isRelationFocused ? 2 : 1)
+							.stroke(isRelationFocused ? Color.wsPrimary : Color.wsSoftBorder, lineWidth: 1)
 					}
 					.clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
 					.focused($isRelationFocused)
@@ -76,7 +76,7 @@ public struct FormView: View {
 					.background(Color.wsSurface)
 					.overlay {
 						RoundedRectangle(cornerRadius: 18, style: .continuous)
-							.stroke(isDetailsFocused ? Color.wsPrimary : Color.wsSoftBorder, lineWidth: isDetailsFocused ? 2 : 1)
+							.stroke(isDetailsFocused ? Color.wsPrimary : Color.wsSoftBorder, lineWidth: 1)
 					}
 					.clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
 				}
@@ -105,7 +105,7 @@ public struct FormView: View {
 					}
 				}
 
-				PrimaryButton(title: L10n.formGenerateButton) {
+				PrimaryButton(title: L10n.formGenerateButton, icon: "sparkles") {
 					viewModel.didTapGenerate()
 				}
 				.padding(.top, 8)

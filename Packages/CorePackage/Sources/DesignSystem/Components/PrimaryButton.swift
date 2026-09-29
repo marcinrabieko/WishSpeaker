@@ -2,32 +2,42 @@ import SwiftUI
 
 public struct PrimaryButton: View {
     let title: String
+    let icon: String?
     let action: () -> Void
     var isEnabled: Bool = true
 
-    public init(title: String, action: @escaping () -> Void, isEnabled: Bool = true) {
+    public init(title: String, icon: String? = nil, action: @escaping () -> Void, isEnabled: Bool = true) {
         self.title = title
+        self.icon = icon
         self.action = action
         self.isEnabled = isEnabled
     }
 
     public var body: some View {
         Button(action: action) {
-            Text(title)
-                .font(.system(size: 17, weight: .semibold))
-                .foregroundColor(.white)
-                .frame(maxWidth: .infinity)
-                .frame(height: WSSize.buttonHeight)
-                .background(
-                    Group {
-                        if isEnabled {
-                            Color.wsPrimary
-                        } else {
-                            Color.wsPrimary.opacity(0.5)
-                        }
+            HStack(spacing: 8) {
+                if let icon {
+                    Image(systemName: icon)
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundColor(.white)
+                }
+
+                Text(title)
+                    .font(.system(size: 17, weight: .semibold))
+                    .foregroundColor(.white)
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: WSSize.buttonHeight)
+            .background(
+                Group {
+                    if isEnabled {
+                        Color.wsPrimary
+                    } else {
+                        Color.wsPrimary.opacity(0.5)
                     }
-                )
-                .cornerRadius(WSRadius.button)
+                }
+            )
+            .cornerRadius(WSRadius.button)
         }
         .buttonStyle(ScaleButtonStyle())
         .disabled(!isEnabled)
