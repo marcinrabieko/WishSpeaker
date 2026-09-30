@@ -1,6 +1,6 @@
 import Foundation
 
-public struct PremiumPackage: Identifiable, Sendable {
+public struct PremiumPackage: Identifiable, Hashable, Sendable {
     public let id: UUID
     public let name: String
     public let description: String

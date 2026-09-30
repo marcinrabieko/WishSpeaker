@@ -119,8 +119,21 @@
 "library_empty_subtitle" = "Twoje zapisane życzenia i utworzone materiały pojawią się tutaj.";
 "library_voice_label" = "Głos";
 "library_video_label" = "Wideo";
-"library_play_button" = "Odtwórz";
-"library_card_title" = "%@ dla: %@";
+"library_metadata_format" = "%@ · %@ · %@";
+
+/* Wish Detail */
+"wish_detail_copy_button" = "Kopiuj";
+"wish_detail_copied_confirmation" = "Skopiowano";
+"wish_detail_edit_button" = "Edytuj";
+"wish_detail_voice_section_title" = "Głos";
+"wish_detail_create_something_special_title" = "Stwórz coś wyjątkowego";
+"wish_detail_create_voice_button" = "Stwórz głos";
+"wish_detail_create_voice_subtitle" = "Ożyw swoje życzenia";
+"wish_detail_create_video_button" = "Stwórz kartę wideo";
+"wish_detail_create_video_subtitle" = "Stwórz kartkę wideo, którą możesz udostępnić";
+"wish_detail_edit_sheet_title" = "Edytuj życzenia";
+"wish_detail_edit_save_button" = "Zapisz";
+"wish_detail_edit_cancel_button" = "Anuluj";
 
 /* Example Wishes */
 "example_wishes_title" = "Przykładowe życzenia";

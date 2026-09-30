@@ -94,3 +94,44 @@ public extension Occasion {
         kind.formCopy
     }
 }
+
+public extension OccasionKind {
+    /// Looked up live from the current locale — never freeze this into a stored
+    /// string, so a Wish always displays its occasion in the app's current language.
+    var displayName: String {
+        switch self {
+        case .birthday:
+            L10n.occasionBirthdayTitle
+
+        case .anniversary:
+            L10n.occasionAnniversaryTitle
+
+        case .nameDay:
+            L10n.occasionNameDayTitle
+
+        case .wedding:
+            L10n.occasionWeddingTitle
+
+        case .mothersDay:
+            L10n.occasionMothersDayTitle
+
+        case .fathersDay:
+            L10n.occasionFathersDayTitle
+
+        case .womensDay:
+            L10n.occasionWomensDayTitle
+
+        case .congratulations:
+            L10n.occasionCongratulationsTitle
+
+        case .apology:
+            L10n.occasionApologyTitle
+
+        case .thanks:
+            L10n.occasionThanksTitle
+
+        case .other:
+            L10n.occasionOtherTitle
+        }
+    }
+}

@@ -119,8 +119,21 @@
 "library_empty_subtitle" = "Your saved wishes and creations will appear here.";
 "library_voice_label" = "Voice";
 "library_video_label" = "Video";
-"library_play_button" = "Play";
-"library_card_title" = "%@ for %@";
+"library_metadata_format" = "%@ · %@ · %@";
+
+/* Wish Detail */
+"wish_detail_copy_button" = "Copy";
+"wish_detail_copied_confirmation" = "Copied";
+"wish_detail_edit_button" = "Edit";
+"wish_detail_voice_section_title" = "Voice";
+"wish_detail_create_something_special_title" = "Create something special";
+"wish_detail_create_voice_button" = "Create Voice";
+"wish_detail_create_voice_subtitle" = "Bring your wish to life";
+"wish_detail_create_video_button" = "Create Video Card";
+"wish_detail_create_video_subtitle" = "Create a shareable video greeting";
+"wish_detail_edit_sheet_title" = "Edit Wish";
+"wish_detail_edit_save_button" = "Save";
+"wish_detail_edit_cancel_button" = "Cancel";
 
 /* Example Wishes */
 "example_wishes_title" = "Example Wishes";

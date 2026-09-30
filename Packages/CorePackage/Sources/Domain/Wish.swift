@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Wish: Identifiable, Sendable {
+public struct Wish: Identifiable, Hashable, Sendable {
     public let id: UUID
     public let occasionKind: OccasionKind
     public let occasionTitle: String

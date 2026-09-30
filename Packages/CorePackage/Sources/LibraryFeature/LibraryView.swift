@@ -6,6 +6,7 @@ import SwiftUI
 
 public struct LibraryView: View {
     @State private var viewModel = LibraryViewModel()
+    @State private var presentedWish: Wish?
 
     public init() {}
 
@@ -17,10 +18,9 @@ public struct LibraryView: View {
                 ScrollView {
                     VStack(spacing: WSSpacing.sm) {
                         ForEach(viewModel.savedWishes) { wish in
-                            NavigationLink(destination: WishDetailPlaceholderView(wish: wish)) {
-                                WishLibraryCard(wish: wish)
+                            WishLibraryCard(wish: wish) {
+                                presentedWish = wish
                             }
-                            .buttonStyle(.plain)
                         }
                     }
                     .padding(.horizontal, WSSpacing.horizontalPadding)
@@ -34,6 +34,9 @@ public struct LibraryView: View {
         .wsBackButton()
         .onAppear {
             viewModel.didAppear()
+        }
+        .navigationDestination(item: $presentedWish) { wish in
+            WishDetailPlaceholderView(wish: wish)
         }
     }
 

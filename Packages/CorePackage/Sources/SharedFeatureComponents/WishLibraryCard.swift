@@ -6,23 +6,39 @@ import SwiftUI
 /// Adapts its presentation to whichever assets the Wish currently has, using the
 /// priority Video > Voice > Text — a Wish can evolve from text-only to text+voice to
 /// text+voice+video without ever becoming a different Library row.
+///
+/// The card owns its own tap target instead of being wrapped in an external
+/// `NavigationLink`, so an inline player's own Buttons can intercept taps (play/pause,
+/// scrub) without also opening the Wish — nesting a Button inside a NavigationLink's
+/// label does not reliably suppress the outer navigation gesture in SwiftUI.
 public struct WishLibraryCard: View {
     let wish: Wish
+    let onTap: () -> Void
 
-    public init(wish: Wish) {
+    public init(wish: Wish, onTap: @escaping () -> Void) {
         self.wish = wish
+        self.onTap = onTap
     }
 
     public var body: some View {
         VStack(alignment: .leading, spacing: WSSpacing.sm) {
             identity
+                .contentShape(Rectangle())
+                .onTapGesture(perform: onTap)
 
             if wish.videoAsset != nil {
-                VideoCardBody(wish: wish)
-            } else if wish.voiceAsset != nil {
-                VoiceCardBody(wish: wish)
+                VideoCardBody(videoAsset: wish.videoAsset)
+                    .onTapGesture(perform: onTap)
+            } else if let voiceAsset = wish.voiceAsset {
+                VoiceCardBody(voiceAsset: voiceAsset)
             } else {
-                TextCardBody(wish: wish)
+                Text(wish.text)
+                    .font(.system(size: 15))
+                    .foregroundColor(.wsPrimaryText.opacity(0.75))
+                    .lineSpacing(3)
+                    .lineLimit(3)
+                    .contentShape(Rectangle())
+                    .onTapGesture(perform: onTap)
             }
         }
         .padding(WSSpacing.sm)
@@ -37,68 +53,53 @@ public struct WishLibraryCard: View {
 
     private var identity: some View {
         VStack(alignment: .leading, spacing: WSSpacing.xxs) {
-            Text(L10n.libraryCardTitle(wish.occasionTitle, wish.recipient))
+            Text(wish.recipient)
                 .font(.system(size: 17, weight: .semibold))
                 .foregroundColor(.wsPrimaryText)
 
-            HStack(spacing: WSSpacing.xs) {
-                Text(wish.variant.displayName)
-                Text("•")
-                Text(wish.createdAt.formatted(date: .abbreviated, time: .omitted))
-            }
-            .font(.system(size: 13))
-            .foregroundColor(.wsSecondaryText)
+            Text(WishMetadataText.format(occasionKind: wish.occasionKind, variant: wish.variant, date: wish.createdAt))
+                .font(.system(size: 13))
+                .foregroundColor(.wsSecondaryText)
         }
     }
 }
 
-private struct TextCardBody: View {
-    let wish: Wish
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: WSSpacing.xs) {
-            Text(wish.text)
-                .font(.system(size: 15))
-                .foregroundColor(.wsSecondaryText)
-                .lineSpacing(3)
-                .lineLimit(3)
-
-            HStack(spacing: 4) {
-                Text(L10n.libraryPlayButton)
-                    .font(.system(size: 13, weight: .medium))
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 11, weight: .semibold))
-            }
-            .foregroundColor(.wsPrimary)
-        }
+/// Shared "occasion · variant · date" formatting for Library cards and WishDetailView —
+/// always built from a localized format string, never a manually concatenated sentence,
+/// and always using the user's current locale for the date.
+public enum WishMetadataText {
+    public static func format(occasionKind: OccasionKind, variant: WishVariant, date: Date) -> String {
+        L10n.libraryMetadataFormat(
+            occasionKind.displayName,
+            variant.displayName,
+            date.formatted(date: .abbreviated, time: .omitted)
+        )
     }
 }
 
 private struct VoiceCardBody: View {
-    let wish: Wish
+    let voiceAsset: VoiceAsset
 
     var body: some View {
         VStack(alignment: .leading, spacing: WSSpacing.xs) {
-            if let voiceAsset = wish.voiceAsset {
-                HStack(spacing: 4) {
-                    Image(systemName: "waveform")
-                        .font(.system(size: 12))
-                    Text(voiceAsset.voiceDisplayName)
-                        .font(.system(size: 13, weight: .medium))
-                }
-                .foregroundColor(.wsPrimary)
-
-                LibraryVoicePlayer(voiceAsset: voiceAsset)
+            HStack(spacing: 4) {
+                Image(systemName: "waveform")
+                    .font(.system(size: 12))
+                Text(voiceAsset.voiceDisplayName)
+                    .font(.system(size: 13, weight: .medium))
             }
+            .foregroundColor(.wsPrimary)
+
+            InlineVoicePlayer(voiceAsset: voiceAsset)
         }
     }
 }
 
 private struct VideoCardBody: View {
-    let wish: Wish
+    let videoAsset: VideoAsset?
 
     var body: some View {
-        if let videoAsset = wish.videoAsset {
+        if let videoAsset {
             LibraryVideoThumbnail(videoAsset: videoAsset)
         }
     }
@@ -106,13 +107,19 @@ private struct VideoCardBody: View {
 
 /// Compact, list-friendly playback UI. Presentation only — no AVPlayer instance is
 /// created here, so a scrolling Library list never runs multiple active players.
-private struct LibraryVoicePlayer: View {
+/// Its Buttons/DragGesture are the only interactive surface inside the card that must
+/// NOT trigger navigation — everything else in the card forwards taps to `onTap`.
+public struct InlineVoicePlayer: View {
     let voiceAsset: VoiceAsset
 
     @State private var isPlaying = false
     @State private var progress: Double = 0
 
-    var body: some View {
+    public init(voiceAsset: VoiceAsset) {
+        self.voiceAsset = voiceAsset
+    }
+
+    public var body: some View {
         HStack(spacing: WSSpacing.xs) {
             Button {
                 isPlaying.toggle()
@@ -134,8 +141,15 @@ private struct LibraryVoicePlayer: View {
                             .fill(Color.wsPrimary)
                             .frame(width: geometry.size.width * progress, height: 3)
                     }
+                    .contentShape(Rectangle())
+                    .gesture(
+                        DragGesture(minimumDistance: 0)
+                            .onChanged { value in
+                                progress = min(max(0, value.location.x / geometry.size.width), 1)
+                            }
+                    )
                 }
-                .frame(height: 3)
+                .frame(height: 12)
 
                 HStack {
                     Text(formattedTime(progress * voiceAsset.duration))
@@ -161,17 +175,25 @@ private struct LibraryVoicePlayer: View {
 
 /// Static thumbnail + play affordance only — intentionally not backed by a video
 /// player, so a scrolling Library list never has to manage embedded playback.
-private struct LibraryVideoThumbnail: View {
+public struct LibraryVideoThumbnail: View {
     let videoAsset: VideoAsset
+    let height: CGFloat
+    let playIconSize: CGFloat
 
-    var body: some View {
+    public init(videoAsset: VideoAsset, height: CGFloat = 160, playIconSize: CGFloat = 44) {
+        self.videoAsset = videoAsset
+        self.height = height
+        self.playIconSize = playIconSize
+    }
+
+    public var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: WSRadius.button, style: .continuous)
                 .fill(Color.wsSecondaryBackground)
-                .frame(height: 160)
+                .frame(height: height)
 
             Image(systemName: "play.circle.fill")
-                .font(.system(size: 44))
+                .font(.system(size: playIconSize))
                 .foregroundColor(.wsPrimary)
 
             VStack {

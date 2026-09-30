@@ -9,7 +9,7 @@ import SwiftUI
         ScrollView {
             VStack(spacing: WSSpacing.sm) {
                 ForEach(LibraryPreviewData.all) { wish in
-                    WishLibraryCard(wish: wish)
+                    WishLibraryCard(wish: wish) {}
                 }
             }
             .padding(.horizontal, WSSpacing.horizontalPadding)
