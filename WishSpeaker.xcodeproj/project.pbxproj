@@ -7,15 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		21D11BC06BEABD987274481C /* LibraryFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 0FB23A92C3BC0662E37FB976 /* LibraryFeature */; };
+		1D05E3779AD64D115E33CCD0 /* ExampleWishesFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 7389B349A52DDAB5AB9D845C /* ExampleWishesFeature */; };
+		21D11BC06BEABD987274481C /* FinalWishFeature in Frameworks */ = {isa = PBXBuildFile; productRef = E70698A6B5B24F5175375071 /* FinalWishFeature */; };
 		2B63765D2BEE2A475FB8C9D0 /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 9C4EBF1A36781F70E0F43D15 /* DesignSystem */; };
 		3D86EBC3DF2A2C44FE223CD6 /* OccasionSelectionFeature in Frameworks */ = {isa = PBXBuildFile; productRef = E784AA2910E71566435D7C0A /* OccasionSelectionFeature */; };
 		46B672AF80ADB1DEAEDD50F5 /* WishSpeakerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F375D255DC2D1FFC8147A4F /* WishSpeakerApp.swift */; };
-		7AAFB174217A231096E2EC6C /* ExampleWishesFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 7389B349A52DDAB5AB9D845C /* ExampleWishesFeature */; };
-		8727F1239ACDD65F1249CFD8 /* FinalWishFeature in Frameworks */ = {isa = PBXBuildFile; productRef = E70698A6B5B24F5175375071 /* FinalWishFeature */; };
+		7AAFB174217A231096E2EC6C /* LibraryFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 0FB23A92C3BC0662E37FB976 /* LibraryFeature */; };
+		8727F1239ACDD65F1249CFD8 /* PackageSelectionFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 1A0736C78C5761C88C867468 /* PackageSelectionFeature */; };
 		89C9FE4203777E2EBBE03E45 /* StartFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 30DB3FBA9029DAD9FF445A40 /* StartFeature */; };
 		AA670CA5568B241ED463BC95 /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = 08E554592AC0872150E5FE0F /* Domain */; };
-		AC654AF3AE67F10ED977ABAF /* PackageSelectionFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 1A0736C78C5761C88C867468 /* PackageSelectionFeature */; };
+		AC654AF3AE67F10ED977ABAF /* CreateFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 673C52D1499CE9FFCD8A119F /* CreateFeature */; };
 		C3FD41F0EA0C2370827B97DE /* WishesFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 2387CBFF460F3BF49B09547E /* WishesFeature */; };
 		CEC0D105C88006A85387F804 /* FormFeature in Frameworks */ = {isa = PBXBuildFile; productRef = DEF6499717BF3D2F842B96D2 /* FormFeature */; };
 		D6CE02BFCC182B5119DABDFF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D6D01DD174A2150EFCADFE25 /* Assets.xcassets */; };
@@ -41,10 +42,11 @@
 				3D86EBC3DF2A2C44FE223CD6 /* OccasionSelectionFeature in Frameworks */,
 				CEC0D105C88006A85387F804 /* FormFeature in Frameworks */,
 				C3FD41F0EA0C2370827B97DE /* WishesFeature in Frameworks */,
-				AC654AF3AE67F10ED977ABAF /* PackageSelectionFeature in Frameworks */,
-				8727F1239ACDD65F1249CFD8 /* FinalWishFeature in Frameworks */,
-				21D11BC06BEABD987274481C /* LibraryFeature in Frameworks */,
-				7AAFB174217A231096E2EC6C /* ExampleWishesFeature in Frameworks */,
+				AC654AF3AE67F10ED977ABAF /* CreateFeature in Frameworks */,
+				8727F1239ACDD65F1249CFD8 /* PackageSelectionFeature in Frameworks */,
+				21D11BC06BEABD987274481C /* FinalWishFeature in Frameworks */,
+				7AAFB174217A231096E2EC6C /* LibraryFeature in Frameworks */,
+				1D05E3779AD64D115E33CCD0 /* ExampleWishesFeature in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,6 +137,7 @@
 				E784AA2910E71566435D7C0A /* OccasionSelectionFeature */,
 				DEF6499717BF3D2F842B96D2 /* FormFeature */,
 				2387CBFF460F3BF49B09547E /* WishesFeature */,
+				673C52D1499CE9FFCD8A119F /* CreateFeature */,
 				1A0736C78C5761C88C867468 /* PackageSelectionFeature */,
 				E70698A6B5B24F5175375071 /* FinalWishFeature */,
 				0FB23A92C3BC0662E37FB976 /* LibraryFeature */,
@@ -436,6 +439,10 @@
 		30DB3FBA9029DAD9FF445A40 /* StartFeature */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = StartFeature;
+		};
+		673C52D1499CE9FFCD8A119F /* CreateFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CreateFeature;
 		};
 		7389B349A52DDAB5AB9D845C /* ExampleWishesFeature */ = {
 			isa = XCSwiftPackageProductDependency;

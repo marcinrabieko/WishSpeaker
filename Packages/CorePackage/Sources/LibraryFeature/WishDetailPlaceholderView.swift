@@ -1,3 +1,4 @@
+import CreateFeature
 import DesignSystem
 import Domain
 import Localizations
@@ -11,6 +12,7 @@ struct WishDetailPlaceholderView: View {
     @State private var viewModel: WishDetailViewModel
     @State private var isCopied = false
     @State private var isEditing = false
+    @State private var presentedCreationKind: CreationKind?
 
     init(wish: Wish) {
         _viewModel = State(initialValue: WishDetailViewModel(wish: wish))
@@ -45,6 +47,9 @@ struct WishDetailPlaceholderView: View {
             EditWishSheet(text: viewModel.wish.text) { newText in
                 viewModel.didSaveEditedText(newText)
             }
+        }
+        .navigationDestination(item: $presentedCreationKind) { kind in
+            VoiceVideoPlaceholderView(kind: kind)
         }
     }
 
@@ -135,14 +140,18 @@ struct WishDetailPlaceholderView: View {
                     icon: "waveform",
                     title: L10n.wishDetailCreateVoiceButton,
                     subtitle: L10n.wishDetailCreateVoiceSubtitle
-                ) {}
+                ) {
+                    presentedCreationKind = .voice
+                }
             }
 
             CreationActionRow(
                 icon: "video.fill",
                 title: L10n.wishDetailCreateVideoButton,
                 subtitle: L10n.wishDetailCreateVideoSubtitle
-            ) {}
+            ) {
+                presentedCreationKind = .videoCard
+            }
         }
         .padding(.top, WSSpacing.sm)
     }

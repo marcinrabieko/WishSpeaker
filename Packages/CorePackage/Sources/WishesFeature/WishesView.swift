@@ -1,7 +1,7 @@
+import CreateFeature
 import DesignSystem
 import Domain
 import Localizations
-import PackageSelectionFeature
 import SwiftUI
 
 public struct WishesView: View {
@@ -30,7 +30,7 @@ public struct WishesView: View {
             viewModel.didAppear()
         }
         .navigationDestination(isPresented: $viewModel.navigateToNextStep) {
-            PackageSelectionView()
+            CreateView()
         }
     }
 
