@@ -92,7 +92,7 @@ public struct WishesView: View {
                         regenerationFailed: viewModel.regenerationErrorVariant == variant,
                         isCopied: viewModel.copiedVariant == variant,
                         isSaved: viewModel.savedVariants.contains(variant),
-                        onExpand: { viewModel.didTapExpand(variant) },
+                        onToggle: { viewModel.didTapToggle(variant) },
                         onCopy: { viewModel.didTapCopy(variant) },
                         onSave: { viewModel.didTapSave(variant) },
                         onRegenerate: { viewModel.didTapRegenerate(variant) },
@@ -115,7 +115,7 @@ private struct WishCandidateCard: View {
     let regenerationFailed: Bool
     let isCopied: Bool
     let isSaved: Bool
-    let onExpand: () -> Void
+    let onToggle: () -> Void
     let onCopy: () -> Void
     let onSave: () -> Void
     let onRegenerate: () -> Void
@@ -123,24 +123,7 @@ private struct WishCandidateCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: WSSpacing.sm) {
-            Button(action: onExpand) {
-                HStack(spacing: WSSpacing.xs) {
-                    Image(systemName: variant.iconName)
-                        .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(Color.wsPrimary)
-
-                    Text(variant.displayName)
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(Color.wsPrimaryText)
-
-                    Spacer()
-
-                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(Color.wsSecondaryText)
-                }
-            }
-            .buttonStyle(.plain)
+            header
 
             if isRegenerating {
                 HStack(spacing: WSSpacing.xs) {
@@ -159,6 +142,12 @@ private struct WishCandidateCard: View {
                     .lineSpacing(5)
                     .lineLimit(isExpanded ? nil : 3)
                     .fixedSize(horizontal: false, vertical: true)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        if !isExpanded {
+                            onToggle()
+                        }
+                    }
 
                 if regenerationFailed {
                     Text(L10n.wishesRegenerateErrorMessage)
@@ -180,6 +169,29 @@ private struct WishCandidateCard: View {
         )
         .clipShape(RoundedRectangle(cornerRadius: WSRadius.card, style: .continuous))
         .animation(.easeInOut(duration: 0.2), value: isExpanded)
+    }
+
+    private var header: some View {
+        HStack(spacing: WSSpacing.xs) {
+            Image(systemName: variant.iconName)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(Color.wsPrimary)
+
+            Text(variant.displayName)
+                .font(.system(size: 17, weight: .semibold))
+                .foregroundStyle(Color.wsPrimaryText)
+
+            Spacer()
+
+            Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(Color.wsSecondaryText)
+        }
+        .frame(minHeight: WSSize.minTapTarget)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            onToggle()
+        }
     }
 
     private var expandedActions: some View {

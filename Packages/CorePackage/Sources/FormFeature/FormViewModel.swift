@@ -23,6 +23,10 @@ public final class FormViewModel {
 		selectedOccasion?.formCopy.detailsPlaceholder ?? L10n.formDetailsPlaceholder
 	}
 
+	var isGenerateEnabled: Bool {
+		!relationText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+	}
+
 	@ObservationIgnored
 	@Dependency(\.wishCreationManager)
 	private var creationManager: WishCreationManager
@@ -34,7 +38,11 @@ public final class FormViewModel {
 	}
 
 	func didTapGenerate() {
-		creationManager.currentForm.relation = relationText
+		guard isGenerateEnabled else {
+			return
+		}
+
+		creationManager.currentForm.relation = relationText.trimmingCharacters(in: .whitespacesAndNewlines)
 		creationManager.currentForm.note = detailsText
 
 		// Clear stale candidates so WishesView always regenerates for this submission.

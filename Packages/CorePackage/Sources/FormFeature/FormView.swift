@@ -88,9 +88,12 @@ public struct FormView: View {
 					.clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
 				}
 
-				PrimaryButton(title: L10n.formGenerateButton, icon: "sparkles") {
-					viewModel.didTapGenerate()
-				}
+				PrimaryButton(
+					title: L10n.formGenerateButton,
+					icon: "sparkles",
+					action: { viewModel.didTapGenerate() },
+					isEnabled: viewModel.isGenerateEnabled
+				)
 				.padding(.top, 24)
 			}
 			.padding(.horizontal, 18)

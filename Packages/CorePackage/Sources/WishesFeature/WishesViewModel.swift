@@ -14,7 +14,7 @@ enum WishesLoadState {
 public final class WishesViewModel {
     var loadState: WishesLoadState = .loading
     var wishes: WishGenerationResult?
-    var expandedVariant: WishVariant = .warm
+    var expandedVariant: WishVariant? = .warm
     var regeneratingVariant: WishVariant?
     var regenerationErrorVariant: WishVariant?
     var copiedVariant: WishVariant?
@@ -53,8 +53,8 @@ public final class WishesViewModel {
         generateInitialWishes()
     }
 
-    func didTapExpand(_ variant: WishVariant) {
-        expandedVariant = variant
+    func didTapToggle(_ variant: WishVariant) {
+        expandedVariant = expandedVariant == variant ? nil : variant
     }
 
     func didTapCopy(_ variant: WishVariant) {
