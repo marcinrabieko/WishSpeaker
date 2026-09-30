@@ -144,9 +144,7 @@ private struct WishCandidateCard: View {
                     .fixedSize(horizontal: false, vertical: true)
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        if !isExpanded {
-                            onToggle()
-                        }
+                        onToggle()
                     }
 
                 if regenerationFailed {
