@@ -17,19 +17,19 @@ public struct WishCard: View {
     public var body: some View {
         VStack(alignment: .leading, spacing: WSSpacing.sm) {
             VStack(alignment: .leading, spacing: WSSpacing.xs) {
-                Text(L10n.wishCardWishFor(wish.recipientName))
+                Text(L10n.wishCardWishFor(wish.recipient))
                     .font(.system(size: 20, weight: .semibold))
                     .foregroundColor(.wsPrimaryText)
 
                 HStack(spacing: WSSpacing.xs) {
-                    Text(wish.occasion)
+                    Text(wish.occasionTitle)
                         .font(.system(size: 15))
                         .foregroundColor(.wsSecondaryText)
 
                     Text("•")
                         .foregroundColor(.wsSecondaryText)
 
-                    Text(wish.tone)
+                    Text(wish.variant.displayName)
                         .font(.system(size: 15))
                         .foregroundColor(.wsSecondaryText)
                 }
@@ -47,26 +47,26 @@ public struct WishCard: View {
                     HStack {
                         Text(showTranscript ? L10n.wishCardHideTranscriptButton : L10n.wishCardShowTranscriptButton)
                             .font(.system(size: 15, weight: .medium))
-                            .foregroundColor(.wsAccent)
+                            .foregroundColor(.wsPrimary)
 
                         Spacer()
 
                         Image(systemName: showTranscript ? "chevron.up" : "chevron.down")
                             .font(.system(size: 13, weight: .semibold))
-                            .foregroundColor(.wsAccent)
+                            .foregroundColor(.wsPrimary)
                     }
                     .padding(.vertical, WSSpacing.xs)
                 }
 
                 if showTranscript {
-                    Text(wish.generatedText)
+                    Text(wish.text)
                         .font(.system(size: 15))
                         .foregroundColor(.wsPrimaryText)
                         .lineSpacing(4)
                         .padding(.top, WSSpacing.xs)
                 }
             } else {
-                Text(wish.generatedText.prefix(100) + (wish.generatedText.count > 100 ? "..." : ""))
+                Text(wish.text.prefix(100) + (wish.text.count > 100 ? "..." : ""))
                     .font(.system(size: 15))
                     .foregroundColor(.wsSecondaryText)
                     .lineSpacing(2)
@@ -79,61 +79,6 @@ public struct WishCard: View {
         .cornerRadius(WSRadius.card)
         .overlay(
             RoundedRectangle(cornerRadius: WSRadius.card)
-                .stroke(Color(.systemGray5), lineWidth: 1)
-        )
-    }
-}
-
-public struct WishListCard: View {
-    let wish: Wish
-
-    public init(wish: Wish) {
-        self.wish = wish
-    }
-
-    public var body: some View {
-        VStack(alignment: .leading, spacing: WSSpacing.sm) {
-            HStack {
-                VStack(alignment: .leading, spacing: WSSpacing.xxs) {
-                    Text(wish.recipientName)
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundColor(.wsPrimaryText)
-
-                    HStack(spacing: WSSpacing.xs) {
-                        Text(wish.occasion)
-                        Text("•")
-                        Text(wish.tone)
-                    }
-                    .font(.system(size: 14))
-                    .foregroundColor(.wsSecondaryText)
-                }
-
-                Spacer()
-
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(.wsSecondaryText.opacity(0.5))
-            }
-
-            HStack(spacing: WSSpacing.xs) {
-                Image(systemName: "waveform")
-                    .font(.system(size: 12))
-                Text(wish.voiceGender.rawValue)
-                    .font(.system(size: 13))
-            }
-            .foregroundColor(.wsAccent)
-
-            Text(wish.generatedText.prefix(80) + (wish.generatedText.count > 80 ? "..." : ""))
-                .font(.system(size: 14))
-                .foregroundColor(.wsSecondaryText)
-                .lineLimit(2)
-        }
-        .padding(WSSpacing.sm)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.systemGray6))
-        .cornerRadius(WSRadius.button)
-        .overlay(
-            RoundedRectangle(cornerRadius: WSRadius.button)
                 .stroke(Color(.systemGray5), lineWidth: 1)
         )
     }

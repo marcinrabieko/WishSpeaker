@@ -6,7 +6,7 @@ import Observation
 public final class StartViewModel {
     var navigateToCreator = false
     var navigateToExamples = false
-    var navigateToMyWishes = false
+    var navigateToLibrary = false
 
     public init() {}
 
@@ -16,5 +16,9 @@ public final class StartViewModel {
 
     func didTapHearExample() {
         navigateToExamples = true
+    }
+
+    func didTapLibrary() {
+        navigateToLibrary = true
     }
 }

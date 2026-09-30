@@ -15,6 +15,11 @@ public final class WishCreationManager {
     public var generatedWishes: WishGenerationResult?
     public var selectedVariant: WishVariant?
 
+    /// Identity of the Wish this session may save to the Library. Kept stable across
+    /// Save/Regenerate/finalize so a later voice/video asset lands on the same Library
+    /// row instead of creating a duplicate entry for the same Wish.
+    public private(set) var currentWishID = UUID()
+
     public init() {}
 
     public func startNewWish() {
@@ -24,12 +29,18 @@ public final class WishCreationManager {
         selectedOccasion = nil
         generatedWishes = nil
         selectedVariant = nil
+        currentWishID = UUID()
     }
 
     public func finalizeWish() -> Wish {
         Wish(
-            form: currentForm,
-            generatedText: generatedText,
+            id: currentWishID,
+            occasionKind: selectedOccasion?.kind ?? .other,
+            occasionTitle: selectedOccasion?.title ?? currentForm.occasion,
+            recipient: currentForm.relation,
+            context: currentForm.note.isEmpty ? nil : currentForm.note,
+            variant: selectedVariant ?? .natural,
+            text: generatedText,
             selectedPackage: selectedPackage
         )
     }

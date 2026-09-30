@@ -1,8 +1,8 @@
 import DesignSystem
 import Domain
 import ExampleWishesFeature
+import LibraryFeature
 import Localizations
-import MyWishesFeature
 import OccasionSelectionFeature
 import Resources
 import SwiftUI
@@ -58,6 +58,24 @@ public struct StartView: View {
                         .frame(height: WSSize.minTapTarget)
                     }
                     .buttonStyle(.plain)
+
+                    Button {
+                        viewModel.didTapLibrary()
+                    } label: {
+                        HStack(spacing: 6) {
+                            Image(systemName: "heart.text.square")
+                                .font(.system(size: 14, weight: .semibold))
+                            Text(L10n.startLibraryButton)
+                                .font(.system(size: 14, weight: .semibold))
+                        }
+                        .foregroundColor(.wsPrimary)
+                        .padding(.horizontal, WSSpacing.sm)
+                        .padding(.vertical, WSSpacing.xs)
+                        .background(Color.wsPrimary.opacity(0.08))
+                        .clipShape(Capsule())
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.top, WSSpacing.xs)
                 }
                 .padding(.horizontal, WSSpacing.horizontalPadding)
 
@@ -73,8 +91,8 @@ public struct StartView: View {
         .navigationDestination(isPresented: $viewModel.navigateToExamples) {
             ExampleWishesView()
         }
-        .navigationDestination(isPresented: $viewModel.navigateToMyWishes) {
-            MyWishesView()
+        .navigationDestination(isPresented: $viewModel.navigateToLibrary) {
+            LibraryView()
         }
     }
 }

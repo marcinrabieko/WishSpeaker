@@ -23,7 +23,7 @@ let package = Package(
         .library(name: "WishesFeature", targets: ["WishesFeature"]),
         .library(name: "PackageSelectionFeature", targets: ["PackageSelectionFeature"]),
         .library(name: "FinalWishFeature", targets: ["FinalWishFeature"]),
-        .library(name: "MyWishesFeature", targets: ["MyWishesFeature"]),
+        .library(name: "LibraryFeature", targets: ["LibraryFeature"]),
         .library(name: "ExampleWishesFeature", targets: ["ExampleWishesFeature"])
     ],
     dependencies: [
@@ -86,7 +86,7 @@ let package = Package(
                 "Resources",
                 "OccasionSelectionFeature",
                 "ExampleWishesFeature",
-                "MyWishesFeature",
+                "LibraryFeature",
                 dependenciesProduct
             ],
             plugins: [swiftLintPlugin]
@@ -147,7 +147,7 @@ let package = Package(
             plugins: [swiftLintPlugin]
         ),
         .target(
-            name: "MyWishesFeature",
+            name: "LibraryFeature",
             dependencies: [
                 "Domain",
                 "DesignSystem",

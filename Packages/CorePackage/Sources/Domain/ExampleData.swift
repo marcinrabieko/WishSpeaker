@@ -3,15 +3,12 @@ import Foundation
 public enum ExampleData {
     public static let exampleWishes: [Wish] = [
         Wish(
-            recipientName: "Gregory",
-            occasion: "40th Birthday",
-            age: "40",
-            tone: "Funny",
-            fromPerson: "Marcin",
-            relation: "Brother-in-law",
-            note: "Works as a paving contractor, owns a company and dreams about a quad.",
-            voiceGender: .male,
-            generatedText: """
+            occasionKind: .birthday,
+            occasionTitle: "40th Birthday",
+            recipient: "Gregory",
+            context: "Works as a paving contractor, owns a company and dreams about a quad.",
+            variant: .warm,
+            text: """
             Gregory, on your 40th birthday I wish you that everything in life aligns as \
             perfectly as the paving stones you lay every day. May your business grow, your \
             projects succeed and your dream of owning a quad finally become reality. All the \
@@ -25,15 +22,12 @@ public enum ExampleData {
             )
         ),
         Wish(
-            recipientName: "Alicia",
-            occasion: "35th Birthday",
-            age: "35",
-            tone: "Elegant",
-            fromPerson: "Ewelina",
-            relation: "Boss",
-            note: "Kind, supportive, very professional and cultured.",
-            voiceGender: .female,
-            generatedText: """
+            occasionKind: .birthday,
+            occasionTitle: "35th Birthday",
+            recipient: "Alicia",
+            context: "Kind, supportive, very professional and cultured.",
+            variant: .natural,
+            text: """
             Alicia, on your 35th birthday I wish you continued success, inspiration and \
             fulfillment both professionally and personally. Thank you for your kindness, \
             professionalism and the positive atmosphere you create every day. With \

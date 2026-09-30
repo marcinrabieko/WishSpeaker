@@ -1,25 +1,24 @@
 import DesignSystem
 import Domain
-import FinalWishFeature
 import Localizations
 import SharedFeatureComponents
 import SwiftUI
 
-public struct MyWishesView: View {
-    @State private var viewModel = MyWishesViewModel()
+public struct LibraryView: View {
+    @State private var viewModel = LibraryViewModel()
 
     public init() {}
 
     public var body: some View {
         Group {
             if viewModel.savedWishes.isEmpty {
-                EmptyWishesView()
+                emptyState
             } else {
                 ScrollView {
                     VStack(spacing: WSSpacing.sm) {
                         ForEach(viewModel.savedWishes) { wish in
-                            NavigationLink(destination: SavedWishDetailView(wish: wish)) {
-                                WishListCard(wish: wish)
+                            NavigationLink(destination: WishDetailPlaceholderView(wish: wish)) {
+                                WishLibraryCard(wish: wish)
                             }
                             .buttonStyle(.plain)
                         }
@@ -30,29 +29,34 @@ public struct MyWishesView: View {
             }
         }
         .background(Color.wsBackground)
-        .navigationTitle(L10n.myWishesTitle)
+        .navigationTitle(L10n.libraryTitle)
         .navigationBarTitleDisplayMode(.large)
         .wsBackButton()
         .onAppear {
             viewModel.didAppear()
         }
     }
-}
 
-struct EmptyWishesView: View {
-    var body: some View {
+    private var emptyState: some View {
         VStack(spacing: WSSpacing.sm) {
-            Image(systemName: "waveform.circle")
-                .font(.system(size: 60))
+            Spacer()
+
+            Image(systemName: "heart.text.square")
+                .font(.system(size: 48))
                 .foregroundColor(.wsSecondaryText.opacity(0.5))
 
-            Text(L10n.myWishesEmptyTitle)
+            Text(L10n.libraryEmptyTitle)
                 .font(.system(size: 20, weight: .semibold))
                 .foregroundColor(.wsPrimaryText)
 
-            Text(L10n.myWishesEmptySubtitle)
+            Text(L10n.libraryEmptySubtitle)
                 .font(.system(size: 15))
                 .foregroundColor(.wsSecondaryText)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, WSSpacing.lg)
+
+            Spacer()
         }
+        .frame(maxWidth: .infinity)
     }
 }

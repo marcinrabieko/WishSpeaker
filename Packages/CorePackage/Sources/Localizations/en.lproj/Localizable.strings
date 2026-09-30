@@ -110,10 +110,17 @@
 "final_wish_package_label" = "Package";
 "final_wish_created_at" = "Created %@";
 
-/* My Wishes */
-"my_wishes_title" = "My Wishes";
-"my_wishes_empty_title" = "No wishes yet";
-"my_wishes_empty_subtitle" = "Create your first wish to see it here";
+/* Start - Library entry */
+"start_library_button" = "Your Wishes";
+
+/* Library */
+"library_title" = "Your Wishes";
+"library_empty_title" = "No wishes saved yet";
+"library_empty_subtitle" = "Your saved wishes and creations will appear here.";
+"library_voice_label" = "Voice";
+"library_video_label" = "Video";
+"library_play_button" = "Play";
+"library_card_title" = "%@ for %@";
 
 /* Example Wishes */
 "example_wishes_title" = "Example Wishes";

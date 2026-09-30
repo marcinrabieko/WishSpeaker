@@ -79,10 +79,15 @@ public final class WishesViewModel {
             return
         }
 
+        let form = creationManager.currentForm
         let wish = Wish(
-            form: creationManager.currentForm,
-            generatedText: text,
-            selectedPackage: nil
+            id: creationManager.currentWishID,
+            occasionKind: creationManager.selectedOccasion?.kind ?? .other,
+            occasionTitle: creationManager.selectedOccasion?.title ?? form.occasion,
+            recipient: form.relation,
+            context: form.note.isEmpty ? nil : form.note,
+            variant: variant,
+            text: text
         )
 
         libraryManager.save(wish)

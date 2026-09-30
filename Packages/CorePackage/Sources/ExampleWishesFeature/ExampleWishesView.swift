@@ -35,24 +35,16 @@ struct ExampleWishCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: WSSpacing.sm) {
             VStack(alignment: .leading, spacing: WSSpacing.xs) {
-                Text(L10n.exampleWishesWishFor(wish.recipientName))
+                Text(L10n.exampleWishesWishFor(wish.recipient))
                     .font(.system(size: 20, weight: .semibold))
                     .foregroundColor(.wsPrimaryText)
 
                 HStack(spacing: WSSpacing.xs) {
-                    Text(wish.occasion)
+                    Text(wish.occasionTitle)
                     Text("•")
-                    Text(wish.tone)
+                    Text(wish.variant.displayName)
                 }
                 .font(.system(size: 15))
-                .foregroundColor(.wsSecondaryText)
-
-                HStack(spacing: 4) {
-                    Image(systemName: "person.fill")
-                        .font(.system(size: 12))
-                    Text(L10n.exampleWishesFrom(wish.fromPerson))
-                        .font(.system(size: 14))
-                }
                 .foregroundColor(.wsSecondaryText)
             }
 
@@ -64,10 +56,10 @@ struct ExampleWishCard: View {
             HStack(spacing: WSSpacing.xs) {
                 Image(systemName: "waveform")
                     .font(.system(size: 14))
-                Text("\(wish.voiceGender.rawValue) \(L10n.exampleWishesVoiceSuffix)")
+                Text(L10n.exampleWishesVoiceSuffix)
                     .font(.system(size: 14, weight: .medium))
             }
-            .foregroundStyle(WSGradient.accent)
+            .foregroundStyle(Color.wsPrimary)
 
             AudioPlayerView()
 
@@ -83,19 +75,19 @@ struct ExampleWishCard: View {
                         Text(showTranscript ? L10n.exampleWishesHideTranscriptButton : L10n.exampleWishesShowTranscriptButton)
                             .font(.system(size: 15, weight: .medium))
                     }
-                    .foregroundColor(.wsAccent)
+                    .foregroundColor(.wsPrimary)
 
                     Spacer()
 
                     Image(systemName: showTranscript ? "chevron.up" : "chevron.down")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(.wsAccent)
+                        .foregroundColor(.wsPrimary)
                 }
                 .padding(.vertical, WSSpacing.xs)
             }
 
             if showTranscript {
-                Text(wish.generatedText)
+                Text(wish.text)
                     .font(.system(size: 15))
                     .foregroundColor(.wsPrimaryText)
                     .lineSpacing(4)

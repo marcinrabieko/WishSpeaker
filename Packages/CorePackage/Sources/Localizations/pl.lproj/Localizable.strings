@@ -110,10 +110,17 @@
 "final_wish_package_label" = "Pakiet";
 "final_wish_created_at" = "Utworzono %@";
 
-/* My Wishes */
-"my_wishes_title" = "Moje życzenia";
-"my_wishes_empty_title" = "Brak życzeń";
-"my_wishes_empty_subtitle" = "Stwórz swoje pierwsze życzenia, aby zobaczyć je tutaj";
+/* Start - Library entry */
+"start_library_button" = "Twoje życzenia";
+
+/* Library */
+"library_title" = "Twoje życzenia";
+"library_empty_title" = "Nie masz jeszcze zapisanych życzeń";
+"library_empty_subtitle" = "Twoje zapisane życzenia i utworzone materiały pojawią się tutaj.";
+"library_voice_label" = "Głos";
+"library_video_label" = "Wideo";
+"library_play_button" = "Odtwórz";
+"library_card_title" = "%@ dla: %@";
 
 /* Example Wishes */
 "example_wishes_title" = "Przykładowe życzenia";

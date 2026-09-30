@@ -64,7 +64,7 @@ targets:
       - package: CorePackage
         product: FinalWishFeature
       - package: CorePackage
-        product: MyWishesFeature
+        product: LibraryFeature
       - package: CorePackage
         product: ExampleWishesFeature
     settings:

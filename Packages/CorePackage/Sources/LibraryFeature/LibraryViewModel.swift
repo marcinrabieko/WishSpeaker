@@ -4,7 +4,7 @@ import Observation
 
 @MainActor
 @Observable
-public final class MyWishesViewModel {
+public final class LibraryViewModel {
     var savedWishes: [Wish] = []
 
     @ObservationIgnored

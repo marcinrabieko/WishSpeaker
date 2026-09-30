@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		21D11BC06BEABD987274481C /* MyWishesFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 3F757995FF5B3AA53B26AF99 /* MyWishesFeature */; };
+		21D11BC06BEABD987274481C /* LibraryFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 0FB23A92C3BC0662E37FB976 /* LibraryFeature */; };
 		2B63765D2BEE2A475FB8C9D0 /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 9C4EBF1A36781F70E0F43D15 /* DesignSystem */; };
 		3D86EBC3DF2A2C44FE223CD6 /* OccasionSelectionFeature in Frameworks */ = {isa = PBXBuildFile; productRef = E784AA2910E71566435D7C0A /* OccasionSelectionFeature */; };
 		46B672AF80ADB1DEAEDD50F5 /* WishSpeakerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F375D255DC2D1FFC8147A4F /* WishSpeakerApp.swift */; };
@@ -43,7 +43,7 @@
 				C3FD41F0EA0C2370827B97DE /* WishesFeature in Frameworks */,
 				AC654AF3AE67F10ED977ABAF /* PackageSelectionFeature in Frameworks */,
 				8727F1239ACDD65F1249CFD8 /* FinalWishFeature in Frameworks */,
-				21D11BC06BEABD987274481C /* MyWishesFeature in Frameworks */,
+				21D11BC06BEABD987274481C /* LibraryFeature in Frameworks */,
 				7AAFB174217A231096E2EC6C /* ExampleWishesFeature in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -137,7 +137,7 @@
 				2387CBFF460F3BF49B09547E /* WishesFeature */,
 				1A0736C78C5761C88C867468 /* PackageSelectionFeature */,
 				E70698A6B5B24F5175375071 /* FinalWishFeature */,
-				3F757995FF5B3AA53B26AF99 /* MyWishesFeature */,
+				0FB23A92C3BC0662E37FB976 /* LibraryFeature */,
 				7389B349A52DDAB5AB9D845C /* ExampleWishesFeature */,
 			);
 			productName = MobileApp;
@@ -421,6 +421,10 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = Domain;
 		};
+		0FB23A92C3BC0662E37FB976 /* LibraryFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LibraryFeature;
+		};
 		1A0736C78C5761C88C867468 /* PackageSelectionFeature */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PackageSelectionFeature;
@@ -432,10 +436,6 @@
 		30DB3FBA9029DAD9FF445A40 /* StartFeature */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = StartFeature;
-		};
-		3F757995FF5B3AA53B26AF99 /* MyWishesFeature */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = MyWishesFeature;
 		};
 		7389B349A52DDAB5AB9D845C /* ExampleWishesFeature */ = {
 			isa = XCSwiftPackageProductDependency;
