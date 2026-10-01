@@ -1,23 +1,50 @@
 import Dependencies
 import Foundation
+import SwiftData
 
-/// Holds the persistent library of wishes the user has already created.
+/// Holds the persistent library of wishes the user has already created, backed by
+/// SwiftData. The rest of the app only ever sees the domain `Wish` struct — mapping
+/// to/from the SwiftData-managed `WishModel` is entirely contained here.
 ///
 /// One Wish = one Library row. A Wish can evolve over time — text only, then
 /// text + voice, then text + voice + video — so saving a Wish with an id that
 /// already exists replaces that row in place rather than appending a duplicate.
 @MainActor
 public final class WishLibraryManager {
-    public var savedWishes: [Wish] = []
+    public private(set) var savedWishes: [Wish] = []
 
-    public init() {}
+    private let modelContainer: ModelContainer
+
+    public init() {
+        modelContainer = WishLibraryManager.makeModelContainer()
+        fetchSavedWishes()
+    }
 
     public func save(_ wish: Wish) {
-        if let index = savedWishes.firstIndex(where: { $0.id == wish.id }) {
-            savedWishes[index] = wish
+        let context = modelContainer.mainContext
+        let wishID = wish.id
+        let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { $0.id == wishID })
+
+        if let existing = try? context.fetch(descriptor).first {
+            existing.update(from: wish)
         } else {
-            savedWishes.insert(wish, at: 0)
+            context.insert(WishModel(wish: wish))
         }
+
+        try? context.save()
+        fetchSavedWishes()
+    }
+
+    private func fetchSavedWishes() {
+        let descriptor = FetchDescriptor<WishModel>(sortBy: [SortDescriptor(\.createdAt, order: .reverse)])
+        let models = (try? modelContainer.mainContext.fetch(descriptor)) ?? []
+
+        savedWishes = models.map(\.asWish)
+    }
+
+    private static func makeModelContainer() -> ModelContainer {
+        // swiftlint:disable:next force_try
+        try! ModelContainer(for: WishModel.self)
     }
 }
 
