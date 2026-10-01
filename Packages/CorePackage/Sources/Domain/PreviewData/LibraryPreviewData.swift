@@ -70,9 +70,109 @@ public enum LibraryPreviewData {
         )
     )
 
+    public static let textOnlyAnniversaryWish = Wish(
+        occasionKind: .anniversary,
+        occasionTitle: "Anniversary",
+        recipient: "Grandma & Grandpa",
+        context: "celebrating 50 years together",
+        variant: .warm,
+        text: """
+        Fifty years together is a true testament to the kind of love that only grows \
+        stronger with time. Thank you for showing all of us what commitment and \
+        tenderness really look like. Happy anniversary!
+        """,
+        createdAt: Date(timeIntervalSinceNow: -86_400 * 8),
+        updatedAt: Date(timeIntervalSinceNow: -86_400 * 8)
+    )
+
+    public static let voiceNameDayWish = Wish(
+        occasionKind: .nameDay,
+        occasionTitle: "Name Day",
+        recipient: "Agnieszka",
+        context: "always the first to help out at work",
+        variant: .natural,
+        text: """
+        Agnieszka, wishing you a wonderful name day! Thank you for always being the \
+        person everyone can count on. May today bring you as much warmth as you give \
+        to everyone around you.
+        """,
+        createdAt: Date(timeIntervalSinceNow: -86_400 * 3),
+        updatedAt: Date(timeIntervalSinceNow: -3_600 * 20),
+        voiceAsset: VoiceAsset(
+            audioFileReference: "sample_voice_agnieszka_nameday.m4a",
+            voiceIdentifier: "light_female_01",
+            voiceDisplayName: "Zofia",
+            duration: 29.0,
+            createdAt: Date(timeIntervalSinceNow: -3_600 * 20)
+        )
+    )
+
+    public static let textOnlyThanksWish = Wish(
+        occasionKind: .thanks,
+        occasionTitle: "Thank You",
+        recipient: "Tomasz",
+        context: "helped move apartments over the whole weekend",
+        variant: .light,
+        text: """
+        Tomasz, I genuinely don't know how I would have survived moving weekend \
+        without you. Thank you for the boxes, the jokes, and for not complaining \
+        once about the stairs. You're the best.
+        """,
+        createdAt: Date(timeIntervalSinceNow: -86_400 * 12),
+        updatedAt: Date(timeIntervalSinceNow: -86_400 * 12)
+    )
+
+    public static let videoCongratulationsWish = Wish(
+        occasionKind: .congratulations,
+        occasionTitle: "Congratulations",
+        recipient: "Kasia",
+        context: "just passed her bar exam after years of studying",
+        variant: .warm,
+        text: """
+        Kasia, congratulations on passing the bar exam! Years of hard work, late \
+        nights and sacrifice have finally paid off. We always knew you had it in \
+        you — welcome to the next chapter of your career.
+        """,
+        createdAt: Date(timeIntervalSinceNow: -86_400 * 4),
+        updatedAt: Date(timeIntervalSinceNow: -3_600 * 2),
+        voiceAsset: VoiceAsset(
+            audioFileReference: "sample_voice_kasia_congrats.m4a",
+            voiceIdentifier: "warm_male_01",
+            voiceDisplayName: "James",
+            duration: 35.0,
+            createdAt: Date(timeIntervalSinceNow: -3_600 * 3)
+        ),
+        videoAsset: VideoAsset(
+            videoFileReference: "sample_video_kasia_congrats.mp4",
+            thumbnailReference: "sample_video_kasia_congrats_thumb.jpg",
+            duration: 35.0,
+            createdAt: Date(timeIntervalSinceNow: -3_600 * 2)
+        )
+    )
+
+    public static let textOnlyApologyWish = Wish(
+        occasionKind: .apology,
+        occasionTitle: "Apology",
+        recipient: "Marta",
+        context: "forgot her birthday last month",
+        variant: .natural,
+        text: """
+        Marta, I'm really sorry for missing your birthday last month — you deserved \
+        better than that. Please know how much your friendship means to me, and \
+        let's celebrate properly soon, I promise.
+        """,
+        createdAt: Date(timeIntervalSinceNow: -86_400 * 6),
+        updatedAt: Date(timeIntervalSinceNow: -86_400 * 6)
+    )
+
     public static let all: [Wish] = [
         videoWeddingWish,
+        videoCongratulationsWish,
+        voiceNameDayWish,
         voiceBirthdayWish,
+        textOnlyApologyWish,
+        textOnlyAnniversaryWish,
+        textOnlyThanksWish,
         textOnlyBirthdayWish
     ]
 }
