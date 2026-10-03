@@ -132,6 +132,11 @@
 "library_voice_label" = "Voice";
 "library_video_label" = "Video";
 "library_metadata_format" = "%@ · %@ · %@";
+"library_delete_button" = "Delete";
+"library_delete_confirmation_title" = "Delete this wish?";
+"library_delete_confirmation_message" = "This will permanently delete the wish and its generated media.";
+"library_delete_confirmation_cancel_button" = "Cancel";
+"library_delete_confirmation_delete_button" = "Delete";
 
 /* Wish Detail */
 "wish_detail_copy_button" = "Copy";

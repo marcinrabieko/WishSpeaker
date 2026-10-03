@@ -16,4 +16,9 @@ public final class LibraryViewModel {
     func didAppear() {
         savedWishes = libraryManager.savedWishes
     }
+
+    func didConfirmDelete(_ wish: Wish) {
+        libraryManager.delete(wish)
+        savedWishes = libraryManager.savedWishes
+    }
 }

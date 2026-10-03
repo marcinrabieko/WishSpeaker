@@ -15,17 +15,28 @@ public struct LibraryView: View {
             if viewModel.savedWishes.isEmpty {
                 emptyState
             } else {
-                ScrollView {
-                    VStack(spacing: WSSpacing.sm) {
-                        ForEach(viewModel.savedWishes) { wish in
-                            WishLibraryCard(wish: wish) {
-                                presentedWish = wish
-                            }
-                        }
+                List {
+                    ForEach(viewModel.savedWishes) { wish in
+                        LibraryRow(
+                            wish: wish,
+                            onTap: { presentedWish = wish },
+                            onConfirmDelete: { viewModel.didConfirmDelete(wish) }
+                        )
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(
+                            EdgeInsets(
+                                top: WSSpacing.xxs,
+                                leading: WSSpacing.horizontalPadding,
+                                bottom: WSSpacing.xxs,
+                                trailing: WSSpacing.horizontalPadding
+                            )
+                        )
                     }
-                    .padding(.horizontal, WSSpacing.horizontalPadding)
-                    .padding(.vertical, WSSpacing.sm)
                 }
+                .listStyle(.plain)
+                .scrollContentBackground(.hidden)
+                .padding(.top, WSSpacing.xs)
             }
         }
         .background(Color.wsBackground)
@@ -61,5 +72,47 @@ public struct LibraryView: View {
             Spacer()
         }
         .frame(maxWidth: .infinity)
+    }
+}
+
+/// Owns its own swipe-to-delete confirmation state so the dialog is scoped to this row
+/// instead of the whole List — attaching it at the List/screen level instead causes the
+/// dialog's appearance to race the row's own swipe-removal animation (the row visibly
+/// flickers back in while the dialog is still animating in).
+private struct LibraryRow: View {
+    let wish: Wish
+    let onTap: () -> Void
+    let onConfirmDelete: () -> Void
+
+    @State private var isShowingDeleteConfirmation = false
+
+    var body: some View {
+        WishLibraryCard(wish: wish, onTap: onTap)
+            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                Button {
+                    didSwipeToDelete()
+                } label: {
+                    Label(L10n.libraryDeleteButton, systemImage: "trash")
+                }
+                .tint(.wsPrimary)
+            }
+            .confirmationDialog(
+                L10n.libraryDeleteConfirmationTitle,
+                isPresented: $isShowingDeleteConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button(L10n.libraryDeleteConfirmationDeleteButton, role: .destructive, action: onConfirmDelete)
+                Button(L10n.libraryDeleteConfirmationCancelButton, role: .cancel) {}
+            } message: {
+                Text(L10n.libraryDeleteConfirmationMessage)
+            }
+    }
+
+    private func didSwipeToDelete() {
+        if wish.voiceAsset != nil || wish.videoAsset != nil {
+            isShowingDeleteConfirmation = true
+        } else {
+            onConfirmDelete()
+        }
     }
 }

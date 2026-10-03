@@ -132,6 +132,11 @@
 "library_voice_label" = "Głos";
 "library_video_label" = "Wideo";
 "library_metadata_format" = "%@ · %@ · %@";
+"library_delete_button" = "Usuń";
+"library_delete_confirmation_title" = "Usunąć te życzenia?";
+"library_delete_confirmation_message" = "Życzenia i wszystkie wygenerowane materiały zostaną trwale usunięte.";
+"library_delete_confirmation_cancel_button" = "Anuluj";
+"library_delete_confirmation_delete_button" = "Usuń";
 
 /* Wish Detail */
 "wish_detail_copy_button" = "Kopiuj";

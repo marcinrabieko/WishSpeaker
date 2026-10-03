@@ -36,6 +36,47 @@ public final class WishLibraryManager {
         fetchSavedWishes()
     }
 
+    /// Deletes the persisted Wish together with any local media files its Voice/Video
+    /// assets reference, so deleting a Library row never leaves orphaned files behind.
+    public func delete(_ wish: Wish) {
+        let context = modelContainer.mainContext
+        let wishID = wish.id
+        let descriptor = FetchDescriptor<WishModel>(predicate: #Predicate { $0.id == wishID })
+
+        guard let model = try? context.fetch(descriptor).first else {
+            return
+        }
+
+        deleteLocalMediaFiles(for: model)
+        context.delete(model)
+        try? context.save()
+        fetchSavedWishes()
+    }
+
+    private func deleteLocalMediaFiles(for model: WishModel) {
+        [
+            model.voiceAudioFileReference,
+            model.videoFileReference,
+            model.videoThumbnailReference
+        ]
+        .compactMap { $0 }
+        .forEach(WishLibraryManager.deleteFileIfExists)
+    }
+
+    private static func deleteFileIfExists(named fileName: String) {
+        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            return
+        }
+
+        let fileURL = documentsDirectory.appendingPathComponent(fileName)
+
+        guard FileManager.default.fileExists(atPath: fileURL.path) else {
+            return
+        }
+
+        try? FileManager.default.removeItem(at: fileURL)
+    }
+
     private func fetchSavedWishes() {
         let descriptor = FetchDescriptor<WishModel>(sortBy: [SortDescriptor(\.createdAt, order: .reverse)])
         let models = (try? modelContainer.mainContext.fetch(descriptor)) ?? []
