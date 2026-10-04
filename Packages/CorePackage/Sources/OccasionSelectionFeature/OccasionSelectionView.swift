@@ -36,6 +36,14 @@ public struct OccasionSelectionView: View {
 		.navigationDestination(isPresented: $viewModel.navigateToCreator) {
 			FormView()
 		}
+		.onAppear {
+			// FormView's "change occasion" chip dismisses back to this same,
+			// still-alive view instead of popping it — without resetting the flag
+			// here, a second occasion tap leaves navigateToCreator stuck at true,
+			// so navigationDestination(isPresented:) never sees a false → true
+			// transition and silently fails to navigate.
+			viewModel.navigateToCreator = false
+		}
 	}
 }
 

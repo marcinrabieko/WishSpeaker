@@ -15,6 +15,7 @@
 		7AAFB174217A231096E2EC6C /* LibraryFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 0FB23A92C3BC0662E37FB976 /* LibraryFeature */; };
 		8727F1239ACDD65F1249CFD8 /* PackageSelectionFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 1A0736C78C5761C88C867468 /* PackageSelectionFeature */; };
 		89C9FE4203777E2EBBE03E45 /* StartFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 30DB3FBA9029DAD9FF445A40 /* StartFeature */; };
+		8E5D92DF2C5DD87D408DBD20 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 853D5FD85860DA15C1F552E8 /* InfoPlist.strings */; };
 		AA670CA5568B241ED463BC95 /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = 08E554592AC0872150E5FE0F /* Domain */; };
 		AC654AF3AE67F10ED977ABAF /* CreateFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 673C52D1499CE9FFCD8A119F /* CreateFeature */; };
 		C3FD41F0EA0C2370827B97DE /* WishesFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 2387CBFF460F3BF49B09547E /* WishesFeature */; };
@@ -26,8 +27,10 @@
 		075038B486D6552521D95CEC /* CorePackage */ = {isa = PBXFileReference; lastKnownFileType = folder; name = CorePackage; path = Packages/CorePackage; sourceTree = SOURCE_ROOT; };
 		1F375D255DC2D1FFC8147A4F /* WishSpeakerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishSpeakerApp.swift; sourceTree = "<group>"; };
 		30E5035B2C6C46FFC253524F /* WishSpeaker.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = WishSpeaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4AC1757CA53B111F3B5ACA45 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		82026C25CEA0F735B325B770 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		970C696EDBF10CA27E86ED65 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
+		A7859C4410571FE4802D6033 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		D6D01DD174A2150EFCADFE25 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -73,6 +76,7 @@
 			isa = PBXGroup;
 			children = (
 				D6D01DD174A2150EFCADFE25 /* Assets.xcassets */,
+				776F6B180812023ADD00CE50 /* Localization */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -83,6 +87,14 @@
 				1F375D255DC2D1FFC8147A4F /* WishSpeakerApp.swift */,
 			);
 			path = Sources;
+			sourceTree = "<group>";
+		};
+		776F6B180812023ADD00CE50 /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				853D5FD85860DA15C1F552E8 /* InfoPlist.strings */,
+			);
+			path = Localization;
 			sourceTree = "<group>";
 		};
 		AD125EC1258F3F3FF6961B38 /* Targets */ = {
@@ -168,6 +180,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				pl,
 			);
 			mainGroup = ECBCAB33C459E09D081A9CFC;
 			minimizedProjectReferenceProxies = 1;
@@ -189,6 +202,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D6CE02BFCC182B5119DABDFF /* Assets.xcassets in Resources */,
+				8E5D92DF2C5DD87D408DBD20 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -204,6 +218,18 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		853D5FD85860DA15C1F552E8 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A7859C4410571FE4802D6033 /* en */,
+				4AC1757CA53B111F3B5ACA45 /* pl */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		150A2BC072802169D7FCB742 /* Release */ = {

@@ -46,6 +46,8 @@ targets:
       - path: Targets/MobileApp/Sources
       - path: Targets/MobileApp/Resources/Assets.xcassets
         buildPhase: resources
+      - path: Targets/MobileApp/Resources/Localization
+        buildPhase: resources
     dependencies:
       - package: CorePackage
         product: Domain

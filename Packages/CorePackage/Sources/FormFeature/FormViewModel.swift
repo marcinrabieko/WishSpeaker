@@ -35,6 +35,8 @@ public final class FormViewModel {
 
 	func didAppear() {
 		selectedOccasion = creationManager.selectedOccasion
+		relationText = creationManager.currentForm.relation
+		detailsText = creationManager.currentForm.note
 	}
 
 	func didTapGenerate() {
