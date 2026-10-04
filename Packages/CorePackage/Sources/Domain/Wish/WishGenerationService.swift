@@ -45,9 +45,52 @@ public struct MockWishGenerationService: WishGenerationService {
     }
 }
 
+public struct LiveWishGenerationService: WishGenerationService {
+    private let apiClient: APIClient
+
+    public init(apiClient: APIClient) {
+        self.apiClient = apiClient
+    }
+
+    public func generateWishes(for request: WishGenerationRequest) async throws -> WishGenerationResult {
+        let dto = GenerateWishesRequestDTO(
+            recipientName: request.form.recipientName,
+            occasionKind: request.occasionKind.rawValue,
+            relation: request.form.relation.isEmpty ? nil : request.form.relation,
+            context: request.form.note.isEmpty ? nil : request.form.note,
+            language: SupportedLanguage.current.rawValue
+        )
+
+        let response: WishVariantsDTO = try await apiClient.post("/api/generateWishes", body: dto)
+
+        return WishGenerationResult(warm: response.warm, natural: response.natural, light: response.light)
+    }
+
+    public func regenerateWish(
+        for request: WishGenerationRequest,
+        variant: WishVariant,
+        previousText: String
+    ) async throws -> String {
+        let dto = RegenerateWishRequestDTO(
+            recipientName: request.form.recipientName,
+            occasionKind: request.occasionKind.rawValue,
+            variant: variant.rawValue,
+            previousText: previousText,
+            relation: request.form.relation.isEmpty ? nil : request.form.relation,
+            context: request.form.note.isEmpty ? nil : request.form.note,
+            language: SupportedLanguage.current.rawValue
+        )
+
+        let response: RegenerateWishResponseDTO = try await apiClient.post("/api/regenerateWish", body: dto)
+
+        return response.text
+    }
+}
+
 private struct WishGenerationServiceKey: DependencyKey {
     static var liveValue: any WishGenerationService {
-        MockWishGenerationService()
+        @Dependency(\.apiEnvironment) var apiEnvironment
+        return LiveWishGenerationService(apiClient: APIClient(baseURL: apiEnvironment.baseURL))
     }
 }
 
