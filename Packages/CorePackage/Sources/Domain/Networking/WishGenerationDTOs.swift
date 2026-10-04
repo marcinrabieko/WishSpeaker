@@ -3,7 +3,6 @@ import Foundation
 struct GenerateWishesRequestDTO: Encodable {
     let recipientName: String
     let occasionKind: String
-    let relation: String?
     let context: String?
     let language: String
 }
@@ -19,7 +18,6 @@ struct RegenerateWishRequestDTO: Encodable {
     let occasionKind: String
     let variant: String
     let previousText: String
-    let relation: String?
     let context: String?
     let language: String
 }

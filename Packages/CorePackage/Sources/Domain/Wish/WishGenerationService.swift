@@ -54,9 +54,8 @@ public struct LiveWishGenerationService: WishGenerationService {
 
     public func generateWishes(for request: WishGenerationRequest) async throws -> WishGenerationResult {
         let dto = GenerateWishesRequestDTO(
-            recipientName: request.form.recipientName,
+            recipientName: resolvedRecipientName(for: request.form),
             occasionKind: request.occasionKind.rawValue,
-            relation: request.form.relation.isEmpty ? nil : request.form.relation,
             context: request.form.note.isEmpty ? nil : request.form.note,
             language: SupportedLanguage.current.rawValue
         )
@@ -72,11 +71,10 @@ public struct LiveWishGenerationService: WishGenerationService {
         previousText: String
     ) async throws -> String {
         let dto = RegenerateWishRequestDTO(
-            recipientName: request.form.recipientName,
+            recipientName: resolvedRecipientName(for: request.form),
             occasionKind: request.occasionKind.rawValue,
             variant: variant.rawValue,
             previousText: previousText,
-            relation: request.form.relation.isEmpty ? nil : request.form.relation,
             context: request.form.note.isEmpty ? nil : request.form.note,
             language: SupportedLanguage.current.rawValue
         )
@@ -84,6 +82,13 @@ public struct LiveWishGenerationService: WishGenerationService {
         let response: RegenerateWishResponseDTO = try await apiClient.post("/api/regenerateWish", body: dto)
 
         return response.text
+    }
+
+    /// The form only ever collects one "who is this for" field (WishForm.relation, e.g.
+    /// "Emma, my sister") — recipientName is never populated by the current UI. Falls
+    /// back to relation, matching MockWishGenerator's same fallback.
+    private func resolvedRecipientName(for form: WishForm) -> String {
+        form.recipientName.isEmpty ? form.relation : form.recipientName
     }
 }
 
