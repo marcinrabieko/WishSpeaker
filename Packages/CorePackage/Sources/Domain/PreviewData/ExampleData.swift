@@ -1,16 +1,32 @@
 import Foundation
 
-/// Three curated demo wishes shown on the Example Wishes screen, each demonstrating a
-/// different occasion/variant/voice combination. English and Polish text is authored
-/// natively per language, not translated — only the audio file names differ, and both
-/// currently point at recordings that don't exist yet (see VoiceAsset+AudioURL), so the
-/// player gracefully shows a disabled state until real samples are bundled.
+/// Three curated demo wishes shown on the Example Wishes screen, one per media type —
+/// video, voice, and text-only — in that order, each demonstrating a different
+/// occasion/variant combination. English and Polish text is authored natively per
+/// language, not translated — only the audio/video file names differ, and none of
+/// them point at recordings that exist yet (see VoiceAsset+AudioURL), so the player
+/// gracefully shows a disabled state until real samples are bundled.
 public enum ExampleData {
     public static var exampleWishes: [Wish] {
         Locale.current.language.languageCode?.identifier == "pl" ? polishWishes : englishWishes
     }
 
     private static let englishWishes: [Wish] = [
+        Wish(
+            occasionKind: .wedding,
+            occasionTitle: "Wedding",
+            recipient: "Alicia & Daniel",
+            variant: .natural,
+            text: """
+            Alicia and Daniel, congratulations on your wedding day. May your marriage be \
+            built on the same trust and laughter that brought you here, and may every year \
+            together feel as easy as this one. Wishing you a lifetime of happiness.
+            """,
+            videoAsset: VideoAsset(
+                videoFileReference: "example_alicia_daniel_wedding_natural_en.mp4",
+                duration: 41.0
+            )
+        ),
         Wish(
             occasionKind: .birthday,
             occasionTitle: "Birthday",
@@ -30,23 +46,6 @@ public enum ExampleData {
             )
         ),
         Wish(
-            occasionKind: .wedding,
-            occasionTitle: "Wedding",
-            recipient: "Alicia & Daniel",
-            variant: .natural,
-            text: """
-            Alicia and Daniel, congratulations on your wedding day. May your marriage be \
-            built on the same trust and laughter that brought you here, and may every year \
-            together feel as easy as this one. Wishing you a lifetime of happiness.
-            """,
-            voiceAsset: VoiceAsset(
-                audioFileReference: "example_alicia_daniel_wedding_natural_en.m4a",
-                voiceIdentifier: "natural_female_01",
-                voiceDisplayName: "Sofia",
-                duration: 41.0
-            )
-        ),
-        Wish(
             occasionKind: .birthday,
             occasionTitle: "Birthday",
             recipient: "Noah",
@@ -55,17 +54,26 @@ public enum ExampleData {
             Noah, happy birthday! Officially aged up, no refunds. Hope today is full of \
             the good stuff — snacks, laughs, and minimal responsibility. Enjoy the extra \
             candle!
-            """,
-            voiceAsset: VoiceAsset(
-                audioFileReference: "example_noah_birthday_light_en.m4a",
-                voiceIdentifier: "light_male_01",
-                voiceDisplayName: "Leo",
-                duration: 22.0
-            )
+            """
         )
     ]
 
     private static let polishWishes: [Wish] = [
+        Wish(
+            occasionKind: .wedding,
+            occasionTitle: "Ślub",
+            recipient: "Alicja i Daniel",
+            variant: .natural,
+            text: """
+            Alicjo i Danielu, gratulacje z okazji ślubu. Niech wasze małżeństwo opiera się \
+            na tym samym zaufaniu i śmiechu, które doprowadziły was do tego dnia, a każdy \
+            kolejny rok niech będzie równie lekki jak ten. Życzymy wam szczęścia na całe życie.
+            """,
+            videoAsset: VideoAsset(
+                videoFileReference: "example_alicja_daniel_slub_natural_pl.mp4",
+                duration: 43.0
+            )
+        ),
         Wish(
             occasionKind: .birthday,
             occasionTitle: "Urodziny",
@@ -85,23 +93,6 @@ public enum ExampleData {
             )
         ),
         Wish(
-            occasionKind: .wedding,
-            occasionTitle: "Ślub",
-            recipient: "Alicja i Daniel",
-            variant: .natural,
-            text: """
-            Alicjo i Danielu, gratulacje z okazji ślubu. Niech wasze małżeństwo opiera się \
-            na tym samym zaufaniu i śmiechu, które doprowadziły was do tego dnia, a każdy \
-            kolejny rok niech będzie równie lekki jak ten. Życzymy wam szczęścia na całe życie.
-            """,
-            voiceAsset: VoiceAsset(
-                audioFileReference: "example_alicja_daniel_slub_natural_pl.m4a",
-                voiceIdentifier: "natural_female_01",
-                voiceDisplayName: "Zofia",
-                duration: 43.0
-            )
-        ),
-        Wish(
             occasionKind: .birthday,
             occasionTitle: "Urodziny",
             recipient: "Antoni",
@@ -110,13 +101,7 @@ public enum ExampleData {
             Antek, sto lat! Oficjalnie starszy, bez zwrotów. Mam nadzieję, że dziś będzie \
             tylko to, co najlepsze — przekąski, śmiech i zero obowiązków. Ciesz się dodatkową \
             świeczką!
-            """,
-            voiceAsset: VoiceAsset(
-                audioFileReference: "example_antoni_urodziny_light_pl.m4a",
-                voiceIdentifier: "light_male_01",
-                voiceDisplayName: "Leon",
-                duration: 21.0
-            )
+            """
         )
     ]
 }

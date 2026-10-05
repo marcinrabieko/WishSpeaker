@@ -15,9 +15,7 @@ struct ExampleWishDetailView: View {
             VStack(alignment: .leading, spacing: WSSpacing.md) {
                 metadata
 
-                if let voiceAsset = wish.voiceAsset {
-                    voiceSection(voiceAsset)
-                }
+                mediaSection
 
                 Text(wish.text)
                     .font(.system(size: 16))
@@ -37,6 +35,15 @@ struct ExampleWishDetailView: View {
         Text(WishMetadataText.format(occasionKind: wish.occasionKind, variant: wish.variant))
             .font(.system(size: 15))
             .foregroundColor(.wsSecondaryText)
+    }
+
+    @ViewBuilder
+    private var mediaSection: some View {
+        if let videoAsset = wish.videoAsset {
+            LibraryVideoThumbnail(videoAsset: videoAsset, height: 220, playIconSize: 56)
+        } else if let voiceAsset = wish.voiceAsset {
+            voiceSection(voiceAsset)
+        }
     }
 
     private func voiceSection(_ voiceAsset: VoiceAsset) -> some View {
