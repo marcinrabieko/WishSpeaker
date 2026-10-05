@@ -32,6 +32,21 @@ public struct APIClient: Sendable {
         _ path: String,
         body: Request
     ) async throws -> Response {
+        let data = try await postRawData(path, body: body)
+
+        do {
+            return try decoder.decode(Response.self, from: data)
+        } catch {
+            throw APIError.decoding(error)
+        }
+    }
+
+    /// For endpoints that respond with a raw binary body (e.g. audio/mpeg) instead of
+    /// JSON — still sends a JSON-encoded request body, same as `post`.
+    public func postRawData<Request: Encodable>(
+        _ path: String,
+        body: Request
+    ) async throws -> Data {
         var request = URLRequest(url: baseURL.appendingPathComponent(path))
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -60,11 +75,7 @@ public struct APIClient: Sendable {
             throw APIError.server(statusCode: httpResponse.statusCode, message: message)
         }
 
-        do {
-            return try decoder.decode(Response.self, from: data)
-        } catch {
-            throw APIError.decoding(error)
-        }
+        return data
     }
 }
 
