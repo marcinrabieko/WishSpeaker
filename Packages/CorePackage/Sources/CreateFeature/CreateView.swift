@@ -32,7 +32,7 @@ public struct CreateView: View {
             viewModel.didAppear()
         }
         .navigationDestination(isPresented: $viewModel.navigateToVoice) {
-            VoiceVideoPlaceholderView(kind: .voice)
+            VoiceView()
         }
         .navigationDestination(isPresented: $viewModel.navigateToVideoCard) {
             VoiceVideoPlaceholderView(kind: .videoCard)

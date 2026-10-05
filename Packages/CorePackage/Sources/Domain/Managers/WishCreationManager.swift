@@ -15,6 +15,11 @@ public final class WishCreationManager {
     public var generatedWishes: WishGenerationResult?
     public var selectedVariant: WishVariant?
 
+    /// The ElevenLabs provider voice ID chosen on the Voice screen, carried forward
+    /// into Voice generation. The user always controls this — never inferred from
+    /// occasion, recipient, relationship, or Wish variant.
+    public var selectedVoiceID: String?
+
     /// Identity of the Wish this session may save to the Library. Kept stable across
     /// Save/Regenerate/finalize so a later voice/video asset lands on the same Library
     /// row instead of creating a duplicate entry for the same Wish.
@@ -29,6 +34,7 @@ public final class WishCreationManager {
         selectedOccasion = nil
         generatedWishes = nil
         selectedVariant = nil
+        selectedVoiceID = nil
         currentWishID = UUID()
     }
 

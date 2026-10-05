@@ -106,6 +106,17 @@
 "create_view_save_for_later_button" = "Zapisz na później";
 "create_view_saved_confirmation" = "Zapisano";
 
+/* Voice Selection */
+"voice_view_title" = "Głos";
+"voice_view_show_text_button" = "Pokaż tekst";
+"voice_view_hide_text_button" = "Ukryj tekst";
+"voice_view_choose_voice_section_title" = "Wybierz głos";
+"voice_view_gender_male" = "Męski";
+"voice_view_gender_female" = "Damski";
+"voice_view_generate_button" = "Wygeneruj głos";
+"voice_view_load_error" = "Nie udało się wczytać tego głosu. Spróbuj ponownie.";
+"voice_view_retry_button" = "Spróbuj ponownie";
+
 /* Package Selection */
 "package_selection_title" = "Wybierz pakiet";
 "package_selection_continue_button" = "Kontynuuj";

@@ -41,6 +41,34 @@ public struct APIClient: Sendable {
         }
     }
 
+    public func get<Response: Decodable>(_ path: String) async throws -> Response {
+        let request = URLRequest(url: baseURL.appendingPathComponent(path))
+
+        let data: Data
+        let response: URLResponse
+
+        do {
+            (data, response) = try await session.data(for: request)
+        } catch {
+            throw APIError.transport(error)
+        }
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIError.invalidResponse
+        }
+
+        guard (200...299).contains(httpResponse.statusCode) else {
+            let message = try? decoder.decode(APIErrorBody.self, from: data).detail
+            throw APIError.server(statusCode: httpResponse.statusCode, message: message)
+        }
+
+        do {
+            return try decoder.decode(Response.self, from: data)
+        } catch {
+            throw APIError.decoding(error)
+        }
+    }
+
     /// For endpoints that respond with a raw binary body (e.g. audio/mpeg) instead of
     /// JSON — still sends a JSON-encoded request body, same as `post`.
     public func postRawData<Request: Encodable>(

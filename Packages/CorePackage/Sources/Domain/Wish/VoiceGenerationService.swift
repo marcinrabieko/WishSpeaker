@@ -5,10 +5,12 @@ import Foundation
 public struct VoiceGenerationRequest: Sendable {
     public let text: String
     public let voiceGender: VoiceGender
+    public let providerVoiceID: String?
 
-    public init(text: String, voiceGender: VoiceGender) {
+    public init(text: String, voiceGender: VoiceGender, providerVoiceID: String? = nil) {
         self.text = text
         self.voiceGender = voiceGender
+        self.providerVoiceID = providerVoiceID
     }
 }
 
@@ -45,7 +47,8 @@ public struct LiveVoiceGenerationService: VoiceGenerationService {
         let dto = GenerateAudioRequestDTO(
             text: request.text,
             language: SupportedLanguage.current.rawValue,
-            voiceGender: request.voiceGender == .male ? "male" : "female"
+            voiceGender: request.voiceGender == .male ? "male" : "female",
+            voiceId: request.providerVoiceID
         )
 
         let audioData = try await apiClient.postRawData("/api/generateAudio", body: dto)

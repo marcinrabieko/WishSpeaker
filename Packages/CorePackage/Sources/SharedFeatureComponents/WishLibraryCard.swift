@@ -167,19 +167,19 @@ public struct InlineVoicePlayer: View {
                             .onChanged { value in
                                 guard audioURL != nil else { return }
                                 let progress = min(max(0, value.location.x / geometry.size.width), 1)
-                                playback.seek(to: progress, duration: voiceAsset.duration)
+                                playback.seek(to: progress)
                             }
                     )
                 }
                 .frame(height: 12)
 
                 HStack {
-                    Text(formattedTime(playback.progress * voiceAsset.duration))
+                    Text(formattedTime(playback.progress * displayDuration))
                         .monospacedDigit()
 
                     Spacer()
 
-                    Text(formattedTime(voiceAsset.duration))
+                    Text(formattedTime(displayDuration))
                         .monospacedDigit()
                 }
                 .font(.system(size: 11, weight: .medium))
@@ -194,6 +194,12 @@ public struct InlineVoicePlayer: View {
         }
     }
 
+    /// The player reports 0 until its AVPlayerItem becomes ready — fall back to the
+    /// known VoiceAsset duration so the label isn't stuck at "0:00" while loading.
+    private var displayDuration: TimeInterval {
+        playback.duration > 0 ? playback.duration : voiceAsset.duration
+    }
+
     private func didTapPlayPause() {
         guard audioURL != nil else { return }
         playback.togglePlayPause()
@@ -203,96 +209,6 @@ public struct InlineVoicePlayer: View {
         let minutes = Int(time) / 60
         let seconds = Int(time) % 60
         return String(format: "%d:%02d", minutes, seconds)
-    }
-}
-
-@MainActor
-@Observable
-private final class PlaybackState {
-    var isPlaying = false
-    var progress: Double = 0
-
-    private var id: UUID?
-    private var player: AVPlayer?
-    private var timeObserver: Any?
-
-    func attach(id: UUID, url: URL?) {
-        self.id = id
-
-        guard let url else {
-            return
-        }
-
-        player = AVPlayer(url: url)
-        VoicePlaybackCoordinator.shared.register(id: id) { [weak self] in
-            self?.pause()
-        }
-
-        timeObserver = player?.addPeriodicTimeObserver(
-            forInterval: CMTime(seconds: 0.1, preferredTimescale: 600),
-            queue: .main
-        ) { [weak self] time in
-            guard let self, let duration = player?.currentItem?.duration.seconds, duration.isFinite, duration > 0 else {
-                return
-            }
-
-            progress = time.seconds / duration
-        }
-
-        NotificationCenter.default.addObserver(
-            forName: .AVPlayerItemDidPlayToEndTime,
-            object: player?.currentItem,
-            queue: .main
-        ) { [weak self] _ in
-            Task { @MainActor in
-                self?.isPlaying = false
-                self?.progress = 0
-                self?.player?.seek(to: .zero)
-            }
-        }
-    }
-
-    func detach() {
-        pause()
-
-        if let timeObserver {
-            player?.removeTimeObserver(timeObserver)
-        }
-
-        if let id {
-            VoicePlaybackCoordinator.shared.unregister(id: id)
-        }
-
-        player = nil
-    }
-
-    func togglePlayPause() {
-        if isPlaying {
-            pause()
-        } else {
-            play()
-        }
-    }
-
-    func seek(to progress: Double, duration: TimeInterval) {
-        self.progress = progress
-        player?.seek(to: CMTime(seconds: progress * duration, preferredTimescale: 600))
-    }
-
-    private func play() {
-        guard let id else { return }
-        VoicePlaybackCoordinator.shared.willStartPlaying(id: id)
-        player?.play()
-        isPlaying = true
-    }
-
-    private func pause() {
-        player?.pause()
-        isPlaying = false
-
-        if let id {
-            VoicePlaybackCoordinator.shared.didStopPlaying(id: id)
-        }
     }
 }
 

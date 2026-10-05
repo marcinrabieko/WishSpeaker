@@ -106,6 +106,17 @@
 "create_view_save_for_later_button" = "Save for later";
 "create_view_saved_confirmation" = "Saved";
 
+/* Voice Selection */
+"voice_view_title" = "Voice";
+"voice_view_show_text_button" = "Show text";
+"voice_view_hide_text_button" = "Hide text";
+"voice_view_choose_voice_section_title" = "Choose a voice";
+"voice_view_gender_male" = "Male";
+"voice_view_gender_female" = "Female";
+"voice_view_generate_button" = "Generate Voice";
+"voice_view_load_error" = "We couldn't load this voice. Please try again.";
+"voice_view_retry_button" = "Retry";
+
 /* Package Selection */
 "package_selection_title" = "Select a Package";
 "package_selection_continue_button" = "Continue";
