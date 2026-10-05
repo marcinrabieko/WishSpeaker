@@ -1,3 +1,4 @@
+import AVFoundation
 import DesignSystem
 import Domain
 import Localizations
@@ -13,10 +14,14 @@ import SwiftUI
 /// label does not reliably suppress the outer navigation gesture in SwiftUI.
 public struct WishLibraryCard: View {
     let wish: Wish
+    let showDate: Bool
     let onTap: () -> Void
 
-    public init(wish: Wish, onTap: @escaping () -> Void) {
+    /// `showDate` is false for curated Example Wishes, which have no creation date —
+    /// they aren't saved Library items, so showing one would be misleading.
+    public init(wish: Wish, showDate: Bool = true, onTap: @escaping () -> Void) {
         self.wish = wish
+        self.showDate = showDate
         self.onTap = onTap
     }
 
@@ -57,9 +62,13 @@ public struct WishLibraryCard: View {
                 .font(.system(size: 17, weight: .semibold))
                 .foregroundColor(.wsPrimaryText)
 
-            Text(WishMetadataText.format(occasionKind: wish.occasionKind, variant: wish.variant, date: wish.createdAt))
-                .font(.system(size: 13))
-                .foregroundColor(.wsSecondaryText)
+            Text(
+                showDate
+                    ? WishMetadataText.format(occasionKind: wish.occasionKind, variant: wish.variant, date: wish.createdAt)
+                    : WishMetadataText.format(occasionKind: wish.occasionKind, variant: wish.variant)
+            )
+            .font(.system(size: 13))
+            .foregroundColor(.wsSecondaryText)
         }
     }
 }
@@ -74,6 +83,11 @@ public enum WishMetadataText {
             variant.displayName,
             date.formatted(date: .abbreviated, time: .omitted)
         )
+    }
+
+    /// No-date variant for curated Example Wishes, which aren't saved Library items.
+    public static func format(occasionKind: OccasionKind, variant: WishVariant) -> String {
+        L10n.exampleWishesMetadataFormat(occasionKind.displayName, variant.displayName)
     }
 }
 
@@ -90,7 +104,7 @@ private struct VoiceCardBody: View {
             }
             .foregroundColor(.wsPrimary)
 
-            InlineVoicePlayer(voiceAsset: voiceAsset)
+            InlineVoicePlayer(voiceAsset: voiceAsset, audioURL: voiceAsset.audioURL)
         }
     }
 }
@@ -105,30 +119,36 @@ private struct VideoCardBody: View {
     }
 }
 
-/// Compact, list-friendly playback UI. Presentation only — no AVPlayer instance is
-/// created here, so a scrolling Library list never runs multiple active players.
-/// Its Buttons/DragGesture are the only interactive surface inside the card that must
-/// NOT trigger navigation — everything else in the card forwards taps to `onTap`.
+/// Compact, list-friendly playback UI backed by a real `AVPlayer` when `audioURL`
+/// resolves to an existing file, falling back to a disabled, non-interactive progress
+/// display otherwise (e.g. bundled example audio not yet recorded for a language).
+/// Coordinates with `VoicePlaybackCoordinator` so starting one instance stops any other
+/// instance currently playing. Its Buttons/DragGesture are the only interactive surface
+/// inside the card that must NOT trigger navigation — everything else in the card
+/// forwards taps to `onTap`.
 public struct InlineVoicePlayer: View {
     let voiceAsset: VoiceAsset
+    let audioURL: URL?
 
-    @State private var isPlaying = false
-    @State private var progress: Double = 0
+    @State private var playback = PlaybackState()
+    private let id = UUID()
 
-    public init(voiceAsset: VoiceAsset) {
+    public init(voiceAsset: VoiceAsset, audioURL: URL? = nil) {
         self.voiceAsset = voiceAsset
+        self.audioURL = audioURL
     }
 
     public var body: some View {
         HStack(spacing: WSSpacing.xs) {
             Button {
-                isPlaying.toggle()
+                didTapPlayPause()
             } label: {
-                Image(systemName: isPlaying ? "pause.circle.fill" : "play.circle.fill")
+                Image(systemName: playback.isPlaying ? "pause.circle.fill" : "play.circle.fill")
                     .font(.system(size: 30))
-                    .foregroundColor(.wsPrimary)
+                    .foregroundColor(audioURL == nil ? .wsSecondaryText.opacity(0.5) : .wsPrimary)
             }
             .buttonStyle(.plain)
+            .disabled(audioURL == nil)
 
             VStack(spacing: 4) {
                 GeometryReader { geometry in
@@ -139,20 +159,22 @@ public struct InlineVoicePlayer: View {
 
                         Capsule()
                             .fill(Color.wsPrimary)
-                            .frame(width: geometry.size.width * progress, height: 3)
+                            .frame(width: geometry.size.width * playback.progress, height: 3)
                     }
                     .contentShape(Rectangle())
                     .gesture(
                         DragGesture(minimumDistance: 0)
                             .onChanged { value in
-                                progress = min(max(0, value.location.x / geometry.size.width), 1)
+                                guard audioURL != nil else { return }
+                                let progress = min(max(0, value.location.x / geometry.size.width), 1)
+                                playback.seek(to: progress, duration: voiceAsset.duration)
                             }
                     )
                 }
                 .frame(height: 12)
 
                 HStack {
-                    Text(formattedTime(progress * voiceAsset.duration))
+                    Text(formattedTime(playback.progress * voiceAsset.duration))
                         .monospacedDigit()
 
                     Spacer()
@@ -164,12 +186,113 @@ public struct InlineVoicePlayer: View {
                 .foregroundColor(.wsSecondaryText)
             }
         }
+        .onAppear {
+            playback.attach(id: id, url: audioURL)
+        }
+        .onDisappear {
+            playback.detach()
+        }
+    }
+
+    private func didTapPlayPause() {
+        guard audioURL != nil else { return }
+        playback.togglePlayPause()
     }
 
     private func formattedTime(_ time: TimeInterval) -> String {
         let minutes = Int(time) / 60
         let seconds = Int(time) % 60
         return String(format: "%d:%02d", minutes, seconds)
+    }
+}
+
+@MainActor
+@Observable
+private final class PlaybackState {
+    var isPlaying = false
+    var progress: Double = 0
+
+    private var id: UUID?
+    private var player: AVPlayer?
+    private var timeObserver: Any?
+
+    func attach(id: UUID, url: URL?) {
+        self.id = id
+
+        guard let url else {
+            return
+        }
+
+        player = AVPlayer(url: url)
+        VoicePlaybackCoordinator.shared.register(id: id) { [weak self] in
+            self?.pause()
+        }
+
+        timeObserver = player?.addPeriodicTimeObserver(
+            forInterval: CMTime(seconds: 0.1, preferredTimescale: 600),
+            queue: .main
+        ) { [weak self] time in
+            guard let self, let duration = player?.currentItem?.duration.seconds, duration.isFinite, duration > 0 else {
+                return
+            }
+
+            progress = time.seconds / duration
+        }
+
+        NotificationCenter.default.addObserver(
+            forName: .AVPlayerItemDidPlayToEndTime,
+            object: player?.currentItem,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                self?.isPlaying = false
+                self?.progress = 0
+                self?.player?.seek(to: .zero)
+            }
+        }
+    }
+
+    func detach() {
+        pause()
+
+        if let timeObserver {
+            player?.removeTimeObserver(timeObserver)
+        }
+
+        if let id {
+            VoicePlaybackCoordinator.shared.unregister(id: id)
+        }
+
+        player = nil
+    }
+
+    func togglePlayPause() {
+        if isPlaying {
+            pause()
+        } else {
+            play()
+        }
+    }
+
+    func seek(to progress: Double, duration: TimeInterval) {
+        self.progress = progress
+        player?.seek(to: CMTime(seconds: progress * duration, preferredTimescale: 600))
+    }
+
+    private func play() {
+        guard let id else { return }
+        VoicePlaybackCoordinator.shared.willStartPlaying(id: id)
+        player?.play()
+        isPlaying = true
+    }
+
+    private func pause() {
+        player?.pause()
+        isPlaying = false
+
+        if let id {
+            VoicePlaybackCoordinator.shared.didStopPlaying(id: id)
+        }
     }
 }
 

@@ -85,6 +85,11 @@ targets:
       path: Targets/MobileApp/Resources/Info.plist
       properties:
         CFBundleDisplayName: WishSpeaker
+        # Allows plain HTTP to the local dev backend (APIConstants.baseURL) when
+        # testing on a physical device over LAN. Remove once the backend is deployed
+        # behind HTTPS (e.g. Render) and APIConstants.baseURL points there instead.
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
 
 # FILE GROUPS
 

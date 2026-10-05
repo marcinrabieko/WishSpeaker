@@ -177,6 +177,7 @@ let package = Package(
                 "Domain",
                 "DesignSystem",
                 "Localizations",
+                "SharedFeatureComponents",
                 dependenciesProduct
             ],
             plugins: [swiftLintPlugin]

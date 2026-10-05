@@ -84,7 +84,7 @@ struct WishDetailPlaceholderView: View {
                 }
                 .foregroundColor(.wsPrimary)
 
-                InlineVoicePlayer(voiceAsset: voiceAsset)
+                InlineVoicePlayer(voiceAsset: voiceAsset, audioURL: voiceAsset.audioURL)
                     .padding(WSSpacing.sm)
                     .background(Color.wsSurface)
                     .overlay(

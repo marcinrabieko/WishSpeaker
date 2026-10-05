@@ -155,11 +155,7 @@
 /* Example Wishes */
 "example_wishes_title" = "Example Wishes";
 "example_wishes_subtitle" = "See how WishSpeaker works";
-"example_wishes_wish_for" = "Wish for %@";
-"example_wishes_from" = "From %@";
-"example_wishes_hide_transcript_button" = "Hide Transcript";
-"example_wishes_show_transcript_button" = "Show Transcript";
-"example_wishes_voice_suffix" = "Voice";
+"example_wishes_metadata_format" = "%@ · %@";
 
 /* Wish Card (shared) */
 "wish_card_wish_for" = "Wish for %@";
