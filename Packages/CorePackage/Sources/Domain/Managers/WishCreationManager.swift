@@ -20,6 +20,10 @@ public final class WishCreationManager {
     /// occasion, recipient, relationship, or Wish variant.
     public var selectedVoiceID: String?
 
+    /// Result of the most recent successful Voice generation, carried into
+    /// finalizeWish()/saveDraft() so the audio survives navigating back from VoiceView.
+    public var generatedVoiceAsset: VoiceAsset?
+
     /// Identity of the Wish this session may save to the Library. Kept stable across
     /// Save/Regenerate/finalize so a later voice/video asset lands on the same Library
     /// row instead of creating a duplicate entry for the same Wish.
@@ -35,6 +39,7 @@ public final class WishCreationManager {
         generatedWishes = nil
         selectedVariant = nil
         selectedVoiceID = nil
+        generatedVoiceAsset = nil
         currentWishID = UUID()
     }
 
@@ -47,7 +52,8 @@ public final class WishCreationManager {
             context: currentForm.note.isEmpty ? nil : currentForm.note,
             variant: selectedVariant ?? .natural,
             text: generatedText,
-            selectedPackage: selectedPackage
+            selectedPackage: selectedPackage,
+            voiceAsset: generatedVoiceAsset
         )
     }
 }

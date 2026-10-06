@@ -15,11 +15,20 @@ public struct CreateView: View {
             VStack(alignment: .leading, spacing: WSSpacing.md) {
                 metadata
 
-                wishText
+                if viewModel.voiceAsset != nil {
+                    voiceSection
+                    wishText
+                } else {
+                    wishText
+                }
 
                 creationSection
 
-                saveForLaterButton
+                if viewModel.voiceAsset != nil {
+                    autoSavedDisclaimer
+                } else {
+                    saveForLaterButton
+                }
             }
             .padding(.horizontal, WSSpacing.horizontalPadding)
             .padding(.vertical, WSSpacing.md)
@@ -45,7 +54,37 @@ public struct CreateView: View {
             .foregroundStyle(Color.wsSecondaryText)
     }
 
+    @ViewBuilder
     private var wishText: some View {
+        if viewModel.voiceAsset != nil {
+            readOnlyWishText
+        } else {
+            editableWishText
+        }
+    }
+
+    /// Once a voice is generated, the text that produced it must stay fixed — editing
+    /// it here would silently desync the written text from the recorded audio.
+    private var readOnlyWishText: some View {
+        VStack(alignment: .leading, spacing: WSSpacing.xs) {
+            Text(viewModel.draftText)
+                .font(.system(size: 16))
+                .foregroundStyle(Color.wsPrimaryText)
+                .lineSpacing(5)
+                .lineLimit(viewModel.isShowingFullText ? nil : 2)
+
+            Button {
+                viewModel.didTapShowFullText()
+            } label: {
+                Text(viewModel.isShowingFullText ? L10n.voiceViewHideTextButton : L10n.voiceViewShowTextButton)
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(Color.wsPrimary)
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
+    private var editableWishText: some View {
         VStack(alignment: .leading, spacing: WSSpacing.xs) {
             if viewModel.isEditing {
                 TextEditor(text: $viewModel.draftText)
@@ -86,18 +125,49 @@ public struct CreateView: View {
         .buttonStyle(.plain)
     }
 
+    @ViewBuilder
+    private var voiceSection: some View {
+        if let voiceAsset = viewModel.voiceAsset {
+            VStack(alignment: .leading, spacing: WSSpacing.xs) {
+                Text(L10n.wishDetailVoiceSectionTitle)
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundColor(.wsSecondaryText)
+                    .textCase(.uppercase)
+
+                HStack(spacing: 4) {
+                    Image(systemName: "waveform")
+                        .font(.system(size: 13))
+                    Text(voiceAsset.voiceDisplayName)
+                        .font(.system(size: 14, weight: .medium))
+                }
+                .foregroundColor(.wsPrimary)
+
+                InlineVoicePlayer(voiceAsset: voiceAsset, audioURL: voiceAsset.audioURL)
+                    .padding(WSSpacing.sm)
+                    .background(Color.wsSurface)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: WSRadius.card, style: .continuous)
+                            .stroke(Color.wsSoftBorder, lineWidth: 1)
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: WSRadius.card, style: .continuous))
+            }
+        }
+    }
+
     private var creationSection: some View {
         VStack(alignment: .leading, spacing: WSSpacing.sm) {
             Text(L10n.createViewMakeItSpecialTitle)
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundStyle(Color.wsPrimaryText)
 
-            CreationActionRow(
-                icon: "waveform",
-                title: L10n.createViewVoiceTitle,
-                subtitle: L10n.createViewVoiceSubtitle,
-                action: { viewModel.didTapVoice() }
-            )
+            if viewModel.voiceAsset == nil {
+                CreationActionRow(
+                    icon: "waveform",
+                    title: L10n.createViewVoiceTitle,
+                    subtitle: L10n.createViewVoiceSubtitle,
+                    action: { viewModel.didTapVoice() }
+                )
+            }
 
             CreationActionRow(
                 icon: "video.fill",
@@ -107,6 +177,19 @@ public struct CreateView: View {
             )
         }
         .padding(.top, WSSpacing.sm)
+    }
+
+    private var autoSavedDisclaimer: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 4) {
+            Image(systemName: "checkmark.circle.fill")
+                .font(.system(size: 12))
+            Text(L10n.createViewAutoSavedDisclaimer)
+                .font(.system(size: 12))
+        }
+        .foregroundStyle(Color.wsSecondaryText)
+        .frame(maxWidth: .infinity, alignment: .center)
+        .multilineTextAlignment(.center)
+        .padding(.top, WSSpacing.xs)
     }
 
     private var saveForLaterButton: some View {

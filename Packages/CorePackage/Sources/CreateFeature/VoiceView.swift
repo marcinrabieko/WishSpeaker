@@ -6,6 +6,7 @@ import SwiftUI
 
 public struct VoiceView: View {
     @State private var viewModel = VoiceViewModel()
+    @Environment(\.dismiss) private var dismiss
 
     public init() {}
 
@@ -34,6 +35,10 @@ public struct VoiceView: View {
         .wsBackButton()
         .onAppear {
             viewModel.didAppear()
+        }
+        .onChange(of: viewModel.navigateBackAfterGeneration) { _, isNavigatingBack in
+            guard isNavigatingBack else { return }
+            dismiss()
         }
     }
 
@@ -83,7 +88,7 @@ public struct VoiceView: View {
                 case .loaded(let voice):
                     VoiceCard(
                         voice: voice,
-                        isSelected: viewModel.selectedProviderVoiceID == voice.providerVoiceID,
+                        isSelected: viewModel.selectedVoice?.id == voice.id,
                         onSelect: { viewModel.didSelectVoice(voice) }
                     )
 
@@ -91,16 +96,28 @@ public struct VoiceView: View {
                     VoiceCardError(providerVoiceID: providerVoiceID, onRetry: { viewModel.didTapRetry() })
                 }
             }
+
+            if let generationError = viewModel.generationError {
+                Text(generationError)
+                    .font(.system(size: 13))
+                    .foregroundStyle(Color.wsPrimary)
+            }
         }
         .padding(.top, WSSpacing.sm)
     }
 
     private var generateButton: some View {
         PrimaryButton(
-            title: L10n.voiceViewGenerateButton,
-            action: {},
+            title: viewModel.isGenerating ? "" : L10n.voiceViewGenerateButton,
+            action: { viewModel.didTapGenerate() },
             isEnabled: viewModel.isGenerateEnabled
         )
+        .overlay {
+            if viewModel.isGenerating {
+                ProgressView()
+                    .tint(.white)
+            }
+        }
     }
 }
 

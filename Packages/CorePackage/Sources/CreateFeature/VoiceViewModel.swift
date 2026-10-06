@@ -1,5 +1,6 @@
 import Dependencies
 import Domain
+import Localizations
 import Observation
 
 enum VoiceRowState {
@@ -17,7 +18,11 @@ public final class VoiceViewModel {
     var isShowingText = false
 
     var voiceRows: [VoiceRowState] = [.loading, .loading]
-    var selectedProviderVoiceID: String?
+    var selectedVoice: VoiceOption?
+
+    var isGenerating = false
+    var generationError: String?
+    var navigateBackAfterGeneration = false
 
     @ObservationIgnored
     @Dependency(\.wishCreationManager)
@@ -27,17 +32,20 @@ public final class VoiceViewModel {
     @Dependency(\.voiceMetadataService)
     private var voiceMetadataService: any VoiceMetadataService
 
+    @ObservationIgnored
+    @Dependency(\.voiceGenerationService)
+    private var voiceGenerationService: any VoiceGenerationService
+
     public init() {}
 
     var isGenerateEnabled: Bool {
-        selectedProviderVoiceID != nil
+        selectedVoice != nil && !isGenerating
     }
 
     func didAppear() {
         occasionTitle = creationManager.selectedOccasion?.title ?? creationManager.currentForm.occasion
         variantDisplayName = (creationManager.selectedVariant ?? .natural).displayName
         wishText = creationManager.generatedText
-        selectedProviderVoiceID = creationManager.selectedVoiceID
 
         guard voiceRows.allSatisfy(\.isLoading) else {
             return
@@ -53,13 +61,39 @@ public final class VoiceViewModel {
     }
 
     func didSelectVoice(_ voice: VoiceOption) {
-        selectedProviderVoiceID = voice.providerVoiceID
+        selectedVoice = voice
         creationManager.selectedVoiceID = voice.providerVoiceID
     }
 
     func didTapRetry() {
         Task {
             await loadVoices()
+        }
+    }
+
+    func didTapGenerate() {
+        guard let selectedVoice else { return }
+
+        generationError = nil
+        isGenerating = true
+
+        Task {
+            do {
+                let voiceAsset = try await voiceGenerationService.generateVoice(
+                    for: VoiceGenerationRequest(
+                        text: wishText,
+                        voiceGender: selectedVoice.gender,
+                        providerVoiceID: selectedVoice.providerVoiceID
+                    )
+                )
+
+                creationManager.generatedVoiceAsset = voiceAsset
+                isGenerating = false
+                navigateBackAfterGeneration = true
+            } catch {
+                isGenerating = false
+                generationError = L10n.voiceViewGenerationError
+            }
         }
     }
 
@@ -75,14 +109,21 @@ public final class VoiceViewModel {
             return .failed(providerVoiceID: providerVoiceID)
         }
 
-        selectDefaultVoiceIfNeeded(from: loadedVoices)
+        restoreOrSelectDefaultVoice(from: loadedVoices)
     }
 
-    /// Picks a deterministic default (the catalog's first successfully loaded voice)
-    /// once metadata is available — never inferred from occasion/recipient/relationship/
-    /// variant, and never overrides a choice the user already made this session.
-    private func selectDefaultVoiceIfNeeded(from loadedVoices: [VoiceOption]) {
-        guard selectedProviderVoiceID == nil, let firstVoice = loadedVoices.first else {
+    /// Restores the user's prior choice (e.g. returning to this screen) if it's still
+    /// in the loaded catalog, otherwise picks a deterministic default — the catalog's
+    /// first successfully loaded voice. Never inferred from occasion/recipient/
+    /// relationship/variant, and never overrides a choice made earlier this session.
+    private func restoreOrSelectDefaultVoice(from loadedVoices: [VoiceOption]) {
+        if let previouslySelectedID = creationManager.selectedVoiceID,
+           let restored = loadedVoices.first(where: { $0.providerVoiceID == previouslySelectedID }) {
+            selectedVoice = restored
+            return
+        }
+
+        guard let firstVoice = loadedVoices.first else {
             return
         }
 

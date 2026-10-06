@@ -10,6 +10,8 @@ public final class CreateViewModel {
     var isSaved = false
     var navigateToVoice = false
     var navigateToVideoCard = false
+    var voiceAsset: VoiceAsset?
+    var isShowingFullText = false
 
     @ObservationIgnored
     @Dependency(\.wishCreationManager)
@@ -32,10 +34,22 @@ public final class CreateViewModel {
     func didAppear() {
         draftText = creationManager.generatedText
         isSaved = libraryManager.savedWishes.contains { $0.id == creationManager.currentWishID }
+        voiceAsset = creationManager.generatedVoiceAsset
+
+        // Generated voice/video is never left unsaved — a user who recorded their
+        // voice shouldn't be able to navigate away and silently lose it.
+        if voiceAsset != nil, !isSaved {
+            saveDraft()
+            isSaved = true
+        }
     }
 
     func didTapEdit() {
         isEditing = true
+    }
+
+    func didTapShowFullText() {
+        isShowingFullText.toggle()
     }
 
     func didTapDoneEditing() {
@@ -71,7 +85,8 @@ public final class CreateViewModel {
             recipient: form.relation,
             context: form.note.isEmpty ? nil : form.note,
             variant: variant,
-            text: draftText
+            text: draftText,
+            voiceAsset: voiceAsset
         )
 
         libraryManager.save(wish)

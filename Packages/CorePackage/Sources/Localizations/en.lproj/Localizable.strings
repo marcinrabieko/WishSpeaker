@@ -105,6 +105,7 @@
 "create_view_video_card_subtitle" = "Create a shareable video greeting";
 "create_view_save_for_later_button" = "Save for later";
 "create_view_saved_confirmation" = "Saved";
+"create_view_auto_saved_disclaimer" = "Generated content is automatically saved to your library.";
 
 /* Voice Selection */
 "voice_view_title" = "Voice";
@@ -116,6 +117,7 @@
 "voice_view_generate_button" = "Generate Voice";
 "voice_view_load_error" = "We couldn't load this voice. Please try again.";
 "voice_view_retry_button" = "Retry";
+"voice_view_generation_error" = "We couldn't generate the voice. Please try again.";
 
 /* Package Selection */
 "package_selection_title" = "Select a Package";
