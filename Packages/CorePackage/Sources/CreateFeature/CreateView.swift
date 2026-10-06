@@ -7,6 +7,7 @@ import SwiftUI
 public struct CreateView: View {
     @State private var viewModel = CreateViewModel()
     @FocusState private var isTextFieldFocused: Bool
+    @Environment(\.createFlowPath) private var createFlowPath
 
     public init() {}
 
@@ -36,15 +37,9 @@ public struct CreateView: View {
         .background(Color.wsBackground)
         .navigationTitle(L10n.createViewTitle)
         .navigationBarTitleDisplayMode(.large)
-        .wsBackButton()
+        .wsBackButton(customAction: { viewModel.didTapBack(path: createFlowPath) })
         .onAppear {
             viewModel.didAppear()
-        }
-        .navigationDestination(isPresented: $viewModel.navigateToVoice) {
-            VoiceView()
-        }
-        .navigationDestination(isPresented: $viewModel.navigateToVideoCard) {
-            VoiceVideoPlaceholderView(kind: .videoCard)
         }
     }
 
@@ -165,7 +160,7 @@ public struct CreateView: View {
                     icon: "waveform",
                     title: L10n.createViewVoiceTitle,
                     subtitle: L10n.createViewVoiceSubtitle,
-                    action: { viewModel.didTapVoice() }
+                    action: { viewModel.didTapVoice(path: createFlowPath) }
                 )
             }
 
@@ -173,7 +168,7 @@ public struct CreateView: View {
                 icon: "video.fill",
                 title: L10n.createViewVideoCardTitle,
                 subtitle: L10n.createViewVideoCardSubtitle,
-                action: { viewModel.didTapVideoCard() }
+                action: { viewModel.didTapVideoCard(path: createFlowPath) }
             )
         }
         .padding(.top, WSSpacing.sm)

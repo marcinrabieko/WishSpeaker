@@ -7,6 +7,7 @@ import SwiftUI
 public struct OccasionSelectionView: View {
 
 	@State private var viewModel = OccasionSelectionViewModel()
+	@Environment(\.createFlowPath) private var createFlowPath
 
 	public init() {}
 
@@ -21,7 +22,7 @@ public struct OccasionSelectionView: View {
 				LazyVStack(spacing: 8) {
 					ForEach(viewModel.occasions) { occasion in
 						OccasionRowView(occasion: occasion) {
-							viewModel.didSelectOccasion(occasion)
+							viewModel.didSelectOccasion(occasion, path: createFlowPath)
 						}
 					}
 				}
@@ -33,17 +34,6 @@ public struct OccasionSelectionView: View {
 		.navigationTitle(L10n.occasionSelectionTitle)
 		.navigationBarTitleDisplayMode(.large)
 		.wsBackButton()
-		.navigationDestination(isPresented: $viewModel.navigateToCreator) {
-			FormView()
-		}
-		.onAppear {
-			// FormView's "change occasion" chip dismisses back to this same,
-			// still-alive view instead of popping it — without resetting the flag
-			// here, a second occasion tap leaves navigateToCreator stuck at true,
-			// so navigationDestination(isPresented:) never sees a false → true
-			// transition and silently fails to navigate.
-			viewModel.navigateToCreator = false
-		}
 	}
 }
 

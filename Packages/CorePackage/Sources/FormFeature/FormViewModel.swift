@@ -2,13 +2,13 @@ import Dependencies
 import Domain
 import Localizations
 import Observation
+import SwiftUI
 
 @MainActor
 @Observable
 public final class FormViewModel {
 	var relationText = ""
 	var detailsText = ""
-	var navigateToWishes = false
 	var selectedOccasion: Occasion?
 
 	var recipientTitle: String {
@@ -39,7 +39,7 @@ public final class FormViewModel {
 		detailsText = creationManager.currentForm.note
 	}
 
-	func didTapGenerate() {
+	func didTapGenerate(path: Binding<NavigationPath>) {
 		guard isGenerateEnabled else {
 			return
 		}
@@ -51,6 +51,6 @@ public final class FormViewModel {
 		creationManager.generatedWishes = nil
 		creationManager.selectedVariant = nil
 
-		navigateToWishes = true
+		path.wrappedValue.append(CreateFlowRoute.wishes)
 	}
 }

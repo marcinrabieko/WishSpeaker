@@ -1,14 +1,18 @@
+import CreateFeature
 import DesignSystem
 import Domain
 import ExampleWishesFeature
+import FormFeature
 import LibraryFeature
 import Localizations
 import OccasionSelectionFeature
 import Resources
 import SwiftUI
+import WishesFeature
 
 public struct StartView: View {
     @State private var viewModel: StartViewModel
+    @Environment(\.createFlowPath) private var createFlowPath
 
     public init(viewModel: StartViewModel = StartViewModel()) {
         self.viewModel = viewModel
@@ -41,7 +45,7 @@ public struct StartView: View {
                     Spacer().frame(height: 32)
 
                     PrimaryButton(title: L10n.startCreateWishButton) {
-                        viewModel.didTapCreateWish()
+                        viewModel.didTapCreateWish(path: createFlowPath)
                     }
 
                     Button {
@@ -85,14 +89,32 @@ public struct StartView: View {
         .background(Color.wsBackground)
         .ignoresSafeArea()
         .navigationBarHidden(true)
-        .navigationDestination(isPresented: $viewModel.navigateToCreator) {
-            OccasionSelectionView()
-        }
         .navigationDestination(isPresented: $viewModel.navigateToExamples) {
             ExampleWishesView()
         }
         .navigationDestination(isPresented: $viewModel.navigateToLibrary) {
             LibraryView()
+        }
+        .navigationDestination(for: CreateFlowRoute.self) { route in
+            switch route {
+            case .occasionSelection:
+                OccasionSelectionView()
+
+            case .form:
+                FormView()
+
+            case .wishes:
+                WishesView()
+
+            case .create:
+                CreateView()
+
+            case .voice:
+                VoiceView()
+
+            case .videoCard:
+                VoiceVideoPlaceholderView(kind: .videoCard)
+            }
         }
     }
 }

@@ -1,4 +1,3 @@
-import CreateFeature
 import DesignSystem
 import Domain
 import Localizations
@@ -6,6 +5,7 @@ import SwiftUI
 
 public struct WishesView: View {
     @State private var viewModel = WishesViewModel()
+    @Environment(\.createFlowPath) private var createFlowPath
 
     public init() {}
 
@@ -28,9 +28,6 @@ public struct WishesView: View {
         .wsBackButton()
         .onAppear {
             viewModel.didAppear()
-        }
-        .navigationDestination(isPresented: $viewModel.navigateToNextStep) {
-            CreateView()
         }
     }
 
@@ -96,7 +93,7 @@ public struct WishesView: View {
                         onCopy: { viewModel.didTapCopy(variant) },
                         onSave: { viewModel.didTapSave(variant) },
                         onRegenerate: { viewModel.didTapRegenerate(variant) },
-                        onUseThisWish: { viewModel.didTapUseThisWish(variant) }
+                        onUseThisWish: { viewModel.didTapUseThisWish(variant, path: createFlowPath) }
                     )
                 }
             }

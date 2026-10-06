@@ -2,11 +2,11 @@ import Dependencies
 import Domain
 import Foundation
 import Observation
+import SwiftUI
 
 @MainActor
 @Observable
 public final class StartViewModel {
-    var navigateToCreator = false
     var navigateToExamples = false
     var navigateToLibrary = false
 
@@ -16,9 +16,9 @@ public final class StartViewModel {
 
     public init() {}
 
-    func didTapCreateWish() {
+    func didTapCreateWish(path: Binding<NavigationPath>) {
         creationManager.startNewWish()
-        navigateToCreator = true
+        path.wrappedValue.append(CreateFlowRoute.occasionSelection)
     }
 
     func didTapHearExample() {

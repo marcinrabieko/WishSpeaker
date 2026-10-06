@@ -2,11 +2,11 @@ import DesignSystem
 import Domain
 import Localizations
 import SwiftUI
-import WishesFeature
 
 public struct FormView: View {
 	@State private var viewModel = FormViewModel()
 	@Environment(\.dismiss) private var dismiss
+	@Environment(\.createFlowPath) private var createFlowPath
 
 	@FocusState private var isRelationFocused: Bool
 	@FocusState private var isDetailsFocused: Bool
@@ -91,7 +91,7 @@ public struct FormView: View {
 				PrimaryButton(
 					title: L10n.formGenerateButton,
 					icon: "sparkles",
-					action: { viewModel.didTapGenerate() },
+					action: { viewModel.didTapGenerate(path: createFlowPath) },
 					isEnabled: viewModel.isGenerateEnabled
 				)
 				.padding(.top, 24)
@@ -103,9 +103,6 @@ public struct FormView: View {
 		.navigationTitle(L10n.formTitle)
 		.navigationBarTitleDisplayMode(.large)
 		.wsBackButton()
-		.navigationDestination(isPresented: $viewModel.navigateToWishes) {
-			WishesView()
-		}
 		.onAppear {
 			viewModel.didAppear()
 		}

@@ -1,6 +1,7 @@
 import Dependencies
 import Domain
 import Observation
+import SwiftUI
 import UIKit
 
 enum WishesLoadState {
@@ -19,7 +20,6 @@ public final class WishesViewModel {
     var regenerationErrorVariant: WishVariant?
     var copiedVariant: WishVariant?
     var savedVariants: Set<WishVariant> = []
-    var navigateToNextStep = false
 
     @ObservationIgnored
     @Dependency(\.wishCreationManager)
@@ -94,14 +94,14 @@ public final class WishesViewModel {
         savedVariants.insert(variant)
     }
 
-    func didTapUseThisWish(_ variant: WishVariant) {
+    func didTapUseThisWish(_ variant: WishVariant, path: Binding<NavigationPath>) {
         guard let text = wishes?.text(for: variant) else {
             return
         }
 
         creationManager.selectedVariant = variant
         creationManager.generatedText = text
-        navigateToNextStep = true
+        path.wrappedValue.append(CreateFlowRoute.create)
     }
 
     func didTapRegenerate(_ variant: WishVariant) {

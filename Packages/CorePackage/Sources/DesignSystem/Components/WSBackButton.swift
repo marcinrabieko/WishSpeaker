@@ -4,6 +4,7 @@ private struct WSBackButtonModifier: ViewModifier {
     @Environment(\.dismiss) private var dismiss
 
     let onDismiss: (() -> Void)?
+    let customAction: (() -> Void)?
 
     func body(content: Content) -> some View {
         content
@@ -11,8 +12,12 @@ private struct WSBackButtonModifier: ViewModifier {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
-                        onDismiss?()
-                        dismiss()
+                        if let customAction {
+                            customAction()
+                        } else {
+                            onDismiss?()
+                            dismiss()
+                        }
                     } label: {
                         Image(systemName: "chevron.left")
                             .font(.system(size: 17, weight: .semibold))
@@ -31,6 +36,14 @@ public extension View {
     /// - Parameter onDismiss: Optional cleanup run right before the view is popped (e.g. clearing
     ///   focus state). Not called when the user swipes back instead of tapping the button.
     func wsBackButton(onDismiss: (() -> Void)? = nil) -> some View {
-        modifier(WSBackButtonModifier(onDismiss: onDismiss))
+        modifier(WSBackButtonModifier(onDismiss: onDismiss, customAction: nil))
+    }
+
+    /// Replaces the system back button's tap action entirely (e.g. popping multiple
+    /// screens at once) instead of the default single-level `dismiss()`. The native
+    /// swipe-to-go-back gesture still only pops one level — this only affects the
+    /// button tap.
+    func wsBackButton(customAction: @escaping () -> Void) -> some View {
+        modifier(WSBackButtonModifier(onDismiss: nil, customAction: customAction))
     }
 }
