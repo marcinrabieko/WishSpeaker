@@ -41,7 +41,7 @@ public struct LibraryView: View {
         }
         .background(Color.wsBackground)
         .navigationTitle(L10n.libraryTitle)
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .wsBackButton()
         .onAppear {
             viewModel.didAppear()

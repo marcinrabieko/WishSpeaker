@@ -12,6 +12,7 @@ struct WishDetailPlaceholderView: View {
     @State private var viewModel: WishDetailViewModel
     @State private var isCopied = false
     @State private var isEditing = false
+    @State private var navigateToVoice = false
     @State private var presentedCreationKind: CreationKind?
 
     init(wish: Wish) {
@@ -43,10 +44,16 @@ struct WishDetailPlaceholderView: View {
         .navigationTitle(viewModel.wish.recipient)
         .navigationBarTitleDisplayMode(.large)
         .wsBackButton()
+        .onAppear {
+            viewModel.didAppear()
+        }
         .sheet(isPresented: $isEditing) {
             EditWishSheet(text: viewModel.wish.text) { newText in
                 viewModel.didSaveEditedText(newText)
             }
+        }
+        .navigationDestination(isPresented: $navigateToVoice) {
+            VoiceView()
         }
         .navigationDestination(item: $presentedCreationKind) { kind in
             VoiceVideoPlaceholderView(kind: kind)
@@ -141,7 +148,8 @@ struct WishDetailPlaceholderView: View {
                     title: L10n.wishDetailCreateVoiceButton,
                     subtitle: L10n.wishDetailCreateVoiceSubtitle
                 ) {
-                    presentedCreationKind = .voice
+                    viewModel.didTapCreateVoice()
+                    navigateToVoice = true
                 }
             }
 

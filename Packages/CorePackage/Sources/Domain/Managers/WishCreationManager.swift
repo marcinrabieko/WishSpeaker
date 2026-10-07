@@ -10,6 +10,11 @@ public final class WishCreationManager {
     public var selectedPackage: PremiumPackage?
     public var selectedOccasion: Occasion?
 
+    /// The occasion kind for the Wish being drafted. Kept separate from
+    /// `selectedOccasion` because `loadExistingWish` only knows a saved Wish's kind —
+    /// not the full `Occasion` (icon, subtitle) a fresh OccasionSelectionView pick has.
+    public var occasionKind: OccasionKind?
+
     /// Temporary, session-only generated candidates. Never persisted automatically —
     /// see WishLibraryManager for the explicit, user-initiated Save action.
     public var generatedWishes: WishGenerationResult?
@@ -36,6 +41,7 @@ public final class WishCreationManager {
         generatedText = ""
         selectedPackage = nil
         selectedOccasion = nil
+        occasionKind = nil
         generatedWishes = nil
         selectedVariant = nil
         selectedVoiceID = nil
@@ -43,10 +49,27 @@ public final class WishCreationManager {
         currentWishID = UUID()
     }
 
+    /// Loads an already-saved Wish's state into the draft, e.g. before navigating from
+    /// LibraryFeature's WishDetailPlaceholderView into VoiceView to add a voice to a
+    /// Wish that was saved text-only. Keeping `id` stable means a later save/generation
+    /// updates that same Library row instead of creating a duplicate.
+    public func loadExistingWish(_ wish: Wish) {
+        currentForm = WishForm(occasion: wish.occasionTitle, relation: wish.recipient, note: wish.context ?? "")
+        generatedText = wish.text
+        selectedPackage = wish.selectedPackage
+        selectedOccasion = nil
+        occasionKind = wish.occasionKind
+        generatedWishes = nil
+        selectedVariant = wish.variant
+        selectedVoiceID = nil
+        generatedVoiceAsset = wish.voiceAsset
+        currentWishID = wish.id
+    }
+
     public func finalizeWish() -> Wish {
         Wish(
             id: currentWishID,
-            occasionKind: selectedOccasion?.kind ?? .other,
+            occasionKind: selectedOccasion?.kind ?? occasionKind ?? .other,
             occasionTitle: selectedOccasion?.title ?? currentForm.occasion,
             recipient: currentForm.relation,
             context: currentForm.note.isEmpty ? nil : currentForm.note,

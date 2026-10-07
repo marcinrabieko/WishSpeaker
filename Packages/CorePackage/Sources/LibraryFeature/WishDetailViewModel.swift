@@ -12,8 +12,27 @@ final class WishDetailViewModel {
     @Dependency(\.wishLibraryManager)
     private var libraryManager: WishLibraryManager
 
+    @ObservationIgnored
+    @Dependency(\.wishCreationManager)
+    private var creationManager: WishCreationManager
+
     init(wish: Wish) {
         self.wish = wish
+    }
+
+    /// Re-reads this Wish from the Library — e.g. after returning from VoiceView, which
+    /// may have added a voiceAsset to this same Wish via WishCreationManager.
+    func didAppear() {
+        if let refreshed = libraryManager.savedWishes.first(where: { $0.id == wish.id }) {
+            wish = refreshed
+        }
+    }
+
+    /// Loads this Wish into the shared creation draft before navigating into VoiceView,
+    /// so a voice generated there updates this same Library row instead of creating a
+    /// new one.
+    func didTapCreateVoice() {
+        creationManager.loadExistingWish(wish)
     }
 
     /// Replaces the saved text in place — same Wish id, so the Library keeps one row

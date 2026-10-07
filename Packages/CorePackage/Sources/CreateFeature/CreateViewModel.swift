@@ -94,7 +94,7 @@ public final class CreateViewModel {
         let form = creationManager.currentForm
         let wish = Wish(
             id: creationManager.currentWishID,
-            occasionKind: creationManager.selectedOccasion?.kind ?? .other,
+            occasionKind: creationManager.selectedOccasion?.kind ?? creationManager.occasionKind ?? .other,
             occasionTitle: creationManager.selectedOccasion?.title ?? form.occasion,
             recipient: form.relation,
             context: form.note.isEmpty ? nil : form.note,
