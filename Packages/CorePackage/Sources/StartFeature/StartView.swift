@@ -113,7 +113,7 @@ public struct StartView: View {
                 VoiceView()
 
             case .videoCard:
-                VoiceVideoPlaceholderView(kind: .videoCard)
+                VideoView()
             }
         }
     }

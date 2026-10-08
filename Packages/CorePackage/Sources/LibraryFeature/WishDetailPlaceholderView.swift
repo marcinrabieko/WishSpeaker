@@ -1,3 +1,4 @@
+import AVKit
 import CreateFeature
 import DesignSystem
 import Domain
@@ -13,7 +14,12 @@ struct WishDetailPlaceholderView: View {
     @State private var isCopied = false
     @State private var isEditing = false
     @State private var navigateToVoice = false
-    @State private var presentedCreationKind: CreationKind?
+    @State private var navigateToVideo = false
+
+    // Held in @State rather than created inline — see CreateView's own videoPlayer
+    // property for why recreating AVPlayer(url:) on every body re-render produces a
+    // black frame with audio still playing.
+    @State private var videoPlayer: AVPlayer?
 
     init(wish: Wish) {
         _viewModel = State(initialValue: WishDetailViewModel(wish: wish))
@@ -47,6 +53,12 @@ struct WishDetailPlaceholderView: View {
         .onAppear {
             viewModel.didAppear()
         }
+        .onChange(of: viewModel.wish.videoAsset?.id) { _, _ in
+            updateVideoPlayerIfNeeded()
+        }
+        .task {
+            updateVideoPlayerIfNeeded()
+        }
         .sheet(isPresented: $isEditing) {
             EditWishSheet(text: viewModel.wish.text) { newText in
                 viewModel.didSaveEditedText(newText)
@@ -55,9 +67,21 @@ struct WishDetailPlaceholderView: View {
         .navigationDestination(isPresented: $navigateToVoice) {
             VoiceView()
         }
-        .navigationDestination(item: $presentedCreationKind) { kind in
-            VoiceVideoPlaceholderView(kind: kind)
+        .navigationDestination(isPresented: $navigateToVideo) {
+            VideoView()
         }
+    }
+
+    /// Creates the player once per video asset (identified by the asset's own id, not
+    /// just "is there a video") — covers both the initial appearance and returning from
+    /// VideoView having just added a video to a Wish that didn't have one before.
+    private func updateVideoPlayerIfNeeded() {
+        guard let videoURL = viewModel.wish.videoAsset?.videoURL else {
+            videoPlayer = nil
+            return
+        }
+
+        videoPlayer = AVPlayer(url: videoURL)
     }
 
     private var metadata: some View {
@@ -74,8 +98,14 @@ struct WishDetailPlaceholderView: View {
 
     @ViewBuilder
     private var mediaSection: some View {
-        if let videoAsset = viewModel.wish.videoAsset {
-            LibraryVideoThumbnail(videoAsset: videoAsset, height: 220, playIconSize: 56)
+        if viewModel.wish.videoAsset != nil {
+            VideoPlayer(player: videoPlayer)
+                .aspectRatio(1, contentMode: .fit)
+                .clipShape(RoundedRectangle(cornerRadius: WSRadius.card, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: WSRadius.card, style: .continuous)
+                        .stroke(Color.wsSoftBorder, lineWidth: 1)
+                )
         } else if let voiceAsset = viewModel.wish.voiceAsset {
             VStack(alignment: .leading, spacing: WSSpacing.xs) {
                 Text(L10n.wishDetailVoiceSectionTitle)
@@ -158,7 +188,8 @@ struct WishDetailPlaceholderView: View {
                 title: L10n.wishDetailCreateVideoButton,
                 subtitle: L10n.wishDetailCreateVideoSubtitle
             ) {
-                presentedCreationKind = .videoCard
+                viewModel.didTapCreateVideo()
+                navigateToVideo = true
             }
         }
         .padding(.top, WSSpacing.sm)

@@ -96,6 +96,7 @@
 
 /* Create View */
 "create_view_title" = "Create";
+"create_view_finished_title" = "Your Card";
 "create_view_edit_button" = "Edit";
 "create_view_edit_done_button" = "Done";
 "create_view_make_it_special_title" = "Make it special";
@@ -118,6 +119,11 @@
 "voice_view_load_error" = "We couldn't load this voice. Please try again.";
 "voice_view_retry_button" = "Retry";
 "voice_view_generation_error" = "We couldn't generate the voice. Please try again.";
+
+/* Video Card */
+"video_view_title" = "Video Card";
+"video_view_generate_button" = "Generate Video";
+"video_view_generation_error" = "We couldn't generate the video. Please try again.";
 
 /* Package Selection */
 "package_selection_title" = "Select a Package";
@@ -156,6 +162,7 @@
 "wish_detail_copied_confirmation" = "Copied";
 "wish_detail_edit_button" = "Edit";
 "wish_detail_voice_section_title" = "Voice";
+"wish_detail_video_section_title" = "Video";
 "wish_detail_create_something_special_title" = "Create something special";
 "wish_detail_create_voice_button" = "Create Voice";
 "wish_detail_create_voice_subtitle" = "Bring your wish to life";

@@ -3,15 +3,9 @@ import Domain
 import Localizations
 import Observation
 
-enum VoiceRowState {
-    case loading
-    case loaded(VoiceOption)
-    case failed(providerVoiceID: String)
-}
-
 @MainActor
 @Observable
-public final class VoiceViewModel {
+public final class VideoViewModel {
     var occasionTitle = ""
     var variantDisplayName = ""
     var wishText = ""
@@ -33,8 +27,8 @@ public final class VoiceViewModel {
     private var voiceMetadataService: any VoiceMetadataService
 
     @ObservationIgnored
-    @Dependency(\.voiceGenerationService)
-    private var voiceGenerationService: any VoiceGenerationService
+    @Dependency(\.videoGenerationService)
+    private var videoGenerationService: any VideoGenerationService
 
     public init() {}
 
@@ -79,20 +73,22 @@ public final class VoiceViewModel {
 
         Task {
             do {
-                let voiceAsset = try await voiceGenerationService.generateVoice(
-                    for: VoiceGenerationRequest(
+                let videoAsset = try await videoGenerationService.generateVideo(
+                    for: VideoGenerationRequest(
                         text: wishText,
                         voiceGender: selectedVoice.gender,
-                        providerVoiceID: selectedVoice.providerVoiceID
+                        providerVoiceID: selectedVoice.providerVoiceID,
+                        greeting: creationManager.generatedGreeting,
+                        occasionKind: creationManager.selectedOccasion?.kind ?? creationManager.occasionKind
                     )
                 )
 
-                creationManager.generatedVoiceAsset = voiceAsset
+                creationManager.generatedVideoAsset = videoAsset
                 isGenerating = false
                 navigateBackAfterGeneration = true
             } catch {
                 isGenerating = false
-                generationError = L10n.voiceViewGenerationError
+                generationError = L10n.videoViewGenerationError
             }
         }
     }
@@ -128,14 +124,5 @@ public final class VoiceViewModel {
         }
 
         didSelectVoice(firstVoice)
-    }
-}
-
-extension VoiceRowState {
-    var isLoading: Bool {
-        if case .loading = self {
-            return true
-        }
-        return false
     }
 }

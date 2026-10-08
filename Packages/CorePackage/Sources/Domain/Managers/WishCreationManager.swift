@@ -20,6 +20,12 @@ public final class WishCreationManager {
     public var generatedWishes: WishGenerationResult?
     public var selectedVariant: WishVariant?
 
+    /// The greeting line from the most recent /api/generateWishes response (e.g.
+    /// "Kochana Kasiu,"), carried forward into Video generation as a static headline.
+    /// Separate from `generatedWishes.greeting` because a Wish loaded from the Library
+    /// (loadExistingWish) has no fresh generation result to read it from.
+    public var generatedGreeting: String?
+
     /// The ElevenLabs provider voice ID chosen on the Voice screen, carried forward
     /// into Voice generation. The user always controls this — never inferred from
     /// occasion, recipient, relationship, or Wish variant.
@@ -28,6 +34,10 @@ public final class WishCreationManager {
     /// Result of the most recent successful Voice generation, carried into
     /// finalizeWish()/saveDraft() so the audio survives navigating back from VoiceView.
     public var generatedVoiceAsset: VoiceAsset?
+
+    /// Result of the most recent successful Video generation, carried into
+    /// finalizeWish()/saveDraft() so the video survives navigating back from VideoView.
+    public var generatedVideoAsset: VideoAsset?
 
     /// Identity of the Wish this session may save to the Library. Kept stable across
     /// Save/Regenerate/finalize so a later voice/video asset lands on the same Library
@@ -43,9 +53,11 @@ public final class WishCreationManager {
         selectedOccasion = nil
         occasionKind = nil
         generatedWishes = nil
+        generatedGreeting = nil
         selectedVariant = nil
         selectedVoiceID = nil
         generatedVoiceAsset = nil
+        generatedVideoAsset = nil
         currentWishID = UUID()
     }
 
@@ -60,9 +72,11 @@ public final class WishCreationManager {
         selectedOccasion = nil
         occasionKind = wish.occasionKind
         generatedWishes = nil
+        generatedGreeting = wish.greeting
         selectedVariant = wish.variant
         selectedVoiceID = nil
         generatedVoiceAsset = wish.voiceAsset
+        generatedVideoAsset = wish.videoAsset
         currentWishID = wish.id
     }
 
@@ -75,8 +89,10 @@ public final class WishCreationManager {
             context: currentForm.note.isEmpty ? nil : currentForm.note,
             variant: selectedVariant ?? .natural,
             text: generatedText,
+            greeting: generatedGreeting,
             selectedPackage: selectedPackage,
-            voiceAsset: generatedVoiceAsset
+            voiceAsset: generatedVoiceAsset,
+            videoAsset: generatedVideoAsset
         )
     }
 }

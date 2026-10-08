@@ -4,8 +4,8 @@ import Localizations
 import SharedFeatureComponents
 import SwiftUI
 
-public struct VoiceView: View {
-    @State private var viewModel = VoiceViewModel()
+public struct VideoView: View {
+    @State private var viewModel = VideoViewModel()
     @Environment(\.dismiss) private var dismiss
 
     public init() {}
@@ -30,7 +30,7 @@ public struct VoiceView: View {
                 .background(Color.wsBackground)
         }
         .background(Color.wsBackground)
-        .navigationTitle(L10n.voiceViewTitle)
+        .navigationTitle(L10n.videoViewTitle)
         .navigationBarTitleDisplayMode(.large)
         .wsBackButton()
         .onAppear {
@@ -108,7 +108,7 @@ public struct VoiceView: View {
 
     private var generateButton: some View {
         PrimaryButton(
-            title: viewModel.isGenerating ? "" : L10n.voiceViewGenerateButton,
+            title: viewModel.isGenerating ? "" : L10n.videoViewGenerateButton,
             action: { viewModel.didTapGenerate() },
             isEnabled: viewModel.isGenerateEnabled
         )

@@ -28,6 +28,7 @@ public struct MockWishGenerationService: WishGenerationService {
         try await Task.sleep(nanoseconds: 900_000_000)
 
         return WishGenerationResult(
+            greeting: "Kochana \(request.form.relation),",
             warm: MockWishGenerator.shared.generateWish(request: request, variant: .warm, avoiding: nil),
             natural: MockWishGenerator.shared.generateWish(request: request, variant: .natural, avoiding: nil),
             light: MockWishGenerator.shared.generateWish(request: request, variant: .light, avoiding: nil)
@@ -62,7 +63,12 @@ public struct LiveWishGenerationService: WishGenerationService {
 
         let response: WishVariantsDTO = try await apiClient.post("/api/generateWishes", body: dto)
 
-        return WishGenerationResult(warm: response.warm, natural: response.natural, light: response.light)
+        return WishGenerationResult(
+            greeting: response.greeting,
+            warm: response.warm,
+            natural: response.natural,
+            light: response.light
+        )
     }
 
     public func regenerateWish(

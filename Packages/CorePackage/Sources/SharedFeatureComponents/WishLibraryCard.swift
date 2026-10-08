@@ -3,6 +3,7 @@ import DesignSystem
 import Domain
 import Localizations
 import SwiftUI
+import UIKit
 
 /// Adapts its presentation to whichever assets the Wish currently has, using the
 /// priority Video > Voice > Text — a Wish can evolve from text-only to text+voice to
@@ -227,9 +228,17 @@ public struct LibraryVideoThumbnail: View {
 
     public var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: WSRadius.button, style: .continuous)
-                .fill(Color.wsSecondaryBackground)
-                .frame(height: height)
+            if let thumbnailURL = videoAsset.thumbnailURL, let thumbnailImage = UIImage(contentsOfFile: thumbnailURL.path) {
+                Image(uiImage: thumbnailImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(height: height)
+                    .clipped()
+            } else {
+                RoundedRectangle(cornerRadius: WSRadius.button, style: .continuous)
+                    .fill(Color.wsSecondaryBackground)
+                    .frame(height: height)
+            }
 
             Image(systemName: "play.circle.fill")
                 .font(.system(size: playIconSize))

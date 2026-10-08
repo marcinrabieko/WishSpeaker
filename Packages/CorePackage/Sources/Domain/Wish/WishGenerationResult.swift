@@ -1,11 +1,13 @@
 import Foundation
 
 public struct WishGenerationResult: Sendable {
+    public var greeting: String
     public var warm: String
     public var natural: String
     public var light: String
 
-    public init(warm: String, natural: String, light: String) {
+    public init(greeting: String, warm: String, natural: String, light: String) {
+        self.greeting = greeting
         self.warm = warm
         self.natural = natural
         self.light = light

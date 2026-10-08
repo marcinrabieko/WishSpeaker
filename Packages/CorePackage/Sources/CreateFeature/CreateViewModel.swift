@@ -1,5 +1,6 @@
 import Dependencies
 import Domain
+import Localizations
 import Observation
 import SwiftUI
 
@@ -10,6 +11,7 @@ public final class CreateViewModel {
     var draftText = ""
     var isSaved = false
     var voiceAsset: VoiceAsset?
+    var videoAsset: VideoAsset?
     var isShowingFullText = false
 
     @ObservationIgnored
@@ -26,6 +28,13 @@ public final class CreateViewModel {
         creationManager.selectedOccasion?.title ?? creationManager.currentForm.occasion
     }
 
+    /// "Create" only describes this screen before anything has been generated yet —
+    /// once a voice/video exists, the screen is presenting a finished result, not a
+    /// creation step.
+    var navigationTitle: String {
+        voiceAsset != nil || videoAsset != nil ? L10n.createViewFinishedTitle : L10n.createViewTitle
+    }
+
     var variant: WishVariant {
         creationManager.selectedVariant ?? .natural
     }
@@ -33,15 +42,19 @@ public final class CreateViewModel {
     func didAppear() {
         draftText = creationManager.generatedText
         voiceAsset = creationManager.generatedVoiceAsset
+        videoAsset = creationManager.generatedVideoAsset
 
         let savedWish = libraryManager.savedWishes.first { $0.id == creationManager.currentWishID }
         isSaved = savedWish != nil
 
-        // Generated voice/video is never left unsaved, and a voice recorded after an
-        // earlier text-only save must update that same Library row — otherwise a user
-        // who saved the text first, then generated a voice, ends up with the voice
-        // silently missing from the already-saved Wish.
-        if voiceAsset != nil, savedWish?.voiceAsset?.id != voiceAsset?.id {
+        // Generated voice/video is never left unsaved, and a voice/video generated
+        // after an earlier text-only save must update that same Library row —
+        // otherwise a user who saved the text first, then generated a voice/video,
+        // ends up with it silently missing from the already-saved Wish.
+        let voiceChanged = voiceAsset != nil && savedWish?.voiceAsset?.id != voiceAsset?.id
+        let videoChanged = videoAsset != nil && savedWish?.videoAsset?.id != videoAsset?.id
+
+        if voiceChanged || videoChanged {
             saveDraft()
             isSaved = true
         }
@@ -83,7 +96,7 @@ public final class CreateViewModel {
     /// flow — Back returns all the way to Start instead of walking back through
     /// Occasion/Form/Wishes, which would just re-show already-submitted choices.
     func didTapBack(path: Binding<NavigationPath>) {
-        if voiceAsset != nil {
+        if voiceAsset != nil || videoAsset != nil {
             path.wrappedValue.removeLast(path.wrappedValue.count)
         } else {
             path.wrappedValue.removeLast()
@@ -100,7 +113,9 @@ public final class CreateViewModel {
             context: form.note.isEmpty ? nil : form.note,
             variant: variant,
             text: draftText,
-            voiceAsset: voiceAsset
+            greeting: creationManager.generatedGreeting,
+            voiceAsset: voiceAsset,
+            videoAsset: videoAsset
         )
 
         libraryManager.save(wish)

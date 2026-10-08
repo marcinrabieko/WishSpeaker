@@ -96,6 +96,7 @@
 
 /* Create View */
 "create_view_title" = "Utwórz";
+"create_view_finished_title" = "Twoja kartka";
 "create_view_edit_button" = "Edytuj";
 "create_view_edit_done_button" = "Gotowe";
 "create_view_make_it_special_title" = "Stwórz coś wyjątkowego";
@@ -118,6 +119,11 @@
 "voice_view_load_error" = "Nie udało się wczytać tego głosu. Spróbuj ponownie.";
 "voice_view_retry_button" = "Spróbuj ponownie";
 "voice_view_generation_error" = "Nie udało się wygenerować głosu. Spróbuj ponownie.";
+
+/* Video Card */
+"video_view_title" = "Kartka wideo";
+"video_view_generate_button" = "Wygeneruj wideo";
+"video_view_generation_error" = "Nie udało się wygenerować wideo. Spróbuj ponownie.";
 
 /* Package Selection */
 "package_selection_title" = "Wybierz pakiet";
@@ -156,6 +162,7 @@
 "wish_detail_copied_confirmation" = "Skopiowano";
 "wish_detail_edit_button" = "Edytuj";
 "wish_detail_voice_section_title" = "Głos";
+"wish_detail_video_section_title" = "Wideo";
 "wish_detail_create_something_special_title" = "Stwórz coś wyjątkowego";
 "wish_detail_create_voice_button" = "Stwórz głos";
 "wish_detail_create_voice_subtitle" = "Ożyw swoje życzenia";

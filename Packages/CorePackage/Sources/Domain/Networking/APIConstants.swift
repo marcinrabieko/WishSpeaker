@@ -8,5 +8,5 @@ enum APIConstants {
     /// (it shares the host's network) but not from a physical device — a real iPhone
     /// needs the Mac's LAN IP instead, and both devices must be on the same Wi-Fi.
     /// Find it with `ipconfig getifaddr en0` while connected to Wi-Fi.
-    static let baseURL = URL(string: "http://192.168.1.14:8000")!
+    static let baseURL = URL(string: "http://localhost:8000")!
 }

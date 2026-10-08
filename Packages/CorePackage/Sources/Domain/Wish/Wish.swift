@@ -8,6 +8,7 @@ public struct Wish: Identifiable, Hashable, Sendable {
     public let context: String?
     public let variant: WishVariant
     public let text: String
+    public let greeting: String?
     public let language: String
     public let createdAt: Date
     public let updatedAt: Date
@@ -23,6 +24,7 @@ public struct Wish: Identifiable, Hashable, Sendable {
         context: String? = nil,
         variant: WishVariant,
         text: String,
+        greeting: String? = nil,
         language: String = "en",
         createdAt: Date = Date(),
         updatedAt: Date = Date(),
@@ -37,6 +39,7 @@ public struct Wish: Identifiable, Hashable, Sendable {
         self.context = context
         self.variant = variant
         self.text = text
+        self.greeting = greeting
         self.language = language
         self.createdAt = createdAt
         self.updatedAt = updatedAt

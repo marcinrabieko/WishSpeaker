@@ -6,14 +6,14 @@ import SwiftUI
     }
 }
 
-#Preview("Voice placeholder") {
+#Preview("Voice") {
     NavigationStack {
-        VoiceVideoPlaceholderView(kind: .voice)
+        VoiceView()
     }
 }
 
-#Preview("Video Card placeholder") {
+#Preview("Video Card") {
     NavigationStack {
-        VoiceVideoPlaceholderView(kind: .videoCard)
+        VideoView()
     }
 }

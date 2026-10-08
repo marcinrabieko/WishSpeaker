@@ -35,6 +35,13 @@ final class WishDetailViewModel {
         creationManager.loadExistingWish(wish)
     }
 
+    /// Loads this Wish into the shared creation draft before navigating into VideoView,
+    /// so a video generated there updates this same Library row instead of creating a
+    /// new one.
+    func didTapCreateVideo() {
+        creationManager.loadExistingWish(wish)
+    }
+
     /// Replaces the saved text in place — same Wish id, so the Library keeps one row
     /// for this Wish rather than gaining a duplicate entry.
     func didSaveEditedText(_ text: String) {
@@ -46,6 +53,7 @@ final class WishDetailViewModel {
             context: wish.context,
             variant: wish.variant,
             text: text,
+            greeting: wish.greeting,
             language: wish.language,
             createdAt: wish.createdAt,
             updatedAt: Date(),
