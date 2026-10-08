@@ -22,8 +22,6 @@ let package = Package(
         .library(name: "FormFeature", targets: ["FormFeature"]),
         .library(name: "WishesFeature", targets: ["WishesFeature"]),
         .library(name: "CreateFeature", targets: ["CreateFeature"]),
-        .library(name: "PackageSelectionFeature", targets: ["PackageSelectionFeature"]),
-        .library(name: "FinalWishFeature", targets: ["FinalWishFeature"]),
         .library(name: "LibraryFeature", targets: ["LibraryFeature"]),
         .library(name: "ExampleWishesFeature", targets: ["ExampleWishesFeature"])
     ],
@@ -140,35 +138,12 @@ let package = Package(
             plugins: [swiftLintPlugin]
         ),
         .target(
-            name: "PackageSelectionFeature",
-            dependencies: [
-                "Domain",
-                "DesignSystem",
-                "Localizations",
-                "FinalWishFeature",
-                dependenciesProduct
-            ],
-            plugins: [swiftLintPlugin]
-        ),
-        .target(
-            name: "FinalWishFeature",
-            dependencies: [
-                "Domain",
-                "DesignSystem",
-                "Localizations",
-                "SharedFeatureComponents",
-                dependenciesProduct
-            ],
-            plugins: [swiftLintPlugin]
-        ),
-        .target(
             name: "LibraryFeature",
             dependencies: [
                 "Domain",
                 "DesignSystem",
                 "Localizations",
                 "SharedFeatureComponents",
-                "FinalWishFeature",
                 "CreateFeature",
                 dependenciesProduct
             ],
