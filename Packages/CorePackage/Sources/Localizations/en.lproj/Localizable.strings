@@ -171,6 +171,8 @@
 "wish_detail_edit_sheet_title" = "Edit Wish";
 "wish_detail_edit_save_button" = "Save";
 "wish_detail_edit_cancel_button" = "Cancel";
+"wish_detail_share_button" = "Share";
+"wish_detail_media_unavailable" = "This file is unavailable";
 
 /* Example Wishes */
 "example_wishes_title" = "Example Wishes";

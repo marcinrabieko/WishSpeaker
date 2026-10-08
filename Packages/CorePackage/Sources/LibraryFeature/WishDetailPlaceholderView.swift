@@ -50,6 +50,11 @@ struct WishDetailPlaceholderView: View {
         .navigationTitle(viewModel.wish.recipient)
         .navigationBarTitleDisplayMode(.large)
         .wsBackButton()
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                shareButton
+            }
+        }
         .onAppear {
             viewModel.didAppear()
         }
@@ -84,6 +89,30 @@ struct WishDetailPlaceholderView: View {
         videoPlayer = AVPlayer(url: videoURL)
     }
 
+    /// Three distinct ShareLinks rather than one generic one — ShareLink's `item`
+    /// closure is tied to a single Transferable type per call, and video/audio file
+    /// URLs vs. plain wish text aren't unifiable without losing the "share the actual
+    /// local file, never regenerate/re-encode/upload" behavior for media. Renders
+    /// nothing when the referenced media file doesn't exist on disk — the "file
+    /// unavailable" state is already communicated via the overlay in `mediaSection`,
+    /// so a disabled/erroring toolbar button would just repeat that message.
+    @ViewBuilder
+    private var shareButton: some View {
+        if let videoURL = viewModel.wish.videoAsset?.videoURL {
+            ShareLink(item: videoURL) {
+                Label(L10n.wishDetailShareButton, systemImage: "square.and.arrow.up")
+            }
+        } else if let audioURL = viewModel.wish.voiceAsset?.audioURL {
+            ShareLink(item: audioURL) {
+                Label(L10n.wishDetailShareButton, systemImage: "square.and.arrow.up")
+            }
+        } else if viewModel.wish.videoAsset == nil && viewModel.wish.voiceAsset == nil {
+            ShareLink(item: viewModel.wish.text) {
+                Label(L10n.wishDetailShareButton, systemImage: "square.and.arrow.up")
+            }
+        }
+    }
+
     private var metadata: some View {
         Text(
             WishMetadataText.format(
@@ -98,7 +127,7 @@ struct WishDetailPlaceholderView: View {
 
     @ViewBuilder
     private var mediaSection: some View {
-        if viewModel.wish.videoAsset != nil {
+        if let videoAsset = viewModel.wish.videoAsset {
             VideoPlayer(player: videoPlayer)
                 .aspectRatio(1, contentMode: .fit)
                 .clipShape(RoundedRectangle(cornerRadius: WSRadius.card, style: .continuous))
@@ -106,6 +135,11 @@ struct WishDetailPlaceholderView: View {
                     RoundedRectangle(cornerRadius: WSRadius.card, style: .continuous)
                         .stroke(Color.wsSoftBorder, lineWidth: 1)
                 )
+                .overlay {
+                    if videoAsset.videoURL == nil {
+                        mediaUnavailableOverlay
+                    }
+                }
         } else if let voiceAsset = viewModel.wish.voiceAsset {
             VStack(alignment: .leading, spacing: WSSpacing.xs) {
                 Text(L10n.wishDetailVoiceSectionTitle)
@@ -131,6 +165,17 @@ struct WishDetailPlaceholderView: View {
                     .clipShape(RoundedRectangle(cornerRadius: WSRadius.card, style: .continuous))
             }
         }
+    }
+
+    private var mediaUnavailableOverlay: some View {
+        ZStack {
+            Color.black.opacity(0.6)
+
+            Label(L10n.wishDetailMediaUnavailable, systemImage: "exclamationmark.triangle.fill")
+                .font(.system(size: 14, weight: .medium))
+                .foregroundColor(.white)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: WSRadius.card, style: .continuous))
     }
 
     private var textActions: some View {
