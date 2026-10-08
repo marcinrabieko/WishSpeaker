@@ -9,7 +9,6 @@ public final class VideoViewModel {
     var occasionTitle = ""
     var variantDisplayName = ""
     var wishText = ""
-    var isShowingText = false
 
     var voiceRows: [VoiceRowState] = [.loading, .loading]
     var selectedVoice: VoiceOption?
@@ -21,6 +20,10 @@ public final class VideoViewModel {
     @ObservationIgnored
     @Dependency(\.wishCreationManager)
     private var creationManager: WishCreationManager
+
+    @ObservationIgnored
+    @Dependency(\.wishLibraryManager)
+    private var libraryManager: WishLibraryManager
 
     @ObservationIgnored
     @Dependency(\.voiceMetadataService)
@@ -48,10 +51,6 @@ public final class VideoViewModel {
         Task {
             await loadVoices()
         }
-    }
-
-    func didTapShowText() {
-        isShowingText.toggle()
     }
 
     func didSelectVoice(_ voice: VoiceOption) {
@@ -84,6 +83,7 @@ public final class VideoViewModel {
                 )
 
                 creationManager.generatedVideoAsset = videoAsset
+                saveToLibrary(videoAsset: videoAsset)
                 isGenerating = false
                 navigateBackAfterGeneration = true
             } catch {
@@ -91,6 +91,30 @@ public final class VideoViewModel {
                 generationError = L10n.videoViewGenerationError
             }
         }
+    }
+
+    /// Persists the video directly to the Library — this screen is reached both via
+    /// CreateView (which separately saves on its own didAppear) and directly from
+    /// WishDetailPlaceholderView's "Create Video Card" action, which never visits
+    /// CreateView at all. Saving here unconditionally covers both paths; `save(_:)`
+    /// updates the existing Library row in place when `currentWishID` already exists,
+    /// so this never creates a duplicate for the CreateView path.
+    private func saveToLibrary(videoAsset: VideoAsset) {
+        let form = creationManager.currentForm
+        let wish = Wish(
+            id: creationManager.currentWishID,
+            occasionKind: creationManager.selectedOccasion?.kind ?? creationManager.occasionKind ?? .other,
+            occasionTitle: creationManager.selectedOccasion?.title ?? form.occasion,
+            recipient: form.relation,
+            context: form.note.isEmpty ? nil : form.note,
+            variant: creationManager.selectedVariant ?? .natural,
+            text: wishText,
+            greeting: creationManager.generatedGreeting,
+            voiceAsset: creationManager.generatedVoiceAsset,
+            videoAsset: videoAsset
+        )
+
+        libraryManager.save(wish)
     }
 
     private func loadVoices() async {

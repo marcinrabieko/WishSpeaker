@@ -29,6 +29,10 @@ public final class VoiceViewModel {
     private var creationManager: WishCreationManager
 
     @ObservationIgnored
+    @Dependency(\.wishLibraryManager)
+    private var libraryManager: WishLibraryManager
+
+    @ObservationIgnored
     @Dependency(\.voiceMetadataService)
     private var voiceMetadataService: any VoiceMetadataService
 
@@ -88,6 +92,7 @@ public final class VoiceViewModel {
                 )
 
                 creationManager.generatedVoiceAsset = voiceAsset
+                saveToLibrary(voiceAsset: voiceAsset)
                 isGenerating = false
                 navigateBackAfterGeneration = true
             } catch {
@@ -95,6 +100,30 @@ public final class VoiceViewModel {
                 generationError = L10n.voiceViewGenerationError
             }
         }
+    }
+
+    /// Persists the voice directly to the Library — this screen is reached both via
+    /// CreateView (which separately saves on its own didAppear) and directly from
+    /// WishDetailPlaceholderView's "Create Voice" action, which never visits CreateView
+    /// at all. Saving here unconditionally covers both paths; `save(_:)` updates the
+    /// existing Library row in place when `currentWishID` already exists, so this never
+    /// creates a duplicate for the CreateView path.
+    private func saveToLibrary(voiceAsset: VoiceAsset) {
+        let form = creationManager.currentForm
+        let wish = Wish(
+            id: creationManager.currentWishID,
+            occasionKind: creationManager.selectedOccasion?.kind ?? creationManager.occasionKind ?? .other,
+            occasionTitle: creationManager.selectedOccasion?.title ?? form.occasion,
+            recipient: form.relation,
+            context: form.note.isEmpty ? nil : form.note,
+            variant: creationManager.selectedVariant ?? .natural,
+            text: wishText,
+            greeting: creationManager.generatedGreeting,
+            voiceAsset: voiceAsset,
+            videoAsset: creationManager.generatedVideoAsset
+        )
+
+        libraryManager.save(wish)
     }
 
     private func loadVoices() async {
