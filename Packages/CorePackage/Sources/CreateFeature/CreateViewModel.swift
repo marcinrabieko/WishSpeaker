@@ -12,7 +12,6 @@ public final class CreateViewModel {
     var isSaved = false
     var voiceAsset: VoiceAsset?
     var videoAsset: VideoAsset?
-    var isShowingFullText = false
 
     @ObservationIgnored
     @Dependency(\.wishCreationManager)
@@ -62,10 +61,6 @@ public final class CreateViewModel {
 
     func didTapEdit() {
         isEditing = true
-    }
-
-    func didTapShowFullText() {
-        isShowingFullText.toggle()
     }
 
     func didTapDoneEditing() {

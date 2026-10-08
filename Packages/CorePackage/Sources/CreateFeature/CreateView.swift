@@ -78,22 +78,10 @@ public struct CreateView: View {
     /// Once a voice is generated, the text that produced it must stay fixed — editing
     /// it here would silently desync the written text from the recorded audio.
     private var readOnlyWishText: some View {
-        VStack(alignment: .leading, spacing: WSSpacing.xs) {
-            Text(viewModel.draftText)
-                .font(.system(size: 16))
-                .foregroundStyle(Color.wsPrimaryText)
-                .lineSpacing(5)
-                .lineLimit(viewModel.isShowingFullText ? nil : 2)
-
-            Button {
-                viewModel.didTapShowFullText()
-            } label: {
-                Text(viewModel.isShowingFullText ? L10n.voiceViewHideTextButton : L10n.voiceViewShowTextButton)
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(Color.wsPrimary)
-            }
-            .buttonStyle(.plain)
-        }
+        Text(viewModel.draftText)
+            .font(.system(size: 16))
+            .foregroundStyle(Color.wsPrimaryText)
+            .lineSpacing(5)
     }
 
     private var editableWishText: some View {
