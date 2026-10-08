@@ -18,7 +18,6 @@ public final class WishLibraryManager {
     public init() {
         modelContainer = WishLibraryManager.makeModelContainer()
         fetchSavedWishes()
-        seedSampleWishesIfNeeded()
     }
 
     public func save(_ wish: Wish) {
@@ -87,19 +86,6 @@ public final class WishLibraryManager {
     private static func makeModelContainer() -> ModelContainer {
         // swiftlint:disable:next force_try
         try! ModelContainer(for: WishModel.self)
-    }
-
-    /// Hardcoded on-device seed data, on by hand — three starter wishes (text, voice,
-    /// video) so the Library isn't empty on first launch. Only runs once: skipped the
-    /// moment the user has any wish of their own saved.
-    private func seedSampleWishesIfNeeded() {
-        guard savedWishes.isEmpty else {
-            return
-        }
-
-        for wish in LibraryPreviewData.all {
-            save(wish)
-        }
     }
 }
 

@@ -21,21 +21,6 @@ public protocol VoiceGenerationService: Sendable {
     func generateVoice(for request: VoiceGenerationRequest) async throws -> VoiceAsset
 }
 
-public struct MockVoiceGenerationService: VoiceGenerationService {
-    public init() {}
-
-    public func generateVoice(for request: VoiceGenerationRequest) async throws -> VoiceAsset {
-        try await Task.sleep(nanoseconds: 1_200_000_000)
-
-        return VoiceAsset(
-            audioFileReference: "mock_voice.m4a",
-            voiceIdentifier: request.voiceGender == .male ? "warm_male_01" : "warm_female_01",
-            voiceDisplayName: request.voiceGender == .male ? "James" : "Sofia",
-            duration: 24.0
-        )
-    }
-}
-
 public struct LiveVoiceGenerationService: VoiceGenerationService {
     private let apiClient: APIClient
 

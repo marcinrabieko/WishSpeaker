@@ -12,29 +12,6 @@ public protocol VoiceMetadataService: Sendable {
     func fetchCuratedVoices() async -> [VoiceOption]
 }
 
-public struct MockVoiceMetadataService: VoiceMetadataService {
-    public init() {}
-
-    public func fetchCuratedVoices() async -> [VoiceOption] {
-        [
-            VoiceOption(
-                providerVoiceID: VoiceCatalog.maleVoiceID,
-                displayName: "Alex",
-                gender: .male,
-                description: "Friendly, warm narration voice.",
-                previewURL: nil
-            ),
-            VoiceOption(
-                providerVoiceID: VoiceCatalog.femaleVoiceID,
-                displayName: "Jessica",
-                gender: .female,
-                description: "Warm, professional voice.",
-                previewURL: nil
-            )
-        ]
-    }
-}
-
 public struct LiveVoiceMetadataService: VoiceMetadataService {
     private let apiClient: APIClient
 

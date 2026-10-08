@@ -21,31 +21,6 @@ public protocol WishGenerationService: Sendable {
     ) async throws -> String
 }
 
-public struct MockWishGenerationService: WishGenerationService {
-    public init() {}
-
-    public func generateWishes(for request: WishGenerationRequest) async throws -> WishGenerationResult {
-        try await Task.sleep(nanoseconds: 900_000_000)
-
-        return WishGenerationResult(
-            greeting: "Kochana \(request.form.relation),",
-            warm: MockWishGenerator.shared.generateWish(request: request, variant: .warm, avoiding: nil),
-            natural: MockWishGenerator.shared.generateWish(request: request, variant: .natural, avoiding: nil),
-            light: MockWishGenerator.shared.generateWish(request: request, variant: .light, avoiding: nil)
-        )
-    }
-
-    public func regenerateWish(
-        for request: WishGenerationRequest,
-        variant: WishVariant,
-        previousText: String
-    ) async throws -> String {
-        try await Task.sleep(nanoseconds: 700_000_000)
-
-        return MockWishGenerator.shared.generateWish(request: request, variant: variant, avoiding: previousText)
-    }
-}
-
 public struct LiveWishGenerationService: WishGenerationService {
     private let apiClient: APIClient
 
@@ -91,8 +66,8 @@ public struct LiveWishGenerationService: WishGenerationService {
     }
 
     /// The form only ever collects one "who is this for" field (WishForm.relation, e.g.
-    /// "Emma, my sister") — recipientName is never populated by the current UI. Falls
-    /// back to relation, matching MockWishGenerator's same fallback.
+    /// "Emma, my sister") — recipientName is never populated by the current UI, so this
+    /// always falls back to relation.
     private func resolvedRecipientName(for form: WishForm) -> String {
         form.recipientName.isEmpty ? form.relation : form.recipientName
     }

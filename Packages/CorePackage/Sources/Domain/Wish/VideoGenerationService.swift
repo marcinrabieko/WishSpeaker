@@ -35,20 +35,6 @@ public protocol VideoGenerationService: Sendable {
     func generateVideo(for request: VideoGenerationRequest) async throws -> VideoAsset
 }
 
-public struct MockVideoGenerationService: VideoGenerationService {
-    public init() {}
-
-    public func generateVideo(for request: VideoGenerationRequest) async throws -> VideoAsset {
-        try await Task.sleep(nanoseconds: 2_000_000_000)
-
-        return VideoAsset(
-            videoFileReference: "mock_video.mp4",
-            thumbnailReference: nil,
-            duration: 30.0
-        )
-    }
-}
-
 public struct LiveVideoGenerationService: VideoGenerationService {
     private let apiClient: APIClient
 
