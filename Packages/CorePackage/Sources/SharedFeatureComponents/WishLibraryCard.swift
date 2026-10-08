@@ -215,14 +215,17 @@ public struct InlineVoicePlayer: View {
 
 /// Static thumbnail + play affordance only — intentionally not backed by a video
 /// player, so a scrolling Library list never has to manage embedded playback.
+///
+/// The generated video is itself a 1:1 square (see WishSpeaker-Backend's
+/// video_service.py) — the container matches that aspect ratio exactly (full card
+/// width, equal height) rather than imposing an unrelated wide/short shape, so the
+/// thumbnail fills it edge-to-edge with no cropping and no empty side bars.
 public struct LibraryVideoThumbnail: View {
     let videoAsset: VideoAsset
-    let height: CGFloat
     let playIconSize: CGFloat
 
-    public init(videoAsset: VideoAsset, height: CGFloat = 160, playIconSize: CGFloat = 44) {
+    public init(videoAsset: VideoAsset, playIconSize: CGFloat = 44) {
         self.videoAsset = videoAsset
-        self.height = height
         self.playIconSize = playIconSize
     }
 
@@ -231,13 +234,9 @@ public struct LibraryVideoThumbnail: View {
             if let thumbnailURL = videoAsset.thumbnailURL, let thumbnailImage = UIImage(contentsOfFile: thumbnailURL.path) {
                 Image(uiImage: thumbnailImage)
                     .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(height: height)
-                    .clipped()
+                    .aspectRatio(contentMode: .fit)
             } else {
-                RoundedRectangle(cornerRadius: WSRadius.button, style: .continuous)
-                    .fill(Color.wsSecondaryBackground)
-                    .frame(height: height)
+                Color.wsBackground
             }
 
             Image(systemName: "play.circle.fill")
@@ -261,6 +260,8 @@ public struct LibraryVideoThumbnail: View {
                 }
             }
         }
+        .aspectRatio(1, contentMode: .fit)
+        .frame(maxWidth: .infinity)
         .clipShape(RoundedRectangle(cornerRadius: WSRadius.button, style: .continuous))
     }
 

@@ -40,7 +40,7 @@ struct ExampleWishDetailView: View {
     @ViewBuilder
     private var mediaSection: some View {
         if let videoAsset = wish.videoAsset {
-            LibraryVideoThumbnail(videoAsset: videoAsset, height: 220, playIconSize: 56)
+            LibraryVideoThumbnail(videoAsset: videoAsset, playIconSize: 56)
         } else if let voiceAsset = wish.voiceAsset {
             voiceSection(voiceAsset)
         }
