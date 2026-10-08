@@ -168,9 +168,6 @@
 "wish_detail_create_voice_subtitle" = "Ożyw swoje życzenia";
 "wish_detail_create_video_button" = "Stwórz kartę wideo";
 "wish_detail_create_video_subtitle" = "Stwórz kartkę wideo, którą możesz udostępnić";
-"wish_detail_edit_sheet_title" = "Edytuj życzenia";
-"wish_detail_edit_save_button" = "Zapisz";
-"wish_detail_edit_cancel_button" = "Anuluj";
 "wish_detail_share_button" = "Udostępnij";
 "wish_detail_media_unavailable" = "Plik jest niedostępny";
 

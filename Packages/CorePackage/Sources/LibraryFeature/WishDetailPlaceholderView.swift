@@ -13,6 +13,7 @@ struct WishDetailPlaceholderView: View {
     @State private var viewModel: WishDetailViewModel
     @State private var isCopied = false
     @State private var isEditing = false
+    @State private var draftText = ""
     @State private var navigateToVoice = false
     @State private var navigateToVideo = false
 
@@ -32,10 +33,7 @@ struct WishDetailPlaceholderView: View {
 
                 mediaSection
 
-                Text(viewModel.wish.text)
-                    .font(.system(size: 16))
-                    .foregroundColor(.wsPrimaryText)
-                    .lineSpacing(5)
+                wishTextSection
 
                 textActions
 
@@ -63,11 +61,6 @@ struct WishDetailPlaceholderView: View {
         }
         .task {
             updateVideoPlayerIfNeeded()
-        }
-        .sheet(isPresented: $isEditing) {
-            EditWishSheet(text: viewModel.wish.text) { newText in
-                viewModel.didSaveEditedText(newText)
-            }
         }
         .navigationDestination(isPresented: $navigateToVoice) {
             VoiceView()
@@ -178,6 +171,25 @@ struct WishDetailPlaceholderView: View {
         .clipShape(RoundedRectangle(cornerRadius: WSRadius.card, style: .continuous))
     }
 
+    /// Once a voice/video is generated, the text that produced it must stay fixed —
+    /// editing it here would silently desync the written text from the recorded audio,
+    /// so Edit only ever shows up (via textActions) while both are still nil.
+    @ViewBuilder
+    private var wishTextSection: some View {
+        if isEditing {
+            TextEditor(text: $draftText)
+                .font(.system(size: 16))
+                .foregroundColor(.wsPrimaryText)
+                .scrollContentBackground(.hidden)
+                .frame(minHeight: 160)
+        } else {
+            Text(viewModel.wish.text)
+                .font(.system(size: 16))
+                .foregroundColor(.wsPrimaryText)
+                .lineSpacing(5)
+        }
+    }
+
     private var textActions: some View {
         HStack(spacing: WSSpacing.md) {
             Button {
@@ -200,11 +212,20 @@ struct WishDetailPlaceholderView: View {
 
             if viewModel.wish.voiceAsset == nil && viewModel.wish.videoAsset == nil {
                 Button {
-                    isEditing = true
+                    if isEditing {
+                        viewModel.didSaveEditedText(draftText)
+                        isEditing = false
+                    } else {
+                        draftText = viewModel.wish.text
+                        isEditing = true
+                    }
                 } label: {
-                    Label(L10n.wishDetailEditButton, systemImage: "pencil")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundColor(.wsPrimaryText.opacity(0.75))
+                    Label(
+                        isEditing ? L10n.createViewEditDoneButton : L10n.wishDetailEditButton,
+                        systemImage: isEditing ? "checkmark" : "pencil"
+                    )
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundColor(.wsPrimaryText.opacity(0.75))
                 }
                 .buttonStyle(.plain)
             }
@@ -238,45 +259,5 @@ struct WishDetailPlaceholderView: View {
             }
         }
         .padding(.top, WSSpacing.sm)
-    }
-}
-
-private struct EditWishSheet: View {
-    let initialText: String
-    let onSave: (String) -> Void
-
-    @Environment(\.dismiss) private var dismiss
-    @State private var draft: String
-
-    init(text: String, onSave: @escaping (String) -> Void) {
-        initialText = text
-        self.onSave = onSave
-        _draft = State(initialValue: text)
-    }
-
-    var body: some View {
-        NavigationStack {
-            TextEditor(text: $draft)
-                .font(.system(size: 16))
-                .padding(WSSpacing.sm)
-                .background(Color.wsBackground)
-                .navigationTitle(L10n.wishDetailEditSheetTitle)
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button(L10n.wishDetailEditCancelButton) {
-                            dismiss()
-                        }
-                    }
-
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button(L10n.wishDetailEditSaveButton) {
-                            onSave(draft)
-                            dismiss()
-                        }
-                        .fontWeight(.semibold)
-                    }
-                }
-        }
     }
 }
