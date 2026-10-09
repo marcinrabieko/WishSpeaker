@@ -40,8 +40,8 @@ public struct VoiceOption: Identifiable, Hashable, Sendable {
 /// SwiftUI Views, matching the backend's own CURATED_VOICE_IDS allowlist. Male voices
 /// first, then female.
 public enum VoiceCatalog {
-    public static let maleVoiceIDs = ["GzE4TcXfh9rYCU9gVgPp", "1SM7GgM6IMuvQlz2BwM3"]
-    public static let femaleVoiceIDs = ["lxYfHSkYm1EzQzGhdbfc", "tnSpp4vdxKPjI9w0GnoV"]
+    public static let maleVoiceIDs = ["1SM7GgM6IMuvQlz2BwM3", "GzE4TcXfh9rYCU9gVgPp"]
+    public static let femaleVoiceIDs = ["tnSpp4vdxKPjI9w0GnoV", "lxYfHSkYm1EzQzGhdbfc"]
 
     public static let curatedVoiceIDs = maleVoiceIDs + femaleVoiceIDs
 
