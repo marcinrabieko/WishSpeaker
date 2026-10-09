@@ -22,11 +22,16 @@ public struct ExampleWishesView: View {
 
     public var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: WSSpacing.sm) {
+            VStack(alignment: .leading, spacing: WSSpacing.xs) {
                 Text(L10n.exampleWishesSubtitle)
                     .font(.system(size: 15))
                     .foregroundColor(.wsSecondaryText)
-                    .padding(.top, WSSpacing.xs)
+                    .padding(.top, WSSpacing.xxs)
+                    // Matches WishLibraryCard's own internal spacing between its title
+                    // and media (WSSpacing.sm) — the outer VStack spacing above only
+                    // covers card-to-card (matches LibraryView's row insets), so this
+                    // first gap needs its own top padding to read as equal.
+                    .padding(.bottom, WSSpacing.sm - WSSpacing.xs)
 
                 ForEach(ExperienceDemoData.wishes) { wish in
                     WishLibraryCard(wish: wish, showDate: false, onTap: { presentedWish = wish })

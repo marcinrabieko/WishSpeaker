@@ -31,7 +31,8 @@ struct ExampleWishDetailView: View {
                     .lineSpacing(5)
             }
             .padding(.horizontal, WSSpacing.horizontalPadding)
-            .padding(.vertical, WSSpacing.md)
+            .padding(.top, WSSpacing.xxs)
+            .padding(.bottom, WSSpacing.md)
         }
         .background(Color.wsBackground)
         .navigationTitle(wish.recipient)
