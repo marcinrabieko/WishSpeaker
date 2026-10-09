@@ -20,6 +20,12 @@ public struct WishResultView: View {
     @State private var isJustSaved = false
     @State private var navigateToVoice = false
     @State private var navigateToVideo = false
+    @FocusState private var isTextEditorFocused: Bool
+
+    // Measured from the read-only Text while it's on screen (see wishTextSection), then
+    // applied as the TextEditor's own height once editing starts — so entering edit
+    // mode doesn't jump to an unrelated fixed minHeight.
+    @State private var readOnlyTextHeight: CGFloat = 0
 
     @Environment(\.createFlowPath) private var createFlowPath
 
@@ -215,9 +221,11 @@ public struct WishResultView: View {
             if viewModel.isEditing {
                 viewModel.didSaveEditedText(viewModel.draftText)
                 viewModel.isEditing = false
+                isTextEditorFocused = false
             } else {
                 viewModel.draftText = viewModel.wish.text
                 viewModel.isEditing = true
+                isTextEditorFocused = true
             }
         } label: {
             Image(systemName: viewModel.isEditing ? "checkmark" : "pencil")
@@ -294,18 +302,32 @@ public struct WishResultView: View {
                 .foregroundColor(.wsPrimaryText)
                 .lineSpacing(5)
                 .scrollContentBackground(.hidden)
-                .frame(minHeight: 160)
+                // frame is sized to readOnlyTextHeight PLUS the vertical inset that
+                // the padding below cancels out right after — otherwise the negative
+                // padding shrinks the already-matched height a second time and clips
+                // the text's last line.
+                .frame(height: max(readOnlyTextHeight, 44) + 16)
                 // TextEditor adds its own internal inset around the text container
                 // (horizontal AND vertical) that Text doesn't have — without canceling
                 // both axes, switching into edit mode visibly shifts/rewraps the text
                 // and nudges it down relative to the read-only view right above it.
                 .padding(.horizontal, -5)
                 .padding(.vertical, -8)
+                .focused($isTextEditorFocused)
         } else {
             Text(viewModel.wish.text)
                 .font(.system(size: 16))
                 .foregroundColor(.wsPrimaryText)
                 .lineSpacing(5)
+                .background {
+                    GeometryReader { proxy in
+                        Color.clear
+                            .onAppear { readOnlyTextHeight = proxy.size.height }
+                            .onChange(of: proxy.size.height) { _, newHeight in
+                                readOnlyTextHeight = newHeight
+                            }
+                    }
+                }
         }
     }
 
