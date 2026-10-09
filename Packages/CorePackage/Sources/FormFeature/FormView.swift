@@ -4,6 +4,11 @@ import Localizations
 import SwiftUI
 
 public struct FormView: View {
+	// Hard cap, not just a counter — a recipient description is a short phrase
+	// ("Sarah, my best friend"), never a reason to need hundreds of characters, so
+	// typing simply stops accepting input past this length instead of only warning.
+	private static let recipientCharacterLimit = 100
+
 	@State private var viewModel = FormViewModel()
 	@Environment(\.dismiss) private var dismiss
 	@Environment(\.createFlowPath) private var createFlowPath
@@ -41,6 +46,11 @@ public struct FormView: View {
 					}
 					.clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
 					.focused($isRelationFocused)
+					.onChange(of: viewModel.relationText) { _, newValue in
+						if newValue.count > Self.recipientCharacterLimit {
+							viewModel.relationText = String(newValue.prefix(Self.recipientCharacterLimit))
+						}
+					}
 				}
 
 				VStack(alignment: .leading, spacing: 8) {

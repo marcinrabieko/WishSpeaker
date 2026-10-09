@@ -13,6 +13,14 @@ import UIKit
 /// voice/video), so they share one view and one WishResultViewModel; `origin` only
 /// changes Back's behavior (see WishResultViewModel.didTapBackInCreationFlow).
 public struct WishResultView: View {
+    // Matches the backend's GenerateAudioRequest/GenerateVideoRequest max_length (see
+    // WishSpeaker-Backend/models.py) — edited text past this point would be rejected
+    // at Create Voice/Create Video Card time, so the counter surfaces that ceiling
+    // while editing instead of failing generation later with no warning. Shown only
+    // once the draft gets close to it (900+) so a short wish never sees a counter.
+    private static let characterLimit = 1000
+    private static let characterCountWarningThreshold = 900
+
     @State private var viewModel: WishResultViewModel
     private let origin: WishResultOrigin
 
@@ -298,23 +306,36 @@ public struct WishResultView: View {
     @ViewBuilder
     private var wishTextSection: some View {
         if viewModel.isEditing {
-            TextEditor(text: $viewModel.draftText)
-                .font(.system(size: 16))
-                .foregroundColor(.wsPrimaryText)
-                .lineSpacing(5)
-                .scrollContentBackground(.hidden)
-                // frame is sized to readOnlyTextHeight PLUS the vertical inset that
-                // the padding below cancels out right after — otherwise the negative
-                // padding shrinks the already-matched height a second time and clips
-                // the text's last line.
-                .frame(height: max(readOnlyTextHeight, 44) + 16)
-                // TextEditor adds its own internal inset around the text container
-                // (horizontal AND vertical) that Text doesn't have — without canceling
-                // both axes, switching into edit mode visibly shifts/rewraps the text
-                // and nudges it down relative to the read-only view right above it.
-                .padding(.horizontal, -5)
-                .padding(.vertical, -8)
-                .focused($isTextEditorFocused)
+            VStack(alignment: .trailing, spacing: WSSpacing.xxs) {
+                TextEditor(text: $viewModel.draftText)
+                    .font(.system(size: 16))
+                    .foregroundColor(.wsPrimaryText)
+                    .lineSpacing(5)
+                    .scrollContentBackground(.hidden)
+                    // frame is sized to readOnlyTextHeight PLUS the vertical inset that
+                    // the padding below cancels out right after — otherwise the negative
+                    // padding shrinks the already-matched height a second time and clips
+                    // the text's last line.
+                    .frame(height: max(readOnlyTextHeight, 44) + 16)
+                    // TextEditor adds its own internal inset around the text container
+                    // (horizontal AND vertical) that Text doesn't have — without canceling
+                    // both axes, switching into edit mode visibly shifts/rewraps the text
+                    // and nudges it down relative to the read-only view right above it.
+                    .padding(.horizontal, -5)
+                    .padding(.vertical, -8)
+                    .focused($isTextEditorFocused)
+                    .onChange(of: viewModel.draftText) { _, newValue in
+                        if newValue.count > Self.characterLimit {
+                            viewModel.draftText = String(newValue.prefix(Self.characterLimit))
+                        }
+                    }
+
+                if viewModel.draftText.count >= WishResultView.characterCountWarningThreshold {
+                    Text("\(viewModel.draftText.count)/\(WishResultView.characterLimit)")
+                        .font(.system(size: 13))
+                        .foregroundColor(.wsSecondaryText)
+                }
+            }
         } else {
             Text(viewModel.wish.text)
                 .font(.system(size: 16))
