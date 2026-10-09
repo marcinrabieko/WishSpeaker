@@ -20,7 +20,7 @@ public struct VoiceView: View {
                 voiceSelectionSection
             }
             .padding(.horizontal, WSSpacing.horizontalPadding)
-            .padding(.top, WSSpacing.md)
+            .padding(.top, WSSpacing.xxs)
             .padding(.bottom, WSSpacing.lg)
         }
         .safeAreaInset(edge: .bottom) {
@@ -49,29 +49,10 @@ public struct VoiceView: View {
     }
 
     private var wishTextSection: some View {
-        VStack(alignment: .leading, spacing: WSSpacing.xs) {
-            if viewModel.isShowingText {
-                Text(viewModel.wishText)
-                    .font(.system(size: 15))
-                    .foregroundStyle(Color.wsPrimaryText.opacity(0.85))
-                    .lineSpacing(4)
-            } else {
-                Text(viewModel.wishText)
-                    .font(.system(size: 15))
-                    .foregroundStyle(Color.wsPrimaryText.opacity(0.85))
-                    .lineSpacing(4)
-                    .lineLimit(3)
-            }
-
-            Button {
-                viewModel.didTapShowText()
-            } label: {
-                Text(viewModel.isShowingText ? L10n.voiceViewHideTextButton : L10n.voiceViewShowTextButton)
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(Color.wsPrimary)
-            }
-            .buttonStyle(.plain)
-        }
+        Text(viewModel.wishText)
+            .font(.system(size: 15))
+            .foregroundStyle(Color.wsPrimaryText.opacity(0.85))
+            .lineSpacing(4)
     }
 
     private var voiceSelectionSection: some View {

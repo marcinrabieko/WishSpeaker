@@ -20,7 +20,7 @@ public struct VideoView: View {
                 voiceSelectionSection
             }
             .padding(.horizontal, WSSpacing.horizontalPadding)
-            .padding(.top, WSSpacing.md)
+            .padding(.top, WSSpacing.xxs)
             .padding(.bottom, WSSpacing.lg)
         }
         .safeAreaInset(edge: .bottom) {

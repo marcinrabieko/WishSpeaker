@@ -91,7 +91,7 @@
 "wishes_copied_confirmation" = "Copied";
 "wishes_save_button" = "Save";
 "wishes_saved_confirmation" = "Saved";
-"wishes_regenerate_button" = "Regenerate";
+"wishes_regenerate_retry_button" = "Retry";
 "wishes_use_this_wish_button" = "Use this wish";
 
 /* Create View */
@@ -100,8 +100,6 @@
 
 /* Voice Selection */
 "voice_view_title" = "Voice";
-"voice_view_show_text_button" = "Show text";
-"voice_view_hide_text_button" = "Hide text";
 "voice_view_choose_voice_section_title" = "Choose a voice";
 "voice_view_gender_male" = "Male";
 "voice_view_gender_female" = "Female";

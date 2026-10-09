@@ -15,7 +15,6 @@ public final class VoiceViewModel {
     var occasionTitle = ""
     var variantDisplayName = ""
     var wishText = ""
-    var isShowingText = false
 
     var voiceRows: [VoiceRowState] = [.loading, .loading]
     var selectedVoice: VoiceOption?
@@ -58,10 +57,6 @@ public final class VoiceViewModel {
         Task {
             await loadVoices()
         }
-    }
-
-    func didTapShowText() {
-        isShowingText.toggle()
     }
 
     func didSelectVoice(_ voice: VoiceOption) {

@@ -191,47 +191,70 @@ private struct WishCandidateCard: View {
 
     private var expandedActions: some View {
         VStack(spacing: WSSpacing.sm) {
-            HStack(spacing: 0) {
-                TertiaryActionButton(
-                    title: isCopied ? L10n.wishesCopiedConfirmation : L10n.wishesCopyButton,
-                    icon: isCopied ? "checkmark" : "doc.on.doc",
-                    isHighlighted: isCopied,
-                    action: onCopy
-                )
-
-                actionDivider
-
-                TertiaryActionButton(
-                    title: isSaved ? L10n.wishesSavedConfirmation : L10n.wishesSaveButton,
-                    icon: isSaved ? "bookmark.fill" : "bookmark",
-                    isHighlighted: isSaved,
-                    action: onSave
-                )
-
-                actionDivider
-
-                TertiaryActionButton(
-                    title: L10n.wishesRegenerateButton,
-                    icon: "arrow.clockwise",
-                    isHighlighted: false,
-                    action: onRegenerate,
-                    isDisabled: isRegenerating
-                )
-            }
+            glassActionRow
 
             PrimaryButton(title: L10n.wishesUseThisWishButton, action: onUseThisWish)
         }
         .padding(.top, WSSpacing.xxs)
     }
 
-    private var actionDivider: some View {
-        Rectangle()
-            .fill(Color.wsSoftBorder)
-            .frame(width: 1, height: 24)
+    /// Three independent glass pills rather than one shared capsule (unlike
+    /// WishDetailView's Copy/Edit group) — each of Copy/Save/Retry here is its own
+    /// visually distinct action per the design spec. ViewThatFits drops to a vertical
+    /// stack if Dynamic Type or a narrow device would otherwise force label truncation
+    /// or overlap rather than ever wrapping a label onto two lines.
+    private var glassActionRow: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: WSSpacing.xs) {
+                copyPill
+                savePill
+                retryPill
+            }
+
+            VStack(spacing: WSSpacing.xs) {
+                copyPill
+                savePill
+                retryPill
+            }
+        }
+    }
+
+    private var copyPill: some View {
+        GlassPillButton(
+            title: isCopied ? L10n.wishesCopiedConfirmation : L10n.wishesCopyButton,
+            icon: isCopied ? "checkmark" : "doc.on.doc",
+            isHighlighted: isCopied,
+            action: onCopy
+        )
+    }
+
+    private var savePill: some View {
+        GlassPillButton(
+            title: isSaved ? L10n.wishesSavedConfirmation : L10n.wishesSaveButton,
+            icon: isSaved ? "bookmark.fill" : "bookmark",
+            isHighlighted: isSaved,
+            action: onSave
+        )
+    }
+
+    private var retryPill: some View {
+        GlassPillButton(
+            title: L10n.wishesRegenerateRetryButton,
+            icon: "arrow.clockwise",
+            isHighlighted: false,
+            action: onRegenerate,
+            isDisabled: isRegenerating
+        )
     }
 }
 
-private struct TertiaryActionButton: View {
+/// One self-contained Liquid Glass capsule (icon + single-line label). True
+/// `glassEffect`/`GlassEffectContainer` on iOS 26+; `.ultraThinMaterial` is the closest
+/// native stand-in below that — never a hand-rolled blur/opacity/gradient approximation
+/// of glass. `isHighlighted` only tints the icon+label Ribbon Red (e.g. once Saved) —
+/// the capsule background itself always stays neutral, matching the "compact, subtle,
+/// visually secondary to the main CTA" requirement.
+private struct GlassPillButton: View {
     let title: String
     let icon: String
     let isHighlighted: Bool
@@ -240,19 +263,42 @@ private struct TertiaryActionButton: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 6) {
-                Image(systemName: icon)
-                    .font(.system(size: 14, weight: .semibold))
-
-                Text(title)
-                    .font(.system(size: 13, weight: .medium))
-            }
-            .foregroundStyle(isHighlighted ? Color.wsPrimary : Color.wsPrimaryText.opacity(0.75))
-            .frame(maxWidth: .infinity, minHeight: WSSize.minTapTarget)
+            label
         }
         .buttonStyle(.plain)
+        .modifier(GlassCapsuleModifier())
         .disabled(isDisabled)
         .opacity(isDisabled ? 0.5 : 1)
-        .contentShape(Rectangle())
+    }
+
+    private var label: some View {
+        HStack(spacing: 6) {
+            Image(systemName: icon)
+                .font(.system(size: 13, weight: .semibold))
+
+            Text(title)
+                .font(.system(size: 13, weight: .medium))
+                .lineLimit(1)
+        }
+        .foregroundStyle(isHighlighted ? Color.wsPrimary : Color.wsPrimaryText.opacity(0.85))
+        .padding(.horizontal, WSSpacing.sm)
+        .frame(minHeight: WSSize.minTapTarget)
+    }
+}
+
+/// True `glassEffect`/`GlassEffectContainer` on iOS 26+; `.ultraThinMaterial` is the
+/// closest native stand-in below that — never a hand-rolled blur/opacity/gradient
+/// approximation of glass.
+private struct GlassCapsuleModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 26, *) {
+            GlassEffectContainer {
+                content
+            }
+            .glassEffect(.regular, in: Capsule())
+        } else {
+            content
+                .background(.ultraThinMaterial, in: Capsule())
+        }
     }
 }

@@ -91,7 +91,7 @@
 "wishes_copied_confirmation" = "Skopiowano";
 "wishes_save_button" = "Zapisz";
 "wishes_saved_confirmation" = "Zapisano";
-"wishes_regenerate_button" = "Wygeneruj ponownie";
+"wishes_regenerate_retry_button" = "Ponów";
 "wishes_use_this_wish_button" = "Użyj tych życzeń";
 
 /* Create View */
@@ -100,8 +100,6 @@
 
 /* Voice Selection */
 "voice_view_title" = "Głos";
-"voice_view_show_text_button" = "Pokaż tekst";
-"voice_view_hide_text_button" = "Ukryj tekst";
 "voice_view_choose_voice_section_title" = "Wybierz głos";
 "voice_view_gender_male" = "Męski";
 "voice_view_gender_female" = "Damski";

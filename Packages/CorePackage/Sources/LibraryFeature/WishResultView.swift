@@ -69,7 +69,8 @@ public struct WishResultView: View {
                 }
             }
             .padding(.horizontal, WSSpacing.horizontalPadding)
-            .padding(.vertical, WSSpacing.md)
+            .padding(.top, WSSpacing.xxs)
+            .padding(.bottom, WSSpacing.md)
         }
         .background(Color.wsBackground)
         .navigationTitle(viewModel.wish.recipient)
@@ -133,22 +134,14 @@ public struct WishResultView: View {
         }
     }
 
-    /// Metadata leading, the Copy/Edit glass action group trailing — falls back to
-    /// stacking the action group below the metadata (via ViewThatFits) rather than
-    /// truncating a long localized occasion name or overlapping it at larger Dynamic
-    /// Type sizes, where the single-row layout would no longer fit.
+    /// Metadata leading, the Copy/Edit glass action group trailing — always one row.
+    /// The action group never shrinks or wraps (fixedSize + its own layoutPriority), so
+    /// metadata is the only side that gives: it wraps up to 2 lines, then tail-truncates
+    /// rather than ever pushing the glass group off-screen or down to its own row.
     private var metadataRow: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack(alignment: .center, spacing: WSSpacing.sm) {
-                metadata
-                Spacer(minLength: WSSpacing.sm)
-                glassActionGroup
-            }
-
-            VStack(alignment: .leading, spacing: WSSpacing.xs) {
-                metadata
-                glassActionGroup
-            }
+        HStack(alignment: .center, spacing: 12) {
+            metadata
+            glassActionGroup
         }
     }
 
@@ -162,14 +155,19 @@ public struct WishResultView: View {
         )
         .font(.system(size: 15))
         .foregroundColor(.wsSecondaryText)
-        .fixedSize(horizontal: false, vertical: true)
+        .lineLimit(2)
+        .truncationMode(.tail)
+        .layoutPriority(0)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     /// Copy (always) + Edit (only while there's no voice/video yet, since editing text
     /// after generation would desync it from the recorded audio) in one shared glass
     /// capsule. True `glassEffect`/`GlassEffectContainer` on iOS 26+; `.ultraThinMaterial`
     /// is the closest native stand-in below that — never a hand-rolled blur/opacity/
-    /// gradient approximation of glass.
+    /// gradient approximation of glass. Fixed size + a higher layoutPriority than
+    /// `metadata` means this capsule never shrinks or wraps — metadata is the side
+    /// that gives when the row runs out of width (see metadataRow).
     @ViewBuilder
     private var glassActionGroup: some View {
         if #available(iOS 26, *) {
@@ -182,6 +180,8 @@ public struct WishResultView: View {
                 }
             }
             .glassEffect(.regular, in: Capsule())
+            .fixedSize(horizontal: true, vertical: false)
+            .layoutPriority(1)
         } else {
             HStack(spacing: WSSpacing.xs) {
                 copyButton
@@ -190,6 +190,8 @@ public struct WishResultView: View {
                 }
             }
             .background(.ultraThinMaterial, in: Capsule())
+            .fixedSize(horizontal: true, vertical: false)
+            .layoutPriority(1)
         }
     }
 
