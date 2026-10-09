@@ -1,4 +1,5 @@
 import DesignSystem
+import Domain
 import SwiftUI
 
 /// Compact play/pause control for previewing a remote audio URL whose duration is
@@ -7,10 +8,16 @@ import SwiftUI
 /// starting a preview stops any other voice preview or Library/Example playback.
 /// Hidden entirely when `previewURL` is nil — a missing preview never blocks Voice
 /// selection itself.
+///
+/// Resolves `previewURL` through `VoicePreviewCache` before attaching playback — the
+/// first tap downloads and caches the sample to disk, every later tap (this visit, or
+/// after the app relaunches) plays the local file instead of re-fetching it from
+/// ElevenLabs/Google Storage.
 public struct VoicePreviewPlayer: View {
     let previewURL: URL?
 
     @State private var playback = PlaybackState()
+    @State private var resolvedURL: URL?
     private let id = UUID()
 
     public init(previewURL: URL?) {
@@ -36,8 +43,10 @@ public struct VoicePreviewPlayer: View {
             }
             .buttonStyle(.plain)
             .disabled(playback.isLoading)
-            .onAppear {
-                playback.attach(id: id, url: previewURL)
+            .task {
+                guard let previewURL else { return }
+                resolvedURL = await VoicePreviewCache.shared.localURL(for: previewURL)
+                playback.attach(id: id, url: resolvedURL)
             }
             .onDisappear {
                 playback.detach()
