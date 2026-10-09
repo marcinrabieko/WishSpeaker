@@ -15,9 +15,11 @@ public struct VideoGenerationRequest: Sendable {
     public let voiceGender: VoiceGender?
     public let providerVoiceID: String?
 
-    /// An already-generated VoiceAsset's audio data, reused verbatim instead of
-    /// synthesizing new speech — keeps the original voice/intonation/pace and avoids a
-    /// redundant ElevenLabs call. `nil` triggers the normal text-to-speech generation.
+    /// An already-generated VoiceAsset's audio data and word-level timing, reused
+    /// verbatim instead of synthesizing new speech — keeps the original voice/
+    /// intonation/pace, avoids a redundant ElevenLabs call, AND lets the backend render
+    /// subtitles without needing fresh alignment data. `nil` triggers the normal
+    /// text-to-speech generation.
     public let existingAudio: ExistingAudio?
 
     public init(
@@ -36,11 +38,11 @@ public struct VideoGenerationRequest: Sendable {
 
     public struct ExistingAudio: Sendable {
         public let data: Data
-        public let fileExtension: String
+        public let wordTimestamps: [WordTiming]
 
-        public init(data: Data, fileExtension: String) {
+        public init(data: Data, wordTimestamps: [WordTiming]) {
             self.data = data
-            self.fileExtension = fileExtension
+            self.wordTimestamps = wordTimestamps
         }
     }
 }
@@ -67,7 +69,9 @@ public struct LiveVideoGenerationService: VideoGenerationService {
             voiceId: request.providerVoiceID,
             occasionKind: request.occasionKind?.rawValue,
             existingAudioBase64: request.existingAudio?.data.base64EncodedString(),
-            existingAudioFormat: request.existingAudio?.fileExtension
+            existingWordTimestamps: request.existingAudio?.wordTimestamps.map {
+                WordTimingDTO(text: $0.text, startMs: $0.startMs, endMs: $0.endMs)
+            }
         )
 
         let videoData = try await apiClient.postRawData("/api/generateVideo", body: dto)

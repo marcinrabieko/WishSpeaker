@@ -24,6 +24,7 @@ extension WishModel {
             voiceDisplayName: wish.voiceAsset?.voiceDisplayName,
             voiceDuration: wish.voiceAsset?.duration,
             voiceCreatedAt: wish.voiceAsset?.createdAt,
+            voiceWordTimestampsFileReference: wish.voiceAsset?.wordTimestampsFileReference,
             videoAssetID: wish.videoAsset?.id,
             videoFileReference: wish.videoAsset?.videoFileReference,
             videoThumbnailReference: wish.videoAsset?.thumbnailReference,
@@ -57,6 +58,7 @@ extension WishModel {
         voiceDisplayName = wish.voiceAsset?.voiceDisplayName
         voiceDuration = wish.voiceAsset?.duration
         voiceCreatedAt = wish.voiceAsset?.createdAt
+        voiceWordTimestampsFileReference = wish.voiceAsset?.wordTimestampsFileReference
 
         videoAssetID = wish.videoAsset?.id
         videoFileReference = wish.videoAsset?.videoFileReference
@@ -120,7 +122,8 @@ extension WishModel {
             voiceIdentifier: voiceIdentifier,
             voiceDisplayName: voiceDisplayName,
             duration: voiceDuration,
-            createdAt: voiceCreatedAt
+            createdAt: voiceCreatedAt,
+            wordTimestampsFileReference: voiceWordTimestampsFileReference
         )
     }
 

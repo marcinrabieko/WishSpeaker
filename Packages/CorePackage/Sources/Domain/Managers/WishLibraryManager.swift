@@ -55,6 +55,7 @@ public final class WishLibraryManager {
     private func deleteLocalMediaFiles(for model: WishModel) {
         [
             model.voiceAudioFileReference,
+            model.voiceWordTimestampsFileReference,
             model.videoFileReference,
             model.videoThumbnailReference
         ]

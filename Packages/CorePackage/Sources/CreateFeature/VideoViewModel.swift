@@ -61,7 +61,9 @@ public final class VideoViewModel {
 
         hasResolvedExistingAudio = true
 
-        if let existingVoiceAsset = creationManager.generatedVoiceAsset, existingVoiceAsset.audioURL != nil {
+        if let existingVoiceAsset = creationManager.generatedVoiceAsset,
+           existingVoiceAsset.audioURL != nil,
+           existingVoiceAsset.wordTimestamps != nil {
             reusableVoiceAsset = existingVoiceAsset
             return
         }
@@ -112,7 +114,11 @@ public final class VideoViewModel {
     /// sharing the voiceGender/providerVoiceID fields a fresh-generation request needs.
     private func makeGenerationRequest() -> VideoGenerationRequest? {
         if let reusableVoiceAsset {
-            guard let audioURL = reusableVoiceAsset.audioURL, let audioData = try? Data(contentsOf: audioURL) else {
+            guard
+                let audioURL = reusableVoiceAsset.audioURL,
+                let audioData = try? Data(contentsOf: audioURL),
+                let wordTimestamps = reusableVoiceAsset.wordTimestamps
+            else {
                 return nil
             }
 
@@ -121,7 +127,7 @@ public final class VideoViewModel {
                 occasionKind: creationManager.selectedOccasion?.kind ?? creationManager.occasionKind,
                 existingAudio: VideoGenerationRequest.ExistingAudio(
                     data: audioData,
-                    fileExtension: audioURL.pathExtension
+                    wordTimestamps: wordTimestamps
                 )
             )
         }
@@ -130,9 +136,9 @@ public final class VideoViewModel {
 
         return VideoGenerationRequest(
             text: wishText,
+            occasionKind: creationManager.selectedOccasion?.kind ?? creationManager.occasionKind,
             voiceGender: selectedVoice.gender,
-            providerVoiceID: selectedVoice.providerVoiceID,
-            occasionKind: creationManager.selectedOccasion?.kind ?? creationManager.occasionKind
+            providerVoiceID: selectedVoice.providerVoiceID
         )
     }
 

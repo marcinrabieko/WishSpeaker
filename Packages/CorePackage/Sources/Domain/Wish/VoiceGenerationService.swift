@@ -36,9 +36,17 @@ public struct LiveVoiceGenerationService: VoiceGenerationService {
             voiceId: request.providerVoiceID
         )
 
-        let audioData = try await apiClient.postRawData("/api/generateAudio", body: dto)
+        let response: GenerateAudioResponseDTO = try await apiClient.post("/api/generateAudio", body: dto)
+
+        guard let audioData = Data(base64Encoded: response.audioBase64) else {
+            throw APIError.invalidResponse
+        }
+
         let fileReference = "voice_\(UUID().uuidString).mp3"
-        try saveAudioFile(audioData, named: fileReference)
+        try saveFile(audioData, named: fileReference)
+
+        let wordTimestampsFileReference = "voice_\(UUID().uuidString)_timestamps.json"
+        try saveWordTimestamps(response.wordTimestamps, named: wordTimestampsFileReference)
 
         let duration = try await audioDuration(forFileNamed: fileReference)
 
@@ -46,17 +54,24 @@ public struct LiveVoiceGenerationService: VoiceGenerationService {
             audioFileReference: fileReference,
             voiceIdentifier: request.voiceGender == .male ? "warm_male_01" : "warm_female_01",
             voiceDisplayName: request.voiceGender == .male ? "James" : "Sofia",
-            duration: duration
+            duration: duration,
+            wordTimestampsFileReference: wordTimestampsFileReference
         )
     }
 
-    private func saveAudioFile(_ data: Data, named fileName: String) throws {
+    private func saveFile(_ data: Data, named fileName: String) throws {
         guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
             throw APIError.invalidResponse
         }
 
         let fileURL = documentsDirectory.appendingPathComponent(fileName)
         try data.write(to: fileURL)
+    }
+
+    private func saveWordTimestamps(_ timestamps: [WordTimingDTO], named fileName: String) throws {
+        let wordTimings = timestamps.map { WordTiming(text: $0.text, startMs: $0.startMs, endMs: $0.endMs) }
+        let data = try JSONEncoder().encode(wordTimings)
+        try saveFile(data, named: fileName)
     }
 
     private func audioDuration(forFileNamed fileName: String) async throws -> TimeInterval {

@@ -5,6 +5,10 @@ See [README.md](README.md) for project setup, build environments, git convention
 
 > Before building, always run `xcodegen generate` to regenerate the `.xcodeproj` from `project.yml`.
 
+> Unlike most other projects, building/running here (xcodebuild, `swift build`, running the app) is
+> explicitly allowed for verification after a change — this project is an exception to the general
+> "don't build" rule.
+
 ## Module Map
 
 `CorePackage` is split per-feature, mirroring Pepco's `{X}Domain`/`{X}Feature` convention:

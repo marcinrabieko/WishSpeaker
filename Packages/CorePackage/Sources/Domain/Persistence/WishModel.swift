@@ -29,6 +29,7 @@ public final class WishModel {
     public var voiceDisplayName: String?
     public var voiceDuration: TimeInterval?
     public var voiceCreatedAt: Date?
+    public var voiceWordTimestampsFileReference: String?
 
     public var videoAssetID: UUID?
     public var videoFileReference: String?
@@ -58,6 +59,7 @@ public final class WishModel {
         voiceDisplayName: String? = nil,
         voiceDuration: TimeInterval? = nil,
         voiceCreatedAt: Date? = nil,
+        voiceWordTimestampsFileReference: String? = nil,
         videoAssetID: UUID? = nil,
         videoFileReference: String? = nil,
         videoThumbnailReference: String? = nil,
@@ -85,6 +87,7 @@ public final class WishModel {
         self.voiceDisplayName = voiceDisplayName
         self.voiceDuration = voiceDuration
         self.voiceCreatedAt = voiceCreatedAt
+        self.voiceWordTimestampsFileReference = voiceWordTimestampsFileReference
         self.videoAssetID = videoAssetID
         self.videoFileReference = videoFileReference
         self.videoThumbnailReference = videoThumbnailReference
