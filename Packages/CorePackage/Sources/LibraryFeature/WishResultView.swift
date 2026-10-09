@@ -295,6 +295,12 @@ public struct WishResultView: View {
                 .lineSpacing(5)
                 .scrollContentBackground(.hidden)
                 .frame(minHeight: 160)
+                // TextEditor adds its own internal inset around the text container
+                // (horizontal AND vertical) that Text doesn't have — without canceling
+                // both axes, switching into edit mode visibly shifts/rewraps the text
+                // and nudges it down relative to the read-only view right above it.
+                .padding(.horizontal, -5)
+                .padding(.vertical, -8)
         } else {
             Text(viewModel.wish.text)
                 .font(.system(size: 16))
