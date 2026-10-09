@@ -213,8 +213,10 @@ public struct InlineVoicePlayer: View {
     }
 }
 
-/// Static thumbnail + play affordance only — intentionally not backed by a video
-/// player, so a scrolling Library list never has to manage embedded playback.
+/// Static thumbnail only — no play affordance over the image itself, since tapping
+/// anywhere on the card (including this thumbnail) opens WishDetailView rather than
+/// starting playback inline. Intentionally not backed by a video player, so a
+/// scrolling Library list never has to manage embedded playback.
 ///
 /// The generated video is itself a 1:1 square (see WishSpeaker-Backend's
 /// video_service.py) — the container matches that aspect ratio exactly (full card
@@ -222,11 +224,9 @@ public struct InlineVoicePlayer: View {
 /// thumbnail fills it edge-to-edge with no cropping and no empty side bars.
 public struct LibraryVideoThumbnail: View {
     let videoAsset: VideoAsset
-    let playIconSize: CGFloat
 
-    public init(videoAsset: VideoAsset, playIconSize: CGFloat = 44) {
+    public init(videoAsset: VideoAsset) {
         self.videoAsset = videoAsset
-        self.playIconSize = playIconSize
     }
 
     public var body: some View {
@@ -239,24 +239,25 @@ public struct LibraryVideoThumbnail: View {
                 Color.wsBackground
             }
 
-            Image(systemName: "play.circle.fill")
-                .font(.system(size: playIconSize))
-                .foregroundColor(.wsPrimary)
-
             VStack {
                 Spacer()
 
                 HStack {
                     Spacer()
 
-                    Text(formattedTime(videoAsset.duration))
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundColor(.white)
-                        .padding(.horizontal, WSSpacing.xs)
-                        .padding(.vertical, 4)
-                        .background(Color.black.opacity(0.55))
-                        .clipShape(Capsule())
-                        .padding(WSSpacing.xs)
+                    HStack(spacing: 4) {
+                        Image(systemName: "play.fill")
+                            .font(.system(size: 10, weight: .semibold))
+
+                        Text(formattedTime(videoAsset.duration))
+                            .font(.system(size: 12, weight: .semibold))
+                    }
+                    .foregroundColor(.white)
+                    .padding(.horizontal, WSSpacing.xs)
+                    .padding(.vertical, 4)
+                    .background(Color.black.opacity(0.55))
+                    .clipShape(Capsule())
+                    .padding(WSSpacing.xs)
                 }
             }
         }

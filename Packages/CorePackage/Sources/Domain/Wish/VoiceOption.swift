@@ -36,15 +36,16 @@ public struct VoiceOption: Identifiable, Hashable, Sendable {
     }
 }
 
-/// The exactly-two curated WishSpeaker voices — kept centralized here, not scattered
-/// through SwiftUI Views, matching the backend's own CURATED_VOICE_IDS allowlist.
+/// The curated WishSpeaker voices — kept centralized here, not scattered through
+/// SwiftUI Views, matching the backend's own CURATED_VOICE_IDS allowlist. Male voices
+/// first, then female.
 public enum VoiceCatalog {
-    public static let maleVoiceID = "GzE4TcXfh9rYCU9gVgPp"
-    public static let femaleVoiceID = "lxYfHSkYm1EzQzGhdbfc"
+    public static let maleVoiceIDs = ["GzE4TcXfh9rYCU9gVgPp", "1SM7GgM6IMuvQlz2BwM3"]
+    public static let femaleVoiceIDs = ["lxYfHSkYm1EzQzGhdbfc", "tnSpp4vdxKPjI9w0GnoV"]
 
-    public static let curatedVoiceIDs = [maleVoiceID, femaleVoiceID]
+    public static let curatedVoiceIDs = maleVoiceIDs + femaleVoiceIDs
 
     public static func gender(forProviderVoiceID providerVoiceID: String) -> VoiceGender {
-        providerVoiceID == maleVoiceID ? .male : .female
+        maleVoiceIDs.contains(providerVoiceID) ? .male : .female
     }
 }

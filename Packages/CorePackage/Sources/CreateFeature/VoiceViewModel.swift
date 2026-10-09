@@ -16,7 +16,7 @@ public final class VoiceViewModel {
     var variantDisplayName = ""
     var wishText = ""
 
-    var voiceRows: [VoiceRowState] = [.loading, .loading]
+    var voiceRows: [VoiceRowState] = VoiceCatalog.curatedVoiceIDs.map { _ in .loading }
     var selectedVoice: VoiceOption?
 
     var isGenerating = false
@@ -82,7 +82,8 @@ public final class VoiceViewModel {
                     for: VoiceGenerationRequest(
                         text: wishText,
                         voiceGender: selectedVoice.gender,
-                        providerVoiceID: selectedVoice.providerVoiceID
+                        providerVoiceID: selectedVoice.providerVoiceID,
+                        voiceDisplayName: selectedVoice.displayName
                     )
                 )
 

@@ -7,10 +7,16 @@ public struct VoiceGenerationRequest: Sendable {
     public let voiceGender: VoiceGender
     public let providerVoiceID: String?
 
-    public init(text: String, voiceGender: VoiceGender, providerVoiceID: String? = nil) {
+    /// The chosen narrator's display name (e.g. "Mark - Casual, Relaxed and Light"),
+    /// saved verbatim onto the resulting VoiceAsset — distinguishes between two voices
+    /// of the same gender, unlike deriving a name from `voiceGender` alone.
+    public let voiceDisplayName: String
+
+    public init(text: String, voiceGender: VoiceGender, providerVoiceID: String? = nil, voiceDisplayName: String) {
         self.text = text
         self.voiceGender = voiceGender
         self.providerVoiceID = providerVoiceID
+        self.voiceDisplayName = voiceDisplayName
     }
 }
 
@@ -52,8 +58,8 @@ public struct LiveVoiceGenerationService: VoiceGenerationService {
 
         return VoiceAsset(
             audioFileReference: fileReference,
-            voiceIdentifier: request.voiceGender == .male ? "warm_male_01" : "warm_female_01",
-            voiceDisplayName: request.voiceGender == .male ? "James" : "Sofia",
+            voiceIdentifier: request.providerVoiceID ?? (request.voiceGender == .male ? VoiceCatalog.maleVoiceIDs[0] : VoiceCatalog.femaleVoiceIDs[0]),
+            voiceDisplayName: request.voiceDisplayName,
             duration: duration,
             wordTimestampsFileReference: wordTimestampsFileReference
         )

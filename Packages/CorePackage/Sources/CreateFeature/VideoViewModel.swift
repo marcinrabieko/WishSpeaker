@@ -11,7 +11,7 @@ public final class VideoViewModel {
     var variantDisplayName = ""
     var wishText = ""
 
-    var voiceRows: [VoiceRowState] = [.loading, .loading]
+    var voiceRows: [VoiceRowState] = VoiceCatalog.curatedVoiceIDs.map { _ in .loading }
     var selectedVoice: VoiceOption?
 
     /// Readable local audio file for the Wish's existing VoiceAsset, if any. Checking
