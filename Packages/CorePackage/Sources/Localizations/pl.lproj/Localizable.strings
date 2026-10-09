@@ -166,9 +166,10 @@
 "wish_detail_media_unavailable" = "Plik jest niedostępny";
 
 /* Example Wishes */
-"example_wishes_title" = "Przykładowe życzenia";
-"example_wishes_subtitle" = "Zobacz, jak działa WishSpeaker";
+"example_wishes_title" = "Poznaj WishSpeaker";
+"example_wishes_subtitle" = "Zobacz, jak wyjątkowo mogą brzmieć Twoje życzenia.";
 "example_wishes_metadata_format" = "%@ · %@";
+"experience_cta_button" = "Stwórz własne życzenia";
 
 /* Wish Card (shared) */
 "wish_card_wish_for" = "Życzenia dla %@";

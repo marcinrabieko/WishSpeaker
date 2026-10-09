@@ -17,6 +17,12 @@ public struct VoiceAsset: Identifiable, Hashable, Sendable {
     /// created before this field existed.
     public let wordTimestampsFileReference: String?
 
+    /// Resolves `audioURL` to this URL directly instead of looking up
+    /// `audioFileReference` in Documents — for a VoiceAsset backed by a file bundled
+    /// into the app (e.g. a showcase/demo recording) rather than one the user
+    /// generated. `nil` for every normal, user-generated VoiceAsset.
+    public let bundledAudioURL: URL?
+
     public init(
         id: UUID = UUID(),
         audioFileReference: String,
@@ -24,7 +30,8 @@ public struct VoiceAsset: Identifiable, Hashable, Sendable {
         voiceDisplayName: String,
         duration: TimeInterval,
         createdAt: Date = Date(),
-        wordTimestampsFileReference: String? = nil
+        wordTimestampsFileReference: String? = nil,
+        bundledAudioURL: URL? = nil
     ) {
         self.id = id
         self.audioFileReference = audioFileReference
@@ -33,5 +40,6 @@ public struct VoiceAsset: Identifiable, Hashable, Sendable {
         self.duration = duration
         self.createdAt = createdAt
         self.wordTimestampsFileReference = wordTimestampsFileReference
+        self.bundledAudioURL = bundledAudioURL
     }
 }

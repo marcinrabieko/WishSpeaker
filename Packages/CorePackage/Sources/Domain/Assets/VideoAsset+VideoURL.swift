@@ -1,10 +1,16 @@
 import Foundation
 
 public extension VideoAsset {
-    /// Resolves `videoFileReference` to a playable file URL, checking the app's
-    /// Documents directory first (where generated videos are saved) and falling back
-    /// to `nil` if nothing exists yet.
+    /// Resolves `videoFileReference` to a playable file URL. `bundledVideoURL`, when
+    /// set, wins outright — a demo VideoAsset's file lives in the app bundle, not
+    /// Documents, so there's nothing to look up there. Otherwise checks the app's
+    /// Documents directory (where generated videos are saved) and falls back to `nil`
+    /// if nothing exists yet.
     var videoURL: URL? {
+        if let bundledVideoURL {
+            return bundledVideoURL
+        }
+
         guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
             return nil
         }
@@ -19,8 +25,13 @@ public extension VideoAsset {
     }
 
     /// Resolves `thumbnailReference` to a file URL the same way `videoURL` does —
-    /// `nil` when there's no reference at all, or when the referenced file is missing.
+    /// `bundledThumbnailURL` wins outright when set, otherwise `nil` when there's no
+    /// reference at all, or when the referenced file is missing.
     var thumbnailURL: URL? {
+        if let bundledThumbnailURL {
+            return bundledThumbnailURL
+        }
+
         guard let thumbnailReference else {
             return nil
         }
