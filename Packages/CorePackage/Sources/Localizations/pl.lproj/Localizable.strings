@@ -112,6 +112,7 @@
 "video_view_title" = "Kartka wideo";
 "video_view_generate_button" = "Wygeneruj wideo";
 "video_view_generation_error" = "Nie udało się wygenerować wideo. Spróbuj ponownie.";
+"video_view_reuse_existing_audio_notice" = "Użyjemy istniejącego nagrania";
 
 /* Package Selection */
 "package_selection_title" = "Wybierz pakiet";
@@ -158,6 +159,10 @@
 "wish_detail_create_video_button" = "Stwórz kartę wideo";
 "wish_detail_create_video_subtitle" = "Stwórz kartkę wideo, którą możesz udostępnić";
 "wish_detail_share_button" = "Udostępnij";
+"wish_detail_share_as_menu_title" = "Udostępnij jako";
+"wish_detail_share_as_video" = "Wideo";
+"wish_detail_share_as_audio" = "Nagranie audio";
+"wish_detail_share_as_text" = "Tekst życzeń";
 "wish_detail_media_unavailable" = "Plik jest niedostępny";
 
 /* Example Wishes */

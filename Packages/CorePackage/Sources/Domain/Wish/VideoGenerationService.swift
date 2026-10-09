@@ -8,20 +8,40 @@ import UIKit
 
 public struct VideoGenerationRequest: Sendable {
     public let text: String
-    public let voiceGender: VoiceGender
-    public let providerVoiceID: String?
     public let occasionKind: OccasionKind?
+
+    /// Needed only to synthesize fresh speech — `nil` whenever `existingAudio` is set,
+    /// since reusing an already-generated recording performs no new text-to-speech call.
+    public let voiceGender: VoiceGender?
+    public let providerVoiceID: String?
+
+    /// An already-generated VoiceAsset's audio data, reused verbatim instead of
+    /// synthesizing new speech — keeps the original voice/intonation/pace and avoids a
+    /// redundant ElevenLabs call. `nil` triggers the normal text-to-speech generation.
+    public let existingAudio: ExistingAudio?
 
     public init(
         text: String,
-        voiceGender: VoiceGender,
+        occasionKind: OccasionKind? = nil,
+        voiceGender: VoiceGender? = nil,
         providerVoiceID: String? = nil,
-        occasionKind: OccasionKind? = nil
+        existingAudio: ExistingAudio? = nil
     ) {
         self.text = text
+        self.occasionKind = occasionKind
         self.voiceGender = voiceGender
         self.providerVoiceID = providerVoiceID
-        self.occasionKind = occasionKind
+        self.existingAudio = existingAudio
+    }
+
+    public struct ExistingAudio: Sendable {
+        public let data: Data
+        public let fileExtension: String
+
+        public init(data: Data, fileExtension: String) {
+            self.data = data
+            self.fileExtension = fileExtension
+        }
     }
 }
 
@@ -43,9 +63,11 @@ public struct LiveVideoGenerationService: VideoGenerationService {
         let dto = GenerateVideoRequestDTO(
             text: request.text,
             language: SupportedLanguage.current.rawValue,
-            voiceGender: request.voiceGender == .male ? "male" : "female",
+            voiceGender: request.voiceGender.map { $0 == .male ? "male" : "female" },
             voiceId: request.providerVoiceID,
-            occasionKind: request.occasionKind?.rawValue
+            occasionKind: request.occasionKind?.rawValue,
+            existingAudioBase64: request.existingAudio?.data.base64EncodedString(),
+            existingAudioFormat: request.existingAudio?.fileExtension
         )
 
         let videoData = try await apiClient.postRawData("/api/generateVideo", body: dto)

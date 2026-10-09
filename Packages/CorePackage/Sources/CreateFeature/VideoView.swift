@@ -17,7 +17,11 @@ public struct VideoView: View {
 
                 wishTextSection
 
-                voiceSelectionSection
+                if viewModel.reusableVoiceAsset != nil {
+                    reuseExistingAudioNotice
+                } else {
+                    voiceSelectionSection
+                }
             }
             .padding(.horizontal, WSSpacing.horizontalPadding)
             .padding(.top, WSSpacing.xxs)
@@ -53,6 +57,18 @@ public struct VideoView: View {
             .font(.system(size: 15))
             .foregroundStyle(Color.wsPrimaryText.opacity(0.85))
             .lineSpacing(4)
+    }
+
+    private var reuseExistingAudioNotice: some View {
+        HStack(spacing: WSSpacing.xs) {
+            Image(systemName: "waveform")
+                .font(.system(size: 13))
+
+            Text(L10n.videoViewReuseExistingAudioNotice)
+                .font(.system(size: 14, weight: .medium))
+        }
+        .foregroundColor(.wsPrimary)
+        .padding(.top, WSSpacing.sm)
     }
 
     private var voiceSelectionSection: some View {

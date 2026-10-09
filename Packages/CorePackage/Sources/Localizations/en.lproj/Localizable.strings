@@ -112,6 +112,7 @@
 "video_view_title" = "Video Card";
 "video_view_generate_button" = "Generate Video";
 "video_view_generation_error" = "We couldn't generate the video. Please try again.";
+"video_view_reuse_existing_audio_notice" = "We'll use your existing recording";
 
 /* Package Selection */
 "package_selection_title" = "Select a Package";
@@ -158,6 +159,10 @@
 "wish_detail_create_video_button" = "Create Video Card";
 "wish_detail_create_video_subtitle" = "Create a shareable video greeting";
 "wish_detail_share_button" = "Share";
+"wish_detail_share_as_menu_title" = "Share as";
+"wish_detail_share_as_video" = "Video";
+"wish_detail_share_as_audio" = "Audio Recording";
+"wish_detail_share_as_text" = "Wish Text";
 "wish_detail_media_unavailable" = "This file is unavailable";
 
 /* Example Wishes */

@@ -118,25 +118,46 @@ public struct WishResultView: View {
         videoPlayer = AVPlayer(url: videoURL)
     }
 
-    /// Three distinct ShareLinks rather than one generic one — ShareLink's `item`
-    /// closure is tied to a single Transferable type per call, and video/audio file
-    /// URLs vs. plain wish text aren't unifiable without losing the "share the actual
-    /// local file, never regenerate/re-encode/upload" behavior for media. Renders
-    /// nothing when the referenced media file doesn't exist on disk — the "file
-    /// unavailable" state is already communicated via the overlay in `mediaSection`,
-    /// so a disabled/erroring toolbar button would just repeat that message.
+    /// Text-only Wishes share immediately via a plain ShareLink — there's only one
+    /// possible format, so a format-picker Menu would be a pointless extra tap. Once a
+    /// Wish has audio and/or video, the same toolbar button becomes a Menu offering only
+    /// the formats actually available, Video > Audio > Text, so the format picker and
+    /// the Share Sheet never both try to present at once — the Share Sheet only opens
+    /// after a format is chosen from the Menu.
+    ///
+    /// Each case gets its own ShareLink rather than one generic call — ShareLink's
+    /// `item` closure is tied to a single Transferable type per call, and a video/audio
+    /// file URL vs. the plain wish text aren't unifiable without losing the "share the
+    /// actual local file, never regenerate/re-encode/upload" behavior for media.
     @ViewBuilder
     private var shareButton: some View {
-        if let videoURL = viewModel.wish.videoAsset?.videoURL {
-            ShareLink(item: videoURL) {
-                Label(L10n.wishDetailShareButton, systemImage: "square.and.arrow.up")
-            }
-        } else if let audioURL = viewModel.wish.voiceAsset?.audioURL {
-            ShareLink(item: audioURL) {
-                Label(L10n.wishDetailShareButton, systemImage: "square.and.arrow.up")
-            }
-        } else if viewModel.wish.videoAsset == nil && viewModel.wish.voiceAsset == nil {
+        let videoURL = viewModel.wish.videoAsset?.videoURL
+        let audioURL = viewModel.wish.voiceAsset?.audioURL
+
+        if videoURL == nil && audioURL == nil {
             ShareLink(item: viewModel.wish.text) {
+                Label(L10n.wishDetailShareButton, systemImage: "square.and.arrow.up")
+            }
+        } else {
+            Menu {
+                Section(L10n.wishDetailShareAsMenuTitle) {
+                    if let videoURL {
+                        ShareLink(item: videoURL) {
+                            Label(L10n.wishDetailShareAsVideo, systemImage: "film")
+                        }
+                    }
+
+                    if let audioURL {
+                        ShareLink(item: audioURL) {
+                            Label(L10n.wishDetailShareAsAudio, systemImage: "waveform")
+                        }
+                    }
+
+                    ShareLink(item: viewModel.wish.text) {
+                        Label(L10n.wishDetailShareAsText, systemImage: "text.alignleft")
+                    }
+                }
+            } label: {
                 Label(L10n.wishDetailShareButton, systemImage: "square.and.arrow.up")
             }
         }

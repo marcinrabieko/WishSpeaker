@@ -1,5 +1,6 @@
 import Dependencies
 import Domain
+import Foundation
 import Localizations
 import Observation
 
@@ -12,6 +13,16 @@ public final class VideoViewModel {
 
     var voiceRows: [VoiceRowState] = [.loading, .loading]
     var selectedVoice: VoiceOption?
+
+    /// Readable local audio file for the Wish's existing VoiceAsset, if any. Checking
+    /// the file (not just the model) means a VoiceAsset whose file was deleted or
+    /// corrupted falls back to the normal narrator-selection + fresh-generation flow
+    /// instead of silently failing to render a video.
+    private(set) var reusableVoiceAsset: VoiceAsset?
+
+    /// True once the existing-audio check has run — gates showing either the reuse
+    /// notice or the narrator picker, so neither flashes before the file check finishes.
+    private(set) var hasResolvedExistingAudio = false
 
     var isGenerating = false
     var generationError: String?
@@ -36,13 +47,24 @@ public final class VideoViewModel {
     public init() {}
 
     var isGenerateEnabled: Bool {
-        selectedVoice != nil && !isGenerating
+        (reusableVoiceAsset != nil || selectedVoice != nil) && !isGenerating
     }
 
     func didAppear() {
         occasionTitle = creationManager.selectedOccasion?.title ?? creationManager.currentForm.occasion
         variantDisplayName = (creationManager.selectedVariant ?? .natural).displayName
         wishText = creationManager.generatedText
+
+        guard !hasResolvedExistingAudio else {
+            return
+        }
+
+        hasResolvedExistingAudio = true
+
+        if let existingVoiceAsset = creationManager.generatedVoiceAsset, existingVoiceAsset.audioURL != nil {
+            reusableVoiceAsset = existingVoiceAsset
+            return
+        }
 
         guard voiceRows.allSatisfy(\.isLoading) else {
             return
@@ -65,21 +87,14 @@ public final class VideoViewModel {
     }
 
     func didTapGenerate() {
-        guard let selectedVoice else { return }
+        guard let request = makeGenerationRequest() else { return }
 
         generationError = nil
         isGenerating = true
 
         Task {
             do {
-                let videoAsset = try await videoGenerationService.generateVideo(
-                    for: VideoGenerationRequest(
-                        text: wishText,
-                        voiceGender: selectedVoice.gender,
-                        providerVoiceID: selectedVoice.providerVoiceID,
-                        occasionKind: creationManager.selectedOccasion?.kind ?? creationManager.occasionKind
-                    )
-                )
+                let videoAsset = try await videoGenerationService.generateVideo(for: request)
 
                 creationManager.generatedVideoAsset = videoAsset
                 saveToLibrary(videoAsset: videoAsset)
@@ -90,6 +105,35 @@ public final class VideoViewModel {
                 generationError = L10n.videoViewGenerationError
             }
         }
+    }
+
+    /// Reusing an existing VoiceAsset never touches `selectedVoice` (the narrator
+    /// picker is skipped entirely), so the two cases build their own request rather than
+    /// sharing the voiceGender/providerVoiceID fields a fresh-generation request needs.
+    private func makeGenerationRequest() -> VideoGenerationRequest? {
+        if let reusableVoiceAsset {
+            guard let audioURL = reusableVoiceAsset.audioURL, let audioData = try? Data(contentsOf: audioURL) else {
+                return nil
+            }
+
+            return VideoGenerationRequest(
+                text: wishText,
+                occasionKind: creationManager.selectedOccasion?.kind ?? creationManager.occasionKind,
+                existingAudio: VideoGenerationRequest.ExistingAudio(
+                    data: audioData,
+                    fileExtension: audioURL.pathExtension
+                )
+            )
+        }
+
+        guard let selectedVoice else { return nil }
+
+        return VideoGenerationRequest(
+            text: wishText,
+            voiceGender: selectedVoice.gender,
+            providerVoiceID: selectedVoice.providerVoiceID,
+            occasionKind: creationManager.selectedOccasion?.kind ?? creationManager.occasionKind
+        )
     }
 
     /// Persists the video directly to the Library the moment generation succeeds,
@@ -108,7 +152,7 @@ public final class VideoViewModel {
             context: form.note.isEmpty ? nil : form.note,
             variant: creationManager.selectedVariant ?? .natural,
             text: wishText,
-            voiceAsset: creationManager.generatedVoiceAsset,
+            voiceAsset: reusableVoiceAsset ?? creationManager.generatedVoiceAsset,
             videoAsset: videoAsset
         )
 
