@@ -102,12 +102,12 @@ public final class VoiceViewModel {
         }
     }
 
-    /// Persists the voice directly to the Library — this screen is reached both via
-    /// CreateView (which separately saves on its own didAppear) and directly from
-    /// WishDetailPlaceholderView's "Create Voice" action, which never visits CreateView
-    /// at all. Saving here unconditionally covers both paths; `save(_:)` updates the
-    /// existing Library row in place when `currentWishID` already exists, so this never
-    /// creates a duplicate for the CreateView path.
+    /// Persists the voice directly to the Library the moment generation succeeds,
+    /// before navigating back to WishResultView — belt-and-suspenders alongside
+    /// WishResultViewModel.didAppear(), which also saves on return if it sees a new
+    /// voiceAsset creationManager doesn't yet have reflected in the Library. `save(_:)`
+    /// updates the existing Library row in place when `currentWishID` already exists,
+    /// so neither save path creates a duplicate.
     private func saveToLibrary(voiceAsset: VoiceAsset) {
         let form = creationManager.currentForm
         let wish = Wish(

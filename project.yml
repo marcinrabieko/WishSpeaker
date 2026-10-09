@@ -64,10 +64,6 @@ targets:
       - package: CorePackage
         product: CreateFeature
       - package: CorePackage
-        product: PackageSelectionFeature
-      - package: CorePackage
-        product: FinalWishFeature
-      - package: CorePackage
         product: LibraryFeature
       - package: CorePackage
         product: ExampleWishesFeature

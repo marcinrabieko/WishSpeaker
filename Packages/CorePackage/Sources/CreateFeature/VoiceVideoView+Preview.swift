@@ -1,11 +1,5 @@
 import SwiftUI
 
-#Preview {
-    NavigationStack {
-        CreateView()
-    }
-}
-
 #Preview("Voice") {
     NavigationStack {
         VoiceView()

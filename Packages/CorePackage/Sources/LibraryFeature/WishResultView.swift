@@ -7,26 +7,44 @@ import SharedFeatureComponents
 import SwiftUI
 import UIKit
 
-/// The detail screen for a saved Wish. Copy/Edit are live; Create Voice/Create Video
-/// Card are clean navigation boundaries for a future premium creation flow.
-struct WishDetailPlaceholderView: View {
-    @State private var viewModel: WishDetailViewModel
+/// The single result screen for a Wish — reached both by tapping a saved Wish in
+/// LibraryView and at the end of the Occasion → Form → Wishes creation flow. The two
+/// origins show exactly the same data and the same decisions (copy, edit, share, create
+/// voice/video), so they share one view and one WishResultViewModel; `origin` only
+/// changes Back's behavior (see WishResultViewModel.didTapBackInCreationFlow).
+public struct WishResultView: View {
+    @State private var viewModel: WishResultViewModel
+    private let origin: WishResultOrigin
+
     @State private var isCopied = false
-    @State private var isEditing = false
-    @State private var draftText = ""
     @State private var navigateToVoice = false
     @State private var navigateToVideo = false
 
-    // Held in @State rather than created inline — see CreateView's own videoPlayer
-    // property for why recreating AVPlayer(url:) on every body re-render produces a
-    // black frame with audio still playing.
+    @Environment(\.createFlowPath) private var createFlowPath
+
+    // Held in @State rather than created inline — recreating AVPlayer(url:) on every
+    // body re-render (e.g. from unrelated @Observable changes) produces a black frame
+    // with audio still playing: the video track's decoder never got a chance to finish
+    // starting up before being torn down and replaced again.
     @State private var videoPlayer: AVPlayer?
 
-    init(wish: Wish) {
-        _viewModel = State(initialValue: WishDetailViewModel(wish: wish))
+    public init(wish: Wish) {
+        _viewModel = State(initialValue: WishResultViewModel(wish: wish))
+        origin = .library
     }
 
-    var body: some View {
+    private init(creationFlow: Void) {
+        _viewModel = State(initialValue: WishResultViewModel(fromCreationDraft: ()))
+        origin = .creationFlow
+    }
+
+    /// The `.create` destination at the end of the Occasion → Form → Wishes flow —
+    /// finalizes whatever WishCreationManager has been accumulating into a Wish.
+    public static func fromCreationFlow() -> WishResultView {
+        WishResultView(creationFlow: ())
+    }
+
+    public var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: WSSpacing.md) {
                 metadata
@@ -40,6 +58,10 @@ struct WishDetailPlaceholderView: View {
                 if viewModel.wish.videoAsset == nil {
                     createSomethingSpecialSection
                 }
+
+                if !viewModel.isSaved {
+                    saveForLaterButton
+                }
             }
             .padding(.horizontal, WSSpacing.horizontalPadding)
             .padding(.vertical, WSSpacing.md)
@@ -47,7 +69,7 @@ struct WishDetailPlaceholderView: View {
         .background(Color.wsBackground)
         .navigationTitle(viewModel.wish.recipient)
         .navigationBarTitleDisplayMode(.large)
-        .wsBackButton()
+        .modifier(BackButtonModifier(origin: origin, viewModel: viewModel, path: createFlowPath))
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 shareButton
@@ -176,8 +198,8 @@ struct WishDetailPlaceholderView: View {
     /// so Edit only ever shows up (via textActions) while both are still nil.
     @ViewBuilder
     private var wishTextSection: some View {
-        if isEditing {
-            TextEditor(text: $draftText)
+        if viewModel.isEditing {
+            TextEditor(text: $viewModel.draftText)
                 .font(.system(size: 16))
                 .foregroundColor(.wsPrimaryText)
                 .scrollContentBackground(.hidden)
@@ -212,17 +234,17 @@ struct WishDetailPlaceholderView: View {
 
             if viewModel.wish.voiceAsset == nil && viewModel.wish.videoAsset == nil {
                 Button {
-                    if isEditing {
-                        viewModel.didSaveEditedText(draftText)
-                        isEditing = false
+                    if viewModel.isEditing {
+                        viewModel.didSaveEditedText(viewModel.draftText)
+                        viewModel.isEditing = false
                     } else {
-                        draftText = viewModel.wish.text
-                        isEditing = true
+                        viewModel.draftText = viewModel.wish.text
+                        viewModel.isEditing = true
                     }
                 } label: {
                     Label(
-                        isEditing ? L10n.createViewEditDoneButton : L10n.wishDetailEditButton,
-                        systemImage: isEditing ? "checkmark" : "pencil"
+                        viewModel.isEditing ? L10n.createViewEditDoneButton : L10n.wishDetailEditButton,
+                        systemImage: viewModel.isEditing ? "checkmark" : "pencil"
                     )
                     .font(.system(size: 14, weight: .medium))
                     .foregroundColor(.wsPrimaryText.opacity(0.75))
@@ -259,5 +281,39 @@ struct WishDetailPlaceholderView: View {
             }
         }
         .padding(.top, WSSpacing.sm)
+    }
+
+    private var saveForLaterButton: some View {
+        Button {
+            viewModel.didTapSaveForLater()
+        } label: {
+            Label(L10n.createViewSaveForLaterButton, systemImage: "bookmark")
+                .font(.system(size: 14, weight: .medium))
+                .foregroundStyle(Color.wsSecondaryText)
+        }
+        .buttonStyle(.plain)
+        .frame(maxWidth: .infinity, alignment: .center)
+        .padding(.top, WSSpacing.xs)
+    }
+}
+
+/// `.wsBackButton()` (plain pop) for a Wish opened from the Library vs.
+/// `.wsBackButton(customAction:)` (pop-to-Start once a voice/video exists) for the
+/// creation flow — kept as a ViewModifier rather than an inline `if` in `body` because
+/// `wsBackButton`'s two overloads aren't both callable from a single `@ViewBuilder` if
+/// branch without it.
+private struct BackButtonModifier: ViewModifier {
+    let origin: WishResultOrigin
+    let viewModel: WishResultViewModel
+    let path: Binding<NavigationPath>
+
+    func body(content: Content) -> some View {
+        switch origin {
+        case .library:
+            content.wsBackButton()
+
+        case .creationFlow:
+            content.wsBackButton(customAction: { viewModel.didTapBackInCreationFlow(path: path) })
+        }
     }
 }

@@ -95,18 +95,8 @@
 "wishes_use_this_wish_button" = "Użyj tych życzeń";
 
 /* Create View */
-"create_view_title" = "Utwórz";
-"create_view_finished_title" = "Twoja kartka";
-"create_view_edit_button" = "Edytuj";
 "create_view_edit_done_button" = "Gotowe";
-"create_view_make_it_special_title" = "Stwórz coś wyjątkowego";
-"create_view_voice_title" = "Głos";
-"create_view_voice_subtitle" = "Zamień życzenia w nagranie głosowe";
-"create_view_video_card_title" = "Kartka wideo";
-"create_view_video_card_subtitle" = "Stwórz kartkę wideo, którą możesz udostępnić";
 "create_view_save_for_later_button" = "Zapisz na później";
-"create_view_saved_confirmation" = "Zapisano";
-"create_view_auto_saved_disclaimer" = "Wygenerowana treść jest automatycznie zapisywana w Twojej bibliotece.";
 
 /* Voice Selection */
 "voice_view_title" = "Głos";

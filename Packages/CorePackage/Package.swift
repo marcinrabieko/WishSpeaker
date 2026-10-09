@@ -86,7 +86,6 @@ let package = Package(
                 "OccasionSelectionFeature",
                 "FormFeature",
                 "WishesFeature",
-                "CreateFeature",
                 "ExampleWishesFeature",
                 "LibraryFeature",
                 dependenciesProduct

@@ -1,15 +1,13 @@
 import Foundation
 
-/// A step in the Start → Occasion → Form → Wishes → Create → Voice/VideoCard flow,
-/// pushed onto the shared NavigationPath owned by the app's root NavigationStack.
-/// Keeping this flat (one enum, one path) lets any screen in the chain pop all the
-/// way back to Start after a terminal action (e.g. a successful Voice generation)
-/// without needing to know how many screens are actually on the stack.
+/// A step in the Start → Occasion → Form → Wishes → Create flow, pushed onto the shared
+/// NavigationPath owned by the app's root NavigationStack. Voice/Video generation is not
+/// a route on this path — WishResultView (the `.create` destination) reaches VoiceView/
+/// VideoView through its own local `navigationDestination(isPresented:)` instead, the
+/// same way LibraryFeature's WishResultView(wish:) does.
 public enum CreateFlowRoute: Hashable, Sendable {
     case occasionSelection
     case form
     case wishes
     case create
-    case voice
-    case videoCard
 }

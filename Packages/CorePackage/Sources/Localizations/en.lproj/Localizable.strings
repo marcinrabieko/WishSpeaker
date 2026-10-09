@@ -95,18 +95,8 @@
 "wishes_use_this_wish_button" = "Use this wish";
 
 /* Create View */
-"create_view_title" = "Create";
-"create_view_finished_title" = "Your Card";
-"create_view_edit_button" = "Edit";
 "create_view_edit_done_button" = "Done";
-"create_view_make_it_special_title" = "Make it special";
-"create_view_voice_title" = "Voice";
-"create_view_voice_subtitle" = "Turn your wish into a spoken greeting";
-"create_view_video_card_title" = "Video Card";
-"create_view_video_card_subtitle" = "Create a shareable video greeting";
 "create_view_save_for_later_button" = "Save for later";
-"create_view_saved_confirmation" = "Saved";
-"create_view_auto_saved_disclaimer" = "Generated content is automatically saved to your library.";
 
 /* Voice Selection */
 "voice_view_title" = "Voice";

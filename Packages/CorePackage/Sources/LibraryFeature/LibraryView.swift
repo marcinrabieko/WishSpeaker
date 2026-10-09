@@ -47,7 +47,7 @@ public struct LibraryView: View {
             viewModel.didAppear()
         }
         .navigationDestination(item: $presentedWish) { wish in
-            WishDetailPlaceholderView(wish: wish)
+            WishResultView(wish: wish)
         }
     }
 

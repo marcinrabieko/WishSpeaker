@@ -62,9 +62,9 @@ public final class WishCreationManager {
     }
 
     /// Loads an already-saved Wish's state into the draft, e.g. before navigating from
-    /// LibraryFeature's WishDetailPlaceholderView into VoiceView to add a voice to a
-    /// Wish that was saved text-only. Keeping `id` stable means a later save/generation
-    /// updates that same Library row instead of creating a duplicate.
+    /// LibraryFeature's WishResultView into VoiceView to add a voice to a Wish that was
+    /// saved text-only. Keeping `id` stable means a later save/generation updates that
+    /// same Library row instead of creating a duplicate.
     public func loadExistingWish(_ wish: Wish) {
         currentForm = WishForm(occasion: wish.occasionTitle, relation: wish.recipient, note: wish.context ?? "")
         generatedText = wish.text

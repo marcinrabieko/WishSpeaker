@@ -3,15 +3,15 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 63;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1D05E3779AD64D115E33CCD0 /* ExampleWishesFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 7389B349A52DDAB5AB9D845C /* ExampleWishesFeature */; };
+		21D11BC06BEABD987274481C /* ExampleWishesFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 7389B349A52DDAB5AB9D845C /* ExampleWishesFeature */; };
 		2B63765D2BEE2A475FB8C9D0 /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 9C4EBF1A36781F70E0F43D15 /* DesignSystem */; };
 		3D86EBC3DF2A2C44FE223CD6 /* OccasionSelectionFeature in Frameworks */ = {isa = PBXBuildFile; productRef = E784AA2910E71566435D7C0A /* OccasionSelectionFeature */; };
 		46B672AF80ADB1DEAEDD50F5 /* WishSpeakerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F375D255DC2D1FFC8147A4F /* WishSpeakerApp.swift */; };
-		7AAFB174217A231096E2EC6C /* LibraryFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 0FB23A92C3BC0662E37FB976 /* LibraryFeature */; };
+		8727F1239ACDD65F1249CFD8 /* LibraryFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 0FB23A92C3BC0662E37FB976 /* LibraryFeature */; };
 		89C9FE4203777E2EBBE03E45 /* StartFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 30DB3FBA9029DAD9FF445A40 /* StartFeature */; };
 		8E5D92DF2C5DD87D408DBD20 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 853D5FD85860DA15C1F552E8 /* InfoPlist.strings */; };
 		AA670CA5568B241ED463BC95 /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = 08E554592AC0872150E5FE0F /* Domain */; };
@@ -24,7 +24,7 @@
 /* Begin PBXFileReference section */
 		075038B486D6552521D95CEC /* CorePackage */ = {isa = PBXFileReference; lastKnownFileType = folder; name = CorePackage; path = Packages/CorePackage; sourceTree = SOURCE_ROOT; };
 		1F375D255DC2D1FFC8147A4F /* WishSpeakerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishSpeakerApp.swift; sourceTree = "<group>"; };
-		30E5035B2C6C46FFC253524F /* WishSpeaker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WishSpeaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		30E5035B2C6C46FFC253524F /* WishSpeaker.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = WishSpeaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4AC1757CA53B111F3B5ACA45 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		82026C25CEA0F735B325B770 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		970C696EDBF10CA27E86ED65 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
@@ -44,8 +44,8 @@
 				CEC0D105C88006A85387F804 /* FormFeature in Frameworks */,
 				C3FD41F0EA0C2370827B97DE /* WishesFeature in Frameworks */,
 				AC654AF3AE67F10ED977ABAF /* CreateFeature in Frameworks */,
-				7AAFB174217A231096E2EC6C /* LibraryFeature in Frameworks */,
-				1D05E3779AD64D115E33CCD0 /* ExampleWishesFeature in Frameworks */,
+				8727F1239ACDD65F1249CFD8 /* LibraryFeature in Frameworks */,
+				21D11BC06BEABD987274481C /* ExampleWishesFeature in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -181,6 +181,7 @@
 			packageReferences = (
 				4F44DA517657BA9746F58B35 /* XCLocalSwiftPackageReference "Packages/CorePackage" */,
 			);
+			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -232,7 +233,6 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Targets/MobileApp/Resources/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = WishSpeaker;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -328,7 +328,6 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Targets/MobileApp/Resources/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = WishSpeaker;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

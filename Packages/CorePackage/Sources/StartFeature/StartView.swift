@@ -1,4 +1,3 @@
-import CreateFeature
 import DesignSystem
 import Domain
 import ExampleWishesFeature
@@ -107,13 +106,7 @@ public struct StartView: View {
                 WishesView()
 
             case .create:
-                CreateView()
-
-            case .voice:
-                VoiceView()
-
-            case .videoCard:
-                VideoView()
+                WishResultView.fromCreationFlow()
             }
         }
     }

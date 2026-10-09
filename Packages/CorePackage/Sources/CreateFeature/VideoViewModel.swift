@@ -93,12 +93,12 @@ public final class VideoViewModel {
         }
     }
 
-    /// Persists the video directly to the Library — this screen is reached both via
-    /// CreateView (which separately saves on its own didAppear) and directly from
-    /// WishDetailPlaceholderView's "Create Video Card" action, which never visits
-    /// CreateView at all. Saving here unconditionally covers both paths; `save(_:)`
+    /// Persists the video directly to the Library the moment generation succeeds,
+    /// before navigating back to WishResultView — belt-and-suspenders alongside
+    /// WishResultViewModel.didAppear(), which also saves on return if it sees a new
+    /// videoAsset creationManager doesn't yet have reflected in the Library. `save(_:)`
     /// updates the existing Library row in place when `currentWishID` already exists,
-    /// so this never creates a duplicate for the CreateView path.
+    /// so neither save path creates a duplicate.
     private func saveToLibrary(videoAsset: VideoAsset) {
         let form = creationManager.currentForm
         let wish = Wish(
