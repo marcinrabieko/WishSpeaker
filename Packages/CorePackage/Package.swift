@@ -158,6 +158,10 @@ let package = Package(
                 "SharedFeatureComponents",
                 dependenciesProduct
             ],
+            resources: [
+                .copy("Demo/birthday_demo.mp4"),
+                .copy("Demo/thankyou_demo.mp3")
+            ],
             plugins: [swiftLintPlugin]
         )
     ]
