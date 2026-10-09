@@ -161,7 +161,9 @@ let package = Package(
             resources: [
                 .copy("Demo/birthday_demo.mp4"),
                 .copy("Demo/birthday_demo_thumbnail.jpg"),
-                .copy("Demo/thankyou_demo.mp3")
+                .copy("Demo/thankyou_demo.mp3"),
+                .copy("Demo/wedding_demo.mp4"),
+                .copy("Demo/wedding_demo_thumbnail.jpg")
             ],
             plugins: [swiftLintPlugin]
         )
