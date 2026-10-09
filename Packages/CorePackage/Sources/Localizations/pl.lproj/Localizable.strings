@@ -147,6 +147,7 @@
 
 /* Wish Detail */
 "wish_detail_copy_button" = "Kopiuj";
+"wish_detail_copy_text_button" = "Kopiuj tekst";
 "wish_detail_copied_confirmation" = "Skopiowano";
 "wish_detail_edit_button" = "Edytuj";
 "wish_detail_voice_section_title" = "Głos";

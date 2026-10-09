@@ -120,6 +120,7 @@ let package = Package(
                 "Domain",
                 "DesignSystem",
                 "Localizations",
+                "SharedFeatureComponents",
                 "CreateFeature",
                 dependenciesProduct
             ],

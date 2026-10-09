@@ -54,14 +54,22 @@ public struct WishResultView: View {
     public var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: WSSpacing.md) {
-                metadataRow
+                metadata
 
                 mediaSection
 
                 wishTextSection
 
+                // The parent VStack's own spacing (WSSpacing.md = 24pt) already sits
+                // between every pair of siblings here — these two paddings only add the
+                // few extra points needed to hit the exact 16pt / 32pt specified gaps,
+                // rather than re-deriving the full gap from zero.
+                textActionsRow
+                    .padding(.top, 16 - WSSpacing.md)
+
                 if viewModel.wish.videoAsset == nil {
                     createSomethingSpecialSection
+                        .padding(.top, 32 - WSSpacing.md)
                 }
 
                 if !viewModel.isSaved || isJustSaved {
@@ -134,17 +142,9 @@ public struct WishResultView: View {
         }
     }
 
-    /// Metadata leading, the Copy/Edit glass action group trailing — always one row.
-    /// The action group never shrinks or wraps (fixedSize + its own layoutPriority), so
-    /// metadata is the only side that gives: it wraps up to 2 lines, then tail-truncates
-    /// rather than ever pushing the glass group off-screen or down to its own row.
-    private var metadataRow: some View {
-        HStack(alignment: .center, spacing: 12) {
-            metadata
-            glassActionGroup
-        }
-    }
-
+    /// Pure metadata, full width, independent of any action — Copy/Edit live directly
+    /// under the wish text instead (see textActionsRow), since they act on the text,
+    /// not on "which occasion/variant/date is this".
     private var metadata: some View {
         Text(
             WishMetadataText.format(
@@ -155,43 +155,20 @@ public struct WishResultView: View {
         )
         .font(.system(size: 15))
         .foregroundColor(.wsSecondaryText)
-        .lineLimit(2)
-        .truncationMode(.tail)
-        .layoutPriority(0)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    /// Copy (always) + Edit (only while there's no voice/video yet, since editing text
-    /// after generation would desync it from the recorded audio) in one shared glass
-    /// capsule. True `glassEffect`/`GlassEffectContainer` on iOS 26+; `.ultraThinMaterial`
-    /// is the closest native stand-in below that — never a hand-rolled blur/opacity/
-    /// gradient approximation of glass. Fixed size + a higher layoutPriority than
-    /// `metadata` means this capsule never shrinks or wraps — metadata is the side
-    /// that gives when the row runs out of width (see metadataRow).
-    @ViewBuilder
-    private var glassActionGroup: some View {
-        if #available(iOS 26, *) {
-            GlassEffectContainer(spacing: WSSpacing.xs) {
-                HStack(spacing: WSSpacing.xs) {
-                    copyButton
-                    if canEditText {
-                        editButton
-                    }
-                }
+    /// Copy + Edit live directly under the full wish text now, not next to metadata —
+    /// each is its own glass pill (icon + label) rather than a shared capsule, so a
+    /// Copy-only wish (voice/video already generated) doesn't look like an accidental
+    /// lone icon. Left-aligned under the text, never wrapping onto its own row.
+    private var textActionsRow: some View {
+        HStack(spacing: 8) {
+            copyPill
+
+            if canEditText {
+                editPill
             }
-            .glassEffect(.regular, in: Capsule())
-            .fixedSize(horizontal: true, vertical: false)
-            .layoutPriority(1)
-        } else {
-            HStack(spacing: WSSpacing.xs) {
-                copyButton
-                if canEditText {
-                    editButton
-                }
-            }
-            .background(.ultraThinMaterial, in: Capsule())
-            .fixedSize(horizontal: true, vertical: false)
-            .layoutPriority(1)
         }
     }
 
@@ -199,27 +176,35 @@ public struct WishResultView: View {
         viewModel.wish.voiceAsset == nil && viewModel.wish.videoAsset == nil
     }
 
-    private var copyButton: some View {
-        Button {
+    private var copyPill: some View {
+        GlassPillButton(
+            title: isCopied ? L10n.wishDetailCopiedConfirmation : copyButtonTitle,
+            icon: isCopied ? "checkmark" : "doc.on.doc",
+            minHeight: 38
+        ) {
             UIPasteboard.general.string = viewModel.wish.text
             isCopied = true
 
             Task {
-                try? await Task.sleep(nanoseconds: 1_600_000_000)
+                try? await Task.sleep(nanoseconds: 2_000_000_000)
                 isCopied = false
             }
-        } label: {
-            Image(systemName: isCopied ? "checkmark" : "doc.on.doc")
-                .font(.system(size: 15, weight: .medium))
-                .foregroundColor(.wsPrimaryText)
-                .frame(width: WSSize.minTapTarget, height: WSSize.minTapTarget)
         }
-        .buttonStyle(.plain)
-        .accessibilityLabel(isCopied ? L10n.wishDetailCopiedConfirmation : L10n.wishDetailCopyButton)
     }
 
-    private var editButton: some View {
-        Button {
+    /// "Copy text" once media exists (Variant C) — disambiguates from copying the
+    /// audio/video itself, which Share already covers. Plain "Copy" otherwise
+    /// (Variants A/B), where the wish text is the only thing there is to copy.
+    private var copyButtonTitle: String {
+        canEditText ? L10n.wishDetailCopyButton : L10n.wishDetailCopyTextButton
+    }
+
+    private var editPill: some View {
+        GlassPillButton(
+            title: viewModel.isEditing ? L10n.createViewEditDoneButton : L10n.wishDetailEditButton,
+            icon: viewModel.isEditing ? "checkmark" : "pencil",
+            minHeight: 38
+        ) {
             if viewModel.isEditing {
                 viewModel.didSaveEditedText(viewModel.draftText)
                 viewModel.isEditing = false
@@ -229,14 +214,7 @@ public struct WishResultView: View {
                 viewModel.isEditing = true
                 isTextEditorFocused = true
             }
-        } label: {
-            Image(systemName: viewModel.isEditing ? "checkmark" : "pencil")
-                .font(.system(size: 15, weight: .medium))
-                .foregroundColor(.wsPrimaryText)
-                .frame(width: WSSize.minTapTarget, height: WSSize.minTapTarget)
         }
-        .buttonStyle(.plain)
-        .accessibilityLabel(viewModel.isEditing ? L10n.createViewEditDoneButton : L10n.wishDetailEditButton)
     }
 
     @ViewBuilder
@@ -359,7 +337,6 @@ public struct WishResultView: View {
                 navigateToVideo = true
             }
         }
-        .padding(.top, WSSpacing.sm)
     }
 
     private var saveForLaterButton: some View {
