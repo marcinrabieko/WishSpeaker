@@ -17,6 +17,7 @@ public struct WishResultView: View {
     private let origin: WishResultOrigin
 
     @State private var isCopied = false
+    @State private var isJustSaved = false
     @State private var navigateToVoice = false
     @State private var navigateToVideo = false
 
@@ -47,19 +48,17 @@ public struct WishResultView: View {
     public var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: WSSpacing.md) {
-                metadata
+                metadataRow
 
                 mediaSection
 
                 wishTextSection
 
-                textActions
-
                 if viewModel.wish.videoAsset == nil {
                     createSomethingSpecialSection
                 }
 
-                if !viewModel.isSaved {
+                if !viewModel.isSaved || isJustSaved {
                     saveForLaterButton
                 }
             }
@@ -128,6 +127,25 @@ public struct WishResultView: View {
         }
     }
 
+    /// Metadata leading, the Copy/Edit glass action group trailing — falls back to
+    /// stacking the action group below the metadata (via ViewThatFits) rather than
+    /// truncating a long localized occasion name or overlapping it at larger Dynamic
+    /// Type sizes, where the single-row layout would no longer fit.
+    private var metadataRow: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(alignment: .center, spacing: WSSpacing.sm) {
+                metadata
+                Spacer(minLength: WSSpacing.sm)
+                glassActionGroup
+            }
+
+            VStack(alignment: .leading, spacing: WSSpacing.xs) {
+                metadata
+                glassActionGroup
+            }
+        }
+    }
+
     private var metadata: some View {
         Text(
             WishMetadataText.format(
@@ -138,6 +156,77 @@ public struct WishResultView: View {
         )
         .font(.system(size: 15))
         .foregroundColor(.wsSecondaryText)
+        .fixedSize(horizontal: false, vertical: true)
+    }
+
+    /// Copy (always) + Edit (only while there's no voice/video yet, since editing text
+    /// after generation would desync it from the recorded audio) in one shared glass
+    /// capsule. True `glassEffect`/`GlassEffectContainer` on iOS 26+; `.ultraThinMaterial`
+    /// is the closest native stand-in below that — never a hand-rolled blur/opacity/
+    /// gradient approximation of glass.
+    @ViewBuilder
+    private var glassActionGroup: some View {
+        if #available(iOS 26, *) {
+            GlassEffectContainer(spacing: WSSpacing.xs) {
+                HStack(spacing: WSSpacing.xs) {
+                    copyButton
+                    if canEditText {
+                        editButton
+                    }
+                }
+            }
+            .glassEffect(.regular, in: Capsule())
+        } else {
+            HStack(spacing: WSSpacing.xs) {
+                copyButton
+                if canEditText {
+                    editButton
+                }
+            }
+            .background(.ultraThinMaterial, in: Capsule())
+        }
+    }
+
+    private var canEditText: Bool {
+        viewModel.wish.voiceAsset == nil && viewModel.wish.videoAsset == nil
+    }
+
+    private var copyButton: some View {
+        Button {
+            UIPasteboard.general.string = viewModel.wish.text
+            isCopied = true
+
+            Task {
+                try? await Task.sleep(nanoseconds: 1_600_000_000)
+                isCopied = false
+            }
+        } label: {
+            Image(systemName: isCopied ? "checkmark" : "doc.on.doc")
+                .font(.system(size: 15, weight: .medium))
+                .foregroundColor(.wsPrimaryText)
+                .frame(width: WSSize.minTapTarget, height: WSSize.minTapTarget)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(isCopied ? L10n.wishDetailCopiedConfirmation : L10n.wishDetailCopyButton)
+    }
+
+    private var editButton: some View {
+        Button {
+            if viewModel.isEditing {
+                viewModel.didSaveEditedText(viewModel.draftText)
+                viewModel.isEditing = false
+            } else {
+                viewModel.draftText = viewModel.wish.text
+                viewModel.isEditing = true
+            }
+        } label: {
+            Image(systemName: viewModel.isEditing ? "checkmark" : "pencil")
+                .font(.system(size: 15, weight: .medium))
+                .foregroundColor(.wsPrimaryText)
+                .frame(width: WSSize.minTapTarget, height: WSSize.minTapTarget)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(viewModel.isEditing ? L10n.createViewEditDoneButton : L10n.wishDetailEditButton)
     }
 
     @ViewBuilder
@@ -195,13 +284,15 @@ public struct WishResultView: View {
 
     /// Once a voice/video is generated, the text that produced it must stay fixed —
     /// editing it here would silently desync the written text from the recorded audio,
-    /// so Edit only ever shows up (via textActions) while both are still nil.
+    /// so Edit only ever shows up (via glassActionGroup/canEditText) while both are
+    /// still nil.
     @ViewBuilder
     private var wishTextSection: some View {
         if viewModel.isEditing {
             TextEditor(text: $viewModel.draftText)
                 .font(.system(size: 16))
                 .foregroundColor(.wsPrimaryText)
+                .lineSpacing(5)
                 .scrollContentBackground(.hidden)
                 .frame(minHeight: 160)
         } else {
@@ -209,48 +300,6 @@ public struct WishResultView: View {
                 .font(.system(size: 16))
                 .foregroundColor(.wsPrimaryText)
                 .lineSpacing(5)
-        }
-    }
-
-    private var textActions: some View {
-        HStack(spacing: WSSpacing.md) {
-            Button {
-                UIPasteboard.general.string = viewModel.wish.text
-                isCopied = true
-
-                Task {
-                    try? await Task.sleep(nanoseconds: 1_600_000_000)
-                    isCopied = false
-                }
-            } label: {
-                Label(
-                    isCopied ? L10n.wishDetailCopiedConfirmation : L10n.wishDetailCopyButton,
-                    systemImage: isCopied ? "checkmark" : "doc.on.doc"
-                )
-                .font(.system(size: 14, weight: .medium))
-                .foregroundColor(isCopied ? .wsPrimary : .wsPrimaryText.opacity(0.75))
-            }
-            .buttonStyle(.plain)
-
-            if viewModel.wish.voiceAsset == nil && viewModel.wish.videoAsset == nil {
-                Button {
-                    if viewModel.isEditing {
-                        viewModel.didSaveEditedText(viewModel.draftText)
-                        viewModel.isEditing = false
-                    } else {
-                        viewModel.draftText = viewModel.wish.text
-                        viewModel.isEditing = true
-                    }
-                } label: {
-                    Label(
-                        viewModel.isEditing ? L10n.createViewEditDoneButton : L10n.wishDetailEditButton,
-                        systemImage: viewModel.isEditing ? "checkmark" : "pencil"
-                    )
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundColor(.wsPrimaryText.opacity(0.75))
-                }
-                .buttonStyle(.plain)
-            }
         }
     }
 
@@ -286,12 +335,22 @@ public struct WishResultView: View {
     private var saveForLaterButton: some View {
         Button {
             viewModel.didTapSaveForLater()
+            isJustSaved = true
+
+            Task {
+                try? await Task.sleep(nanoseconds: 1_600_000_000)
+                isJustSaved = false
+            }
         } label: {
-            Label(L10n.createViewSaveForLaterButton, systemImage: "bookmark")
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(Color.wsSecondaryText)
+            Label(
+                isJustSaved ? L10n.wishesSavedConfirmation : L10n.createViewSaveForLaterButton,
+                systemImage: isJustSaved ? "checkmark" : "bookmark"
+            )
+            .font(.system(size: 14, weight: .medium))
+            .foregroundStyle(isJustSaved ? Color.wsPrimary : Color.wsSecondaryText)
         }
         .buttonStyle(.plain)
+        .disabled(isJustSaved)
         .frame(maxWidth: .infinity, alignment: .center)
         .padding(.top, WSSpacing.xs)
     }
