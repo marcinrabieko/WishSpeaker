@@ -39,7 +39,6 @@ public struct LiveWishGenerationService: WishGenerationService {
         let response: WishVariantsDTO = try await apiClient.post("/api/generateWishes", body: dto)
 
         return WishGenerationResult(
-            greeting: response.greeting,
             warm: response.warm,
             natural: response.natural,
             light: response.light

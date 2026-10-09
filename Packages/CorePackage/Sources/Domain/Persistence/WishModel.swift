@@ -13,7 +13,6 @@ public final class WishModel {
     public var context: String?
     public var variant: String
     public var text: String
-    public var greeting: String?
     public var language: String
     public var createdAt: Date
     public var updatedAt: Date
@@ -45,7 +44,6 @@ public final class WishModel {
         context: String?,
         variant: String,
         text: String,
-        greeting: String? = nil,
         language: String,
         createdAt: Date,
         updatedAt: Date,
@@ -73,7 +71,6 @@ public final class WishModel {
         self.context = context
         self.variant = variant
         self.text = text
-        self.greeting = greeting
         self.language = language
         self.createdAt = createdAt
         self.updatedAt = updatedAt

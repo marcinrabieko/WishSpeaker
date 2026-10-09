@@ -77,7 +77,6 @@ public final class VideoViewModel {
                         text: wishText,
                         voiceGender: selectedVoice.gender,
                         providerVoiceID: selectedVoice.providerVoiceID,
-                        greeting: creationManager.generatedGreeting,
                         occasionKind: creationManager.selectedOccasion?.kind ?? creationManager.occasionKind
                     )
                 )
@@ -109,7 +108,6 @@ public final class VideoViewModel {
             context: form.note.isEmpty ? nil : form.note,
             variant: creationManager.selectedVariant ?? .natural,
             text: wishText,
-            greeting: creationManager.generatedGreeting,
             voiceAsset: creationManager.generatedVoiceAsset,
             videoAsset: videoAsset
         )

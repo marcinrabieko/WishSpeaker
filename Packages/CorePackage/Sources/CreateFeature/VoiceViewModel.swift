@@ -113,7 +113,6 @@ public final class VoiceViewModel {
             context: form.note.isEmpty ? nil : form.note,
             variant: creationManager.selectedVariant ?? .natural,
             text: wishText,
-            greeting: creationManager.generatedGreeting,
             voiceAsset: voiceAsset,
             videoAsset: creationManager.generatedVideoAsset
         )

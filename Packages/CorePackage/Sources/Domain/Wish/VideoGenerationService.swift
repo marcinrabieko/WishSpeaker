@@ -10,20 +10,17 @@ public struct VideoGenerationRequest: Sendable {
     public let text: String
     public let voiceGender: VoiceGender
     public let providerVoiceID: String?
-    public let greeting: String?
     public let occasionKind: OccasionKind?
 
     public init(
         text: String,
         voiceGender: VoiceGender,
         providerVoiceID: String? = nil,
-        greeting: String? = nil,
         occasionKind: OccasionKind? = nil
     ) {
         self.text = text
         self.voiceGender = voiceGender
         self.providerVoiceID = providerVoiceID
-        self.greeting = greeting
         self.occasionKind = occasionKind
     }
 }
@@ -48,8 +45,7 @@ public struct LiveVideoGenerationService: VideoGenerationService {
             language: SupportedLanguage.current.rawValue,
             voiceGender: request.voiceGender == .male ? "male" : "female",
             voiceId: request.providerVoiceID,
-            greeting: request.greeting,
-            occasionKind: request.occasionKind?.backendOccasionKey
+            occasionKind: request.occasionKind?.rawValue
         )
 
         let videoData = try await apiClient.postRawData("/api/generateVideo", body: dto)

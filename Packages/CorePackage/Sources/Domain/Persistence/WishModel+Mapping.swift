@@ -10,7 +10,6 @@ extension WishModel {
             context: wish.context,
             variant: wish.variant.rawValue,
             text: wish.text,
-            greeting: wish.greeting,
             language: wish.language,
             createdAt: wish.createdAt,
             updatedAt: wish.updatedAt,
@@ -42,7 +41,6 @@ extension WishModel {
         context = wish.context
         variant = wish.variant.rawValue
         text = wish.text
-        greeting = wish.greeting
         language = wish.language
         createdAt = wish.createdAt
         updatedAt = wish.updatedAt
@@ -76,7 +74,6 @@ extension WishModel {
             context: context,
             variant: WishVariant(rawValue: variant) ?? .natural,
             text: text,
-            greeting: greeting,
             language: language,
             createdAt: createdAt,
             updatedAt: updatedAt,

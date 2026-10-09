@@ -20,12 +20,6 @@ public final class WishCreationManager {
     public var generatedWishes: WishGenerationResult?
     public var selectedVariant: WishVariant?
 
-    /// The greeting line from the most recent /api/generateWishes response (e.g.
-    /// "Kochana Kasiu,"), carried forward into Video generation as a static headline.
-    /// Separate from `generatedWishes.greeting` because a Wish loaded from the Library
-    /// (loadExistingWish) has no fresh generation result to read it from.
-    public var generatedGreeting: String?
-
     /// The ElevenLabs provider voice ID chosen on the Voice screen, carried forward
     /// into Voice generation. The user always controls this — never inferred from
     /// occasion, recipient, relationship, or Wish variant.
@@ -53,7 +47,6 @@ public final class WishCreationManager {
         selectedOccasion = nil
         occasionKind = nil
         generatedWishes = nil
-        generatedGreeting = nil
         selectedVariant = nil
         selectedVoiceID = nil
         generatedVoiceAsset = nil
@@ -72,7 +65,6 @@ public final class WishCreationManager {
         selectedOccasion = nil
         occasionKind = wish.occasionKind
         generatedWishes = nil
-        generatedGreeting = wish.greeting
         selectedVariant = wish.variant
         selectedVoiceID = nil
         generatedVoiceAsset = wish.voiceAsset
@@ -89,7 +81,6 @@ public final class WishCreationManager {
             context: currentForm.note.isEmpty ? nil : currentForm.note,
             variant: selectedVariant ?? .natural,
             text: generatedText,
-            greeting: generatedGreeting,
             selectedPackage: selectedPackage,
             voiceAsset: generatedVoiceAsset,
             videoAsset: generatedVideoAsset

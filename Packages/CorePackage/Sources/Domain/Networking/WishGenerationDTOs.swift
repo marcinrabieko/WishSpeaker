@@ -8,7 +8,6 @@ struct GenerateWishesRequestDTO: Encodable {
 }
 
 struct WishVariantsDTO: Decodable {
-    let greeting: String
     let warm: String
     let natural: String
     let light: String

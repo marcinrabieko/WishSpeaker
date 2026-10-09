@@ -87,8 +87,7 @@ public final class WishesViewModel {
             recipient: form.relation,
             context: form.note.isEmpty ? nil : form.note,
             variant: variant,
-            text: text,
-            greeting: wishes?.greeting
+            text: text
         )
 
         libraryManager.save(wish)
@@ -143,7 +142,6 @@ public final class WishesViewModel {
 
                 wishes = result
                 creationManager.generatedWishes = result
-                creationManager.generatedGreeting = result.greeting
                 expandedVariant = .warm
                 loadState = .loaded
             } catch {

@@ -5,6 +5,5 @@ struct GenerateVideoRequestDTO: Encodable {
     let language: String
     let voiceGender: String
     let voiceId: String?
-    let greeting: String?
     let occasionKind: String?
 }
