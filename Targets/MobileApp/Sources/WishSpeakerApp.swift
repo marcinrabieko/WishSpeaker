@@ -1,3 +1,4 @@
+import AVFoundation
 import Domain
 import StartFeature
 import SwiftUI
@@ -5,6 +6,11 @@ import SwiftUI
 @main
 struct WishSpeakerApp: App {
     @State private var createFlowPath = NavigationPath()
+
+    init() {
+        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
+        try? AVAudioSession.sharedInstance().setActive(true)
+    }
 
     var body: some Scene {
         WindowGroup {
