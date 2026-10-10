@@ -59,58 +59,74 @@ public struct WishResultView: View {
         WishResultView(creationFlow: ())
     }
 
+    private enum ScrollAnchor {
+        static let textActionsRow = "textActionsRow"
+    }
+
     public var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: WSSpacing.md) {
-                metadata
+        ScrollViewReader { scrollProxy in
+            ScrollView {
+                VStack(alignment: .leading, spacing: WSSpacing.md) {
+                    metadata
 
-                mediaSection
+                    mediaSection
 
-                wishTextSection
+                    wishTextSection
 
-                // The parent VStack's own spacing (WSSpacing.md = 24pt) already sits
-                // between every pair of siblings here — these two paddings only add the
-                // few extra points needed to hit the exact 16pt / 32pt specified gaps,
-                // rather than re-deriving the full gap from zero.
-                textActionsRow
-                    .padding(.top, 16 - WSSpacing.md)
+                    // The parent VStack's own spacing (WSSpacing.md = 24pt) already sits
+                    // between every pair of siblings here — these two paddings only add the
+                    // few extra points needed to hit the exact 16pt / 32pt specified gaps,
+                    // rather than re-deriving the full gap from zero.
+                    textActionsRow
+                        .padding(.top, 16 - WSSpacing.md)
+                        .id(ScrollAnchor.textActionsRow)
 
-                if viewModel.wish.videoAsset == nil {
-                    createSomethingSpecialSection
-                        .padding(.top, 32 - WSSpacing.md)
+                    if viewModel.wish.videoAsset == nil {
+                        createSomethingSpecialSection
+                            .padding(.top, 32 - WSSpacing.md)
+                    }
+
+                    if !viewModel.isSaved || isJustSaved {
+                        saveForLaterButton
+                    }
                 }
-
-                if !viewModel.isSaved || isJustSaved {
-                    saveForLaterButton
+                .padding(.horizontal, WSSpacing.horizontalPadding)
+                .padding(.top, WSSpacing.xxs)
+                .padding(.bottom, WSSpacing.md)
+            }
+            .background(Color.wsBackground)
+            .navigationTitle(viewModel.wish.recipient)
+            .navigationBarTitleDisplayMode(.large)
+            .modifier(BackButtonModifier(origin: origin, viewModel: viewModel, path: createFlowPath))
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    shareButton
                 }
             }
-            .padding(.horizontal, WSSpacing.horizontalPadding)
-            .padding(.top, WSSpacing.xxs)
-            .padding(.bottom, WSSpacing.md)
-        }
-        .background(Color.wsBackground)
-        .navigationTitle(viewModel.wish.recipient)
-        .navigationBarTitleDisplayMode(.large)
-        .modifier(BackButtonModifier(origin: origin, viewModel: viewModel, path: createFlowPath))
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                shareButton
+            .onAppear {
+                viewModel.didAppear()
             }
-        }
-        .onAppear {
-            viewModel.didAppear()
-        }
-        .onChange(of: viewModel.wish.videoAsset?.id) { _, _ in
-            updateVideoPlayerIfNeeded()
-        }
-        .task {
-            updateVideoPlayerIfNeeded()
-        }
-        .navigationDestination(isPresented: $navigateToVoice) {
-            VoiceView()
-        }
-        .navigationDestination(isPresented: $navigateToVideo) {
-            VideoView()
+            .onChange(of: viewModel.wish.videoAsset?.id) { _, _ in
+                updateVideoPlayerIfNeeded()
+            }
+            .onChange(of: viewModel.isEditing) { _, isEditing in
+                guard isEditing else {
+                    return
+                }
+
+                withAnimation {
+                    scrollProxy.scrollTo(ScrollAnchor.textActionsRow, anchor: .bottom)
+                }
+            }
+            .task {
+                updateVideoPlayerIfNeeded()
+            }
+            .navigationDestination(isPresented: $navigateToVoice) {
+                VoiceView()
+            }
+            .navigationDestination(isPresented: $navigateToVideo) {
+                VideoView()
+            }
         }
     }
 

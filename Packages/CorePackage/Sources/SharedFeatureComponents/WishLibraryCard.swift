@@ -9,10 +9,11 @@ import UIKit
 /// priority Video > Voice > Text — a Wish can evolve from text-only to text+voice to
 /// text+voice+video without ever becoming a different Library row.
 ///
-/// The card owns its own tap target instead of being wrapped in an external
-/// `NavigationLink`, so an inline player's own Buttons can intercept taps (play/pause,
-/// scrub) without also opening the Wish — nesting a Button inside a NavigationLink's
-/// label does not reliably suppress the outer navigation gesture in SwiftUI.
+/// The card owns its own tap target (covering the full card, including padding and
+/// background) instead of being wrapped in an external `NavigationLink`, so an inline
+/// player's own Buttons can intercept taps (play/pause, scrub) without also opening the
+/// Wish — nesting a Button inside a NavigationLink's label does not reliably suppress
+/// the outer navigation gesture in SwiftUI.
 public struct WishLibraryCard: View {
     let wish: Wish
     let showDate: Bool
@@ -29,22 +30,19 @@ public struct WishLibraryCard: View {
     public var body: some View {
         VStack(alignment: .leading, spacing: WSSpacing.sm) {
             identity
-                .contentShape(Rectangle())
-                .onTapGesture(perform: onTap)
 
             if wish.videoAsset != nil {
                 VideoCardBody(videoAsset: wish.videoAsset)
-                    .onTapGesture(perform: onTap)
             } else if let voiceAsset = wish.voiceAsset {
                 VoiceCardBody(voiceAsset: voiceAsset)
+                    .contentShape(Rectangle())
+                    .onTapGesture {}
             } else {
                 Text(wish.text)
                     .font(.system(size: 15))
                     .foregroundColor(.wsPrimaryText.opacity(0.75))
                     .lineSpacing(3)
                     .lineLimit(3)
-                    .contentShape(Rectangle())
-                    .onTapGesture(perform: onTap)
             }
         }
         .padding(WSSpacing.sm)
@@ -55,6 +53,8 @@ public struct WishLibraryCard: View {
                 .stroke(Color.wsSoftBorder, lineWidth: 1)
         )
         .clipShape(RoundedRectangle(cornerRadius: WSRadius.card, style: .continuous))
+        .contentShape(Rectangle())
+        .onTapGesture(perform: onTap)
     }
 
     private var identity: some View {
@@ -125,8 +125,9 @@ private struct VideoCardBody: View {
 /// display otherwise (e.g. bundled example audio not yet recorded for a language).
 /// Coordinates with `VoicePlaybackCoordinator` so starting one instance stops any other
 /// instance currently playing. Its Buttons/DragGesture are the only interactive surface
-/// inside the card that must NOT trigger navigation — everything else in the card
-/// forwards taps to `onTap`.
+/// inside the card that must NOT trigger navigation — the card's own no-op
+/// `.onTapGesture` on `VoiceCardBody` absorbs taps there before they reach the card-wide
+/// `onTap` gesture underneath.
 public struct InlineVoicePlayer: View {
     let voiceAsset: VoiceAsset
     let audioURL: URL?
