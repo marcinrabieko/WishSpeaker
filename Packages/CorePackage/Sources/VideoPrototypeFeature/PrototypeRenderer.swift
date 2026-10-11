@@ -2,7 +2,10 @@ import AVFoundation
 import CoreGraphics
 import CoreText
 import Foundation
+import os
 import UIKit
+
+private let logger = Logger(subsystem: "com.wishspeaker.app", category: "VideoPrototype")
 
 /// Standalone native iOS video renderer prototype — draws every frame manually via
 /// Core Graphics into a CVPixelBuffer and encodes through AVAssetWriter (which uses
@@ -58,53 +61,79 @@ public enum PrototypeRenderer {
     /// full-duration centered text block. `durationSeconds` controls how long the
     /// output video is (used by the benchmark to produce 15s/30s/60s test clips).
     public static func renderBasicClip(durationSeconds: Double, text: String) async throws -> Result {
+        logger.info("renderBasicClip: starting, duration=\(durationSeconds, format: .fixed(precision: 1))s")
         let totalStart = CFAbsoluteTimeGetCurrent()
 
         let assets = try loadAssets()
         registerFontIfNeeded(fontURL: assets.fontURL)
+        logger.info("renderBasicClip: assets loaded + font registered")
 
         let compositionStart = CFAbsoluteTimeGetCurrent()
 
         let background = try await loadBackground(url: assets.backgroundURL)
+        logger.info("renderBasicClip: background track loaded, naturalSize=\(background.naturalSize.width, format: .fixed(precision: 0))x\(background.naturalSize.height, format: .fixed(precision: 0)), duration=\(background.duration, format: .fixed(precision: 2))s")
         let outputURL = FileManager.default.temporaryDirectory
             .appendingPathComponent("prototype_\(UUID().uuidString)")
             .appendingPathExtension("mp4")
         let writerSetup = try makeWriter(outputURL: outputURL)
+        logger.info("renderBasicClip: AVAssetWriter configured, output=\(outputURL.lastPathComponent)")
 
         let renderStart = CFAbsoluteTimeGetCurrent()
 
-        let backgroundFrames = try decodeFrames(asset: background.asset, track: background.track)
+        let decodedFrames = try decodeFrames(asset: background.asset, track: background.track)
+        logger.info("renderBasicClip: decoded \(decodedFrames.count) background frames in \(CFAbsoluteTimeGetCurrent() - renderStart, format: .fixed(precision: 2))s")
+
+        let prescaleStart = CFAbsoluteTimeGetCurrent()
+        let backgroundFrames = prerenderBackgroundFrames(decodedFrames, naturalSize: background.naturalSize, canvasSize: canvasSize)
+        let borderRenderSize = CGFloat(canvasSize) * 0.82
+        let borderOffset = (CGFloat(canvasSize) - borderRenderSize) / 2
+        let prerenderedBorder = prerenderBorder(assets.borderCGImage, canvasSize: canvasSize, renderSize: borderRenderSize, offset: borderOffset)
+        logger.info("renderBasicClip: pre-scaled \(backgroundFrames.count) background frames + border in \(CFAbsoluteTimeGetCurrent() - prescaleStart, format: .fixed(precision: 2))s")
+
         guard let pixelBufferPool = writerSetup.adaptor.pixelBufferPool else {
             throw RendererError.pixelBufferPoolUnavailable
         }
 
+        let textImage = makeTextImage(text, canvasSize: canvasSize)
+        logger.info("renderBasicClip: text image built (nil=\(textImage == nil))")
+
+        // Flattens border + text into ONE alpha-blended layer up front, instead of
+        // leaving the render loop to alpha-composite them as two separate context.draw
+        // calls per frame. On-device measurement found drawBorder+drawText alone
+        // costing ~31s of a 450-frame loop even after both were already same-size
+        // blits (no resampling) — alpha compositing itself, not resampling, is the
+        // remaining per-call cost CGContext.draw() pays, and merging two layers into
+        // one halves how many times that cost is paid per frame.
+        let overlayImage = flattenOverlay(border: prerenderedBorder, text: textImage, canvasSize: canvasSize)
+
         let job = RenderJob(
             durationSeconds: durationSeconds,
-            text: text,
             backgroundFrames: backgroundFrames,
-            backgroundNaturalSize: background.naturalSize,
-            backgroundDuration: background.duration,
-            borderCGImage: assets.borderCGImage,
-            fontURL: assets.fontURL,
+            overlayImage: overlayImage,
             pixelBufferPool: pixelBufferPool,
             writer: writerSetup.writer,
             writerInput: writerSetup.writerInput,
-            adaptor: writerSetup.adaptor
+            adaptor: writerSetup.adaptor,
+            backgroundDuration: background.duration
         )
+        logger.info("renderBasicClip: entering frame render loop, totalFrames=\(Int((durationSeconds * Double(fps)).rounded(.up)))")
         try await renderFrames(job)
 
         let renderEnd = CFAbsoluteTimeGetCurrent()
+        logger.info("renderBasicClip: frame render loop finished in \(renderEnd - renderStart, format: .fixed(precision: 2))s, finishing writer")
 
         writerSetup.writerInput.markAsFinished()
         await writerSetup.writer.finishWriting()
 
         let writeFinishEnd = CFAbsoluteTimeGetCurrent()
+        logger.info("renderBasicClip: writer finished in \(writeFinishEnd - renderEnd, format: .fixed(precision: 2))s, status=\(writerSetup.writer.status.rawValue)")
 
         if writerSetup.writer.status != .completed {
             throw RendererError.writerFailed(writerSetup.writer.error?.localizedDescription ?? "writer.status = \(writerSetup.writer.status.rawValue)")
         }
 
         let fileSize = (try? FileManager.default.attributesOfItem(atPath: outputURL.path)[.size] as? Int64) ?? 0
+        logger.info("renderBasicClip: done, total=\(writeFinishEnd - totalStart, format: .fixed(precision: 2))s, fileSize=\(fileSize) bytes")
 
         return Result(
             outputURL: outputURL,
@@ -112,7 +141,7 @@ public enum PrototypeRenderer {
             compositionDuration: renderStart - compositionStart,
             renderDuration: renderEnd - renderStart,
             writeFinishDuration: writeFinishEnd - renderEnd,
-            fileSizeBytes: fileSize ?? 0
+            fileSizeBytes: fileSize
         )
     }
 
@@ -238,143 +267,143 @@ public enum PrototypeRenderer {
     /// long parameter list (SwiftLint's function_parameter_count caps at 5).
     private struct RenderJob {
         let durationSeconds: Double
-        let text: String
+        /// Already scaled/cropped to exactly canvasSize×canvasSize — see
+        /// prerenderBackgroundFrames. The render loop blits these 1:1, no resampling.
         let backgroundFrames: [CGImage]
-        let backgroundNaturalSize: CGSize
-        let backgroundDuration: Double
-        let borderCGImage: CGImage
-        let fontURL: URL
+        /// Border + text flattened into one alpha-blended canvasSize×canvasSize image
+        /// — see flattenOverlay. The render loop composites this once per frame
+        /// instead of compositing border and text as two separate alpha-blends.
+        let overlayImage: CGImage?
         let pixelBufferPool: CVPixelBufferPool
         let writer: AVAssetWriter
         let writerInput: AVAssetWriterInput
         let adaptor: AVAssetWriterInputPixelBufferAdaptor
+        let backgroundDuration: Double
+    }
+
+    private struct FrameTimings {
+        var pixelBufferCreate: Double = 0
+        var contextCreate: Double = 0
+        var drawBackground: Double = 0
+        var drawOverlay: Double = 0
+        var append: Double = 0
+        var wait: Double = 0
+    }
+
+    /// Shared context needed to render any single frame — kept as a struct for the
+    /// same function_parameter_count reason as RenderJob.
+    private struct FrameContext {
+        let job: RenderJob
+        let colorSpace: CGColorSpace
+        let bitmapInfo: UInt32
+        let fullCanvasRect: CGRect
+        let frameDuration: CMTime
     }
 
     private static func renderFrames(_ job: RenderJob) async throws {
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let bitmapInfo = CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
-        let borderRenderSize = CGFloat(canvasSize) * 0.82
-        let borderOffset = (CGFloat(canvasSize) - borderRenderSize) / 2
+        let frameContext = FrameContext(
+            job: job,
+            colorSpace: CGColorSpaceCreateDeviceRGB(),
+            bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue,
+            fullCanvasRect: CGRect(x: 0, y: 0, width: canvasSize, height: canvasSize),
+            frameDuration: CMTime(value: 1, timescale: fps)
+        )
         let totalFrames = Int((job.durationSeconds * Double(fps)).rounded(.up))
-        let frameDuration = CMTime(value: 1, timescale: fps)
+
+        var timings = FrameTimings()
+        let loopStart = CFAbsoluteTimeGetCurrent()
 
         for frameIndex in 0..<totalFrames {
-            while !job.writerInput.isReadyForMoreMediaData {
-                try await Task.sleep(nanoseconds: 1_000_000)
-            }
+            try await renderSingleFrame(frameIndex, context: frameContext, timings: &timings)
 
-            var pixelBufferOut: CVPixelBuffer?
-            let status = CVPixelBufferPoolCreatePixelBuffer(nil, job.pixelBufferPool, &pixelBufferOut)
-            guard status == kCVReturnSuccess, let pixelBuffer = pixelBufferOut else {
-                throw RendererError.pixelBufferCreationFailed
-            }
-
-            CVPixelBufferLockBaseAddress(pixelBuffer, [])
-            guard let context = CGContext(
-                data: CVPixelBufferGetBaseAddress(pixelBuffer),
-                width: canvasSize,
-                height: canvasSize,
-                bitsPerComponent: 8,
-                bytesPerRow: CVPixelBufferGetBytesPerRow(pixelBuffer),
-                space: colorSpace,
-                bitmapInfo: bitmapInfo
-            ) else {
-                CVPixelBufferUnlockBaseAddress(pixelBuffer, [])
-                throw RendererError.pixelBufferCreationFailed
-            }
-
-            // Background: loop by wall-clock time against the source clip's own
-            // frame rate, matching ffmpeg's -stream_loop -1 semantics (re-reading
-            // from the start once the source is exhausted) rather than freezing on
-            // the last frame.
-            let elapsedSeconds = Double(frameIndex) / Double(fps)
-            let loopedSeconds = elapsedSeconds.truncatingRemainder(dividingBy: job.backgroundDuration)
-            let sourceFrameIndex = min(
-                Int((loopedSeconds / job.backgroundDuration) * Double(job.backgroundFrames.count)),
-                job.backgroundFrames.count - 1
-            )
-            let backgroundImage = job.backgroundFrames[sourceFrameIndex]
-
-            drawBackground(backgroundImage, naturalSize: job.backgroundNaturalSize, in: context, canvasSize: canvasSize)
-            drawBorder(job.borderCGImage, in: context, origin: CGPoint(x: borderOffset, y: borderOffset), size: borderRenderSize)
-            drawCenteredText(job.text, in: context, canvasSize: canvasSize, fontURL: job.fontURL)
-
-            CVPixelBufferUnlockBaseAddress(pixelBuffer, [])
-
-            let presentationTime = CMTimeMultiply(frameDuration, multiplier: Int32(frameIndex))
-            if !job.adaptor.append(pixelBuffer, withPresentationTime: presentationTime) {
-                throw RendererError.writerFailed(job.writer.error?.localizedDescription ?? "adaptor.append failed at frame \(frameIndex)")
+            if frameIndex % 30 == 0 {
+                logger.info("renderFrames: frame \(frameIndex)/\(totalFrames), elapsed=\(CFAbsoluteTimeGetCurrent() - loopStart, format: .fixed(precision: 2))s")
             }
         }
+
+        logger.info("""
+        renderFrames breakdown over \(totalFrames) frames: \
+        wait=\(timings.wait, format: .fixed(precision: 2))s \
+        pixelBufferCreate=\(timings.pixelBufferCreate, format: .fixed(precision: 2))s \
+        contextCreate=\(timings.contextCreate, format: .fixed(precision: 2))s \
+        drawBackground=\(timings.drawBackground, format: .fixed(precision: 2))s \
+        drawOverlay=\(timings.drawOverlay, format: .fixed(precision: 2))s \
+        append=\(timings.append, format: .fixed(precision: 2))s
+        """)
+    }
+
+    private static func renderSingleFrame(_ frameIndex: Int, context frameContext: FrameContext, timings: inout FrameTimings) async throws {
+        let job = frameContext.job
+
+        var t = CFAbsoluteTimeGetCurrent()
+        while !job.writerInput.isReadyForMoreMediaData {
+            try await Task.sleep(nanoseconds: 1_000_000)
+        }
+        timings.wait += CFAbsoluteTimeGetCurrent() - t
+
+        t = CFAbsoluteTimeGetCurrent()
+        var pixelBufferOut: CVPixelBuffer?
+        let status = CVPixelBufferPoolCreatePixelBuffer(nil, job.pixelBufferPool, &pixelBufferOut)
+        guard status == kCVReturnSuccess, let pixelBuffer = pixelBufferOut else {
+            throw RendererError.pixelBufferCreationFailed
+        }
+        timings.pixelBufferCreate += CFAbsoluteTimeGetCurrent() - t
+
+        CVPixelBufferLockBaseAddress(pixelBuffer, [])
+        defer {
+            CVPixelBufferUnlockBaseAddress(pixelBuffer, [])
+        }
+
+        t = CFAbsoluteTimeGetCurrent()
+        guard let context = CGContext(
+            data: CVPixelBufferGetBaseAddress(pixelBuffer),
+            width: canvasSize,
+            height: canvasSize,
+            bitsPerComponent: 8,
+            bytesPerRow: CVPixelBufferGetBytesPerRow(pixelBuffer),
+            space: frameContext.colorSpace,
+            bitmapInfo: frameContext.bitmapInfo
+        ) else {
+            throw RendererError.pixelBufferCreationFailed
+        }
+        timings.contextCreate += CFAbsoluteTimeGetCurrent() - t
+
+        // Background: loop by wall-clock time against the source clip's own frame
+        // rate, matching ffmpeg's -stream_loop -1 semantics (re-reading from the
+        // start once the source is exhausted) rather than freezing on the last frame.
+        let elapsedSeconds = Double(frameIndex) / Double(fps)
+        let loopedSeconds = elapsedSeconds.truncatingRemainder(dividingBy: job.backgroundDuration)
+        let sourceFrameIndex = min(
+            Int((loopedSeconds / job.backgroundDuration) * Double(job.backgroundFrames.count)),
+            job.backgroundFrames.count - 1
+        )
+        let backgroundImage = job.backgroundFrames[sourceFrameIndex]
+
+        // Both layers are already pre-scaled to exactly canvasSize×canvasSize (see
+        // prerenderBackgroundFrames/flattenOverlay) — same-size blits, not resampling
+        // scales. The background draw has no alpha to blend (cheap); the overlay draw
+        // is the one alpha-composite per frame, down from two.
+        t = CFAbsoluteTimeGetCurrent()
+        context.draw(backgroundImage, in: frameContext.fullCanvasRect)
+        timings.drawBackground += CFAbsoluteTimeGetCurrent() - t
+
+        t = CFAbsoluteTimeGetCurrent()
+        if let overlayImage = job.overlayImage {
+            context.draw(overlayImage, in: frameContext.fullCanvasRect)
+        }
+        timings.drawOverlay += CFAbsoluteTimeGetCurrent() - t
+
+        t = CFAbsoluteTimeGetCurrent()
+        let presentationTime = CMTimeMultiply(frameContext.frameDuration, multiplier: Int32(frameIndex))
+        if !job.adaptor.append(pixelBuffer, withPresentationTime: presentationTime) {
+            throw RendererError.writerFailed(job.writer.error?.localizedDescription ?? "adaptor.append failed at frame \(frameIndex)")
+        }
+        timings.append += CFAbsoluteTimeGetCurrent() - t
     }
 
     private static func cgImage(from pixelBuffer: CVPixelBuffer) -> CGImage? {
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
         let context = CIContext()
         return context.createCGImage(ciImage, from: ciImage.extent)
-    }
-
-    private static func drawBackground(_ image: CGImage, naturalSize: CGSize, in context: CGContext, canvasSize: Int) {
-        // Mirrors ffmpeg's scale=increase + crop: scale to COVER the canvas, then
-        // center-crop — never letterbox/distort the background's aspect ratio.
-        let canvas = CGFloat(canvasSize)
-        let scale = max(canvas / naturalSize.width, canvas / naturalSize.height)
-        let scaledWidth = naturalSize.width * scale
-        let scaledHeight = naturalSize.height * scale
-        let originX = (canvas - scaledWidth) / 2
-        let originY = (canvas - scaledHeight) / 2
-        // CGContext's Y axis is flipped relative to CVPixelBuffer's top-left video
-        // convention here — draw in the context's native (bottom-left origin) space.
-        context.draw(image, in: CGRect(x: originX, y: originY, width: scaledWidth, height: scaledHeight))
-    }
-
-    private static func drawBorder(_ image: CGImage, in context: CGContext, origin: CGPoint, size: CGFloat) {
-        context.draw(image, in: CGRect(x: origin.x, y: origin.y, width: size, height: size))
-    }
-
-    private static func drawCenteredText(_ text: String, in context: CGContext, canvasSize: Int, fontURL: URL) {
-        context.saveGState()
-        // CGContext draws text with its own baseline-up coordinate convention that's
-        // independent of the bitmap flip used for images above — flip just for text
-        // so CoreText's top-down line layout matches on-screen expectations.
-        context.textMatrix = .identity
-        context.translateBy(x: 0, y: CGFloat(canvasSize))
-        context.scaleBy(x: 1, y: -1)
-
-        let fontSize: CGFloat = 52 // Stage 1: fixed size, matches backend's FONT_SIZE scaled proportionally to 1024 canvas.
-        guard let font = CTFontCreateWithName("Libre Baskerville" as CFString, fontSize, nil) as CTFont? else {
-            context.restoreGState()
-            return
-        }
-
-        let textColor = CGColor(red: 0x17 / 255, green: 0x14 / 255, blue: 0x12 / 255, alpha: 1)
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font: font,
-            .foregroundColor: textColor
-        ]
-        let attributedString = NSAttributedString(string: text, attributes: attributes)
-        let framesetter = CTFramesetterCreateWithAttributedString(attributedString)
-
-        let textAreaWidth = CGFloat(canvasSize) * 0.7
-        let textAreaHeight = CGFloat(canvasSize) * 0.4
-        let suggestedSize = CTFramesetterSuggestFrameSizeWithConstraints(
-            framesetter, CFRange(location: 0, length: 0), nil,
-            CGSize(width: textAreaWidth, height: textAreaHeight), nil
-        )
-
-        let originX = (CGFloat(canvasSize) - suggestedSize.width) / 2
-        let originY = (CGFloat(canvasSize) - suggestedSize.height) / 2
-        let path = CGPath(rect: CGRect(x: originX, y: originY, width: suggestedSize.width, height: suggestedSize.height), transform: nil)
-        let frame = CTFramesetterCreateFrame(framesetter, CFRange(location: 0, length: 0), path, nil)
-        CTFrameDraw(frame, context)
-
-        context.restoreGState()
-    }
-
-    private static func registerFontIfNeeded(fontURL: URL) {
-        guard UIFont(name: "Libre Baskerville", size: 12) == nil else {
-            return
-        }
-        CTFontManagerRegisterFontsForURL(fontURL as CFURL, .process, nil)
     }
 }
