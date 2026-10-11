@@ -23,7 +23,8 @@ let package = Package(
         .library(name: "WishesFeature", targets: ["WishesFeature"]),
         .library(name: "CreateFeature", targets: ["CreateFeature"]),
         .library(name: "LibraryFeature", targets: ["LibraryFeature"]),
-        .library(name: "ExampleWishesFeature", targets: ["ExampleWishesFeature"])
+        .library(name: "ExampleWishesFeature", targets: ["ExampleWishesFeature"]),
+        .library(name: "VideoPrototypeFeature", targets: ["VideoPrototypeFeature"])
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.9.0"),
@@ -164,6 +165,21 @@ let package = Package(
                 .copy("Demo/thankyou_demo.mp3"),
                 .copy("Demo/wedding_demo.mp4"),
                 .copy("Demo/wedding_demo_thumbnail.jpg")
+            ],
+            plugins: [swiftLintPlugin]
+        ),
+
+        // MARK: - Prototype (isolated, DEBUG-only — see VideoPrototypeFeature's README)
+
+        .target(
+            name: "VideoPrototypeFeature",
+            dependencies: [],
+            resources: [
+                .copy("Assets/background_celebration_normalized.mp4"),
+                .copy("Assets/border_celebration.png"),
+                .copy("Assets/outro.png"),
+                .copy("Assets/outro_sound.mp3"),
+                .copy("Assets/LibreBaskerville-Regular.ttf")
             ],
             plugins: [swiftLintPlugin]
         )

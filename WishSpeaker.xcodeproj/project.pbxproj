@@ -11,6 +11,7 @@
 		2B63765D2BEE2A475FB8C9D0 /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 9C4EBF1A36781F70E0F43D15 /* DesignSystem */; };
 		3D86EBC3DF2A2C44FE223CD6 /* OccasionSelectionFeature in Frameworks */ = {isa = PBXBuildFile; productRef = E784AA2910E71566435D7C0A /* OccasionSelectionFeature */; };
 		46B672AF80ADB1DEAEDD50F5 /* WishSpeakerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F375D255DC2D1FFC8147A4F /* WishSpeakerApp.swift */; };
+		7AAFB174217A231096E2EC6C /* VideoPrototypeFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 9E56A8CABBA9F1ACAF70230C /* VideoPrototypeFeature */; };
 		8727F1239ACDD65F1249CFD8 /* LibraryFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 0FB23A92C3BC0662E37FB976 /* LibraryFeature */; };
 		89C9FE4203777E2EBBE03E45 /* StartFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 30DB3FBA9029DAD9FF445A40 /* StartFeature */; };
 		8E5D92DF2C5DD87D408DBD20 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 853D5FD85860DA15C1F552E8 /* InfoPlist.strings */; };
@@ -46,6 +47,7 @@
 				AC654AF3AE67F10ED977ABAF /* CreateFeature in Frameworks */,
 				8727F1239ACDD65F1249CFD8 /* LibraryFeature in Frameworks */,
 				21D11BC06BEABD987274481C /* ExampleWishesFeature in Frameworks */,
+				7AAFB174217A231096E2EC6C /* VideoPrototypeFeature in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -148,6 +150,7 @@
 				673C52D1499CE9FFCD8A119F /* CreateFeature */,
 				0FB23A92C3BC0662E37FB976 /* LibraryFeature */,
 				7389B349A52DDAB5AB9D845C /* ExampleWishesFeature */,
+				9E56A8CABBA9F1ACAF70230C /* VideoPrototypeFeature */,
 			);
 			productName = MobileApp;
 			productReference = 30E5035B2C6C46FFC253524F /* WishSpeaker.app */;
@@ -467,6 +470,10 @@
 		9C4EBF1A36781F70E0F43D15 /* DesignSystem */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DesignSystem;
+		};
+		9E56A8CABBA9F1ACAF70230C /* VideoPrototypeFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = VideoPrototypeFeature;
 		};
 		DEF6499717BF3D2F842B96D2 /* FormFeature */ = {
 			isa = XCSwiftPackageProductDependency;

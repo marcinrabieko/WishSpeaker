@@ -44,7 +44,12 @@ public struct LibraryView: View {
         .navigationBarTitleDisplayMode(.large)
         .wsBackButton()
         .onAppear {
-            viewModel.didAppear()
+            // Deferred a frame: reloading savedWishes synchronously here can change the
+            // List's content height at the exact moment a pop transition is completing,
+            // which visibly delays the large-title nav bar's own layout pass.
+            DispatchQueue.main.async {
+                viewModel.didAppear()
+            }
         }
         .navigationDestination(item: $presentedWish) { wish in
             WishResultView(wish: wish)

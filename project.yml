@@ -67,6 +67,8 @@ targets:
         product: LibraryFeature
       - package: CorePackage
         product: ExampleWishesFeature
+      - package: CorePackage
+        product: VideoPrototypeFeature
     settings:
       base:
         PRODUCT_NAME: WishSpeaker
