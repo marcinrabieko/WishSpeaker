@@ -175,3 +175,16 @@
 "wish_card_wish_for" = "Życzenia dla %@";
 "wish_card_hide_transcript_button" = "Ukryj transkrypcję";
 "wish_card_show_transcript_button" = "Pokaż transkrypcję";
+
+/* Video card headline (burned into the rendered wish video) */
+"video_greeting_birthday" = "W dniu urodzin";
+"video_greeting_anniversary" = "Z okazji rocznicy";
+"video_greeting_name_day" = "Z okazji imienin";
+"video_greeting_wedding" = "Z okazji ślubu";
+"video_greeting_mothers_day" = "Z okazji Dnia Matki";
+"video_greeting_fathers_day" = "Z okazji Dnia Ojca";
+"video_greeting_womens_day" = "Z okazji Dnia Kobiet";
+"video_greeting_congratulations" = "Gratulacje!";
+"video_greeting_apology" = "Kilka słów od serca";
+"video_greeting_thanks" = "Z całego serca dziękuję";
+"video_greeting_other" = "Kilka słów dla Ciebie";

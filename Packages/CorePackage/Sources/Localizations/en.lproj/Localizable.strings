@@ -175,3 +175,16 @@
 "wish_card_wish_for" = "Wish for %@";
 "wish_card_hide_transcript_button" = "Hide Transcript";
 "wish_card_show_transcript_button" = "Show Transcript";
+
+/* Video card headline (burned into the rendered wish video) */
+"video_greeting_birthday" = "On Your Birthday";
+"video_greeting_anniversary" = "Happy Anniversary";
+"video_greeting_name_day" = "On Your Name Day";
+"video_greeting_wedding" = "On Your Wedding Day";
+"video_greeting_mothers_day" = "On Mother's Day";
+"video_greeting_fathers_day" = "On Father's Day";
+"video_greeting_womens_day" = "On Women's Day";
+"video_greeting_congratulations" = "Congratulations!";
+"video_greeting_apology" = "A Few Words From the Heart";
+"video_greeting_thanks" = "Thank You From the Heart";
+"video_greeting_other" = "A Few Words for You";

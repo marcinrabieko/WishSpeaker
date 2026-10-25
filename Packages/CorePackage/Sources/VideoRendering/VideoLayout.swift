@@ -47,6 +47,23 @@ struct VideoLayout {
         textMarginTop + (canvasSize - textMarginTop - textMarginBottom) / 2
     }
 
+    /// The occasion headline above the first page's wish text — a title, not a shout,
+    /// so only ~12.5% larger than the wish text itself.
+    var greetingFontSize: Int {
+        scaled(72.0)
+    }
+
+    var greetingCenterY: Int {
+        textMarginTop + greetingFontSize / 2 + Int((20.0 * canvasScale).rounded())
+    }
+
+    /// How far the first page's wish text is pushed down to make room for the headline.
+    /// Not scaled by `cardScale` — the backend froze it at its old 1080px value, so
+    /// retuning the headline's font size never moves the wish text.
+    var titlePageTextCenterY: Int {
+        textCenterY + Int((44.0 * canvasScale).rounded())
+    }
+
     private func scaled(_ value: Double) -> Int {
         Int((value * Self.cardScale * canvasScale).rounded())
     }

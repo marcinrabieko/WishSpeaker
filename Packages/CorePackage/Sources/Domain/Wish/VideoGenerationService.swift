@@ -1,6 +1,7 @@
 import AVFoundation
 import Dependencies
 import Foundation
+import Localizations
 import VideoRendering
 
 #if canImport(UIKit)
@@ -67,6 +68,7 @@ public struct LiveVideoGenerationService: VideoGenerationService {
                 audioURL: narration.audioURL,
                 words: narration.words.map { VideoWordTiming(text: $0.text, startMs: $0.startMs, endMs: $0.endMs) },
                 theme: VideoTheme(occasionKind: request.occasionKind),
+                greeting: videoGreeting(for: request.occasionKind),
                 outputURL: try documentsDirectory().appendingPathComponent(fileReference)
             )
         )
@@ -160,6 +162,35 @@ public struct LiveVideoGenerationService: VideoGenerationService {
         try jpegData.write(to: thumbnailURL)
 
         return thumbnailFileName
+    }
+}
+
+/// Fixed per-occasion headline burned into the video card — never AI-generated or
+/// derived from the wish text; no occasion falls back to the `.other` headline.
+private func videoGreeting(for occasionKind: OccasionKind?) -> String {
+    switch occasionKind {
+    case .birthday:
+        L10n.videoGreetingBirthday
+    case .anniversary:
+        L10n.videoGreetingAnniversary
+    case .nameDay:
+        L10n.videoGreetingNameDay
+    case .wedding:
+        L10n.videoGreetingWedding
+    case .mothersDay:
+        L10n.videoGreetingMothersDay
+    case .fathersDay:
+        L10n.videoGreetingFathersDay
+    case .womensDay:
+        L10n.videoGreetingWomensDay
+    case .congratulations:
+        L10n.videoGreetingCongratulations
+    case .apology:
+        L10n.videoGreetingApology
+    case .thanks:
+        L10n.videoGreetingThanks
+    case .other, nil:
+        L10n.videoGreetingOther
     }
 }
 

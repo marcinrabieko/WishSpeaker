@@ -8,12 +8,15 @@ public struct WishVideoRenderRequest: Sendable {
     public let audioURL: URL
     public let words: [VideoWordTiming]
     public let theme: VideoTheme
+    /// Occasion headline shown above the first page's wish text, or `nil` for none.
+    public let greeting: String?
     public let outputURL: URL
 
-    public init(audioURL: URL, words: [VideoWordTiming], theme: VideoTheme, outputURL: URL) {
+    public init(audioURL: URL, words: [VideoWordTiming], theme: VideoTheme, greeting: String?, outputURL: URL) {
         self.audioURL = audioURL
         self.words = words
         self.theme = theme
+        self.greeting = greeting
         self.outputURL = outputURL
     }
 }
@@ -86,7 +89,12 @@ public enum WishVideoRenderer {
         }
 
         let subtitlesURL = workDirectory.appendingPathComponent("subtitles.ass")
-        let subtitles = SubtitleScript.make(words: request.words, mainDurationMs: mainDurationMs, layout: layout)
+        let subtitles = SubtitleScript.make(
+            words: request.words,
+            greeting: request.greeting,
+            mainDurationMs: mainDurationMs,
+            layout: layout
+        )
         try subtitles.write(to: subtitlesURL, atomically: true, encoding: .utf8)
 
         let filterComplex = makeFilterComplex(
