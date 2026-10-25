@@ -62,6 +62,13 @@ final class WishResultViewModel {
             isSaved = true
         }
 
+        // creationManager only holds assets for the Wish it's currently drafting — when
+        // this screen shows a different Wish (e.g. opened from the Library after
+        // generating for another one), its leftover voice/video must not be folded in.
+        guard creationManager.currentWishID == wish.id else {
+            return
+        }
+
         var didGenerateNewAsset = false
 
         if let freshVoice = creationManager.generatedVoiceAsset, freshVoice.id != wish.voiceAsset?.id {
