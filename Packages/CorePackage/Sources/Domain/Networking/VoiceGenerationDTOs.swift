@@ -7,6 +7,17 @@ struct GenerateAudioRequestDTO: Encodable {
     let voiceId: String?
 }
 
+struct GenerateAudioResponseDTO: Decodable {
+    let audioBase64: String
+    let wordTimestamps: [WordTimingDTO]
+}
+
+struct WordTimingDTO: Codable {
+    let text: String
+    let startMs: Int
+    let endMs: Int
+}
+
 struct VoiceMetadataResponseDTO: Decodable {
     let voiceId: String
     let name: String

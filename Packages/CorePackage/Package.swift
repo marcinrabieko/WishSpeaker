@@ -28,7 +28,8 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.9.0"),
         .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.59.1"),
-        .package(url: "https://github.com/SwiftGen/SwiftGenPlugin", from: "6.6.0")
+        .package(url: "https://github.com/SwiftGen/SwiftGenPlugin", from: "6.6.0"),
+        .package(path: "../FFmpegKit")
     ],
     targets: [
         // MARK: - Infrastructure / Domain
@@ -42,6 +43,7 @@ let package = Package(
             name: "Domain",
             dependencies: [
                 "Localizations",
+                "VideoRendering",
                 dependenciesProduct
             ],
             plugins: [swiftLintPlugin]
@@ -60,6 +62,16 @@ let package = Package(
                 .process("Fonts")
             ],
             plugins: [swiftGenPlugin, swiftLintPlugin]
+        ),
+        .target(
+            name: "VideoRendering",
+            dependencies: [
+                .product(name: "ffmpeg-kit", package: "FFmpegKit")
+            ],
+            resources: [
+                .copy("Assets")
+            ],
+            plugins: [swiftLintPlugin]
         ),
 
         // MARK: - Shared Feature Components

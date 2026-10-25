@@ -17,6 +17,14 @@ See [README.md](README.md) for project setup, build environments, git convention
 - **SharedFeatureComponents** — feature-level UI that needs Domain models (e.g. `WishCard`,
   `WishListCard`, which render a `Wish`) but is reused by more than one Feature — kept out of
   `DesignSystem` on purpose, since DesignSystem must stay domain-agnostic
+- **VideoRendering** — on-device wish video rendering (`WishVideoRenderer`): a port of the
+  backend's `services/video_service.py` (subtitle paging + ASS script + the same single-pass
+  ffmpeg filtergraph), encoding with `h264_videotoolbox` instead of `libx264`. Domain-agnostic
+  (Domain maps `OccasionKind` → `VideoTheme`). Video assets (backgrounds, borders, outro, font)
+  go in `Sources/VideoRendering/Assets/` under the backend's file names. The backend only
+  supplies narration audio + word timestamps (`/api/generateAudio`)
+- **FFmpegKit** (`Packages/FFmpegKit`, separate local package) — prebuilt ffmpeg-kit-next
+  xcframeworks (LGPL: libass + VideoToolbox, no x264); rebuild with its `build.sh`
 - **`{X}Feature`** — one target per screen/flow: `StartFeature`, `OccasionSelectionFeature`,
   `FormFeature`, `GeneratedPreviewFeature`, `PackageSelectionFeature`, `FinalWishFeature`,
   `MyWishesFeature`, `ExampleWishesFeature`
