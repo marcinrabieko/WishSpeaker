@@ -1,6 +1,7 @@
 import AVFoundation
 import Dependencies
 import Foundation
+import VideoRendering
 
 #if canImport(UIKit)
 import UIKit
@@ -10,40 +11,29 @@ public struct VideoGenerationRequest: Sendable {
     public let text: String
     public let occasionKind: OccasionKind?
 
-    /// Needed only to synthesize fresh speech — `nil` whenever `existingAudio` is set,
+    /// Needed only to synthesize fresh speech — `nil` whenever `existingVoice` is set,
     /// since reusing an already-generated recording performs no new text-to-speech call.
     public let voiceGender: VoiceGender?
     public let providerVoiceID: String?
 
-    /// An already-generated VoiceAsset's audio data and word-level timing, reused
-    /// verbatim instead of synthesizing new speech — keeps the original voice/
-    /// intonation/pace, avoids a redundant ElevenLabs call, AND lets the backend render
-    /// subtitles without needing fresh alignment data. `nil` triggers the normal
-    /// text-to-speech generation.
-    public let existingAudio: ExistingAudio?
+    /// An already-generated voice recording (with its word timestamps) to narrate the
+    /// video with, instead of synthesizing the text again — keeps the original
+    /// voice/intonation/pace and skips a redundant ElevenLabs call. Ignored (falls
+    /// back to fresh synthesis) when its audio or timestamps file is missing.
+    public let existingVoice: VoiceAsset?
 
     public init(
         text: String,
         occasionKind: OccasionKind? = nil,
         voiceGender: VoiceGender? = nil,
         providerVoiceID: String? = nil,
-        existingAudio: ExistingAudio? = nil
+        existingVoice: VoiceAsset? = nil
     ) {
         self.text = text
         self.occasionKind = occasionKind
         self.voiceGender = voiceGender
         self.providerVoiceID = providerVoiceID
-        self.existingAudio = existingAudio
-    }
-
-    public struct ExistingAudio: Sendable {
-        public let data: Data
-        public let wordTimestamps: [WordTiming]
-
-        public init(data: Data, wordTimestamps: [WordTiming]) {
-            self.data = data
-            self.wordTimestamps = wordTimestamps
-        }
+        self.existingVoice = existingVoice
     }
 }
 
@@ -61,22 +51,25 @@ public struct LiveVideoGenerationService: VideoGenerationService {
         self.apiClient = apiClient
     }
 
+    /// The backend only synthesizes the narration (audio + word timestamps); the video
+    /// itself is rendered on device by `WishVideoRenderer`.
     public func generateVideo(for request: VideoGenerationRequest) async throws -> VideoAsset {
-        let dto = GenerateVideoRequestDTO(
-            text: request.text,
-            language: SupportedLanguage.current.rawValue,
-            voiceGender: request.voiceGender.map { $0 == .male ? "male" : "female" },
-            voiceId: request.providerVoiceID,
-            occasionKind: request.occasionKind?.rawValue,
-            existingAudioBase64: request.existingAudio?.data.base64EncodedString(),
-            existingWordTimestamps: request.existingAudio?.wordTimestamps.map {
-                WordTimingDTO(text: $0.text, startMs: $0.startMs, endMs: $0.endMs)
+        let narration = try await narration(for: request)
+        defer {
+            if narration.isTemporary {
+                try? FileManager.default.removeItem(at: narration.audioURL)
             }
-        )
+        }
 
-        let videoData = try await apiClient.postRawData("/api/generateVideo", body: dto)
         let fileReference = "video_\(UUID().uuidString).mp4"
-        try saveVideoFile(videoData, named: fileReference)
+        try await WishVideoRenderer.render(
+            WishVideoRenderRequest(
+                audioURL: narration.audioURL,
+                words: narration.words.map { VideoWordTiming(text: $0.text, startMs: $0.startMs, endMs: $0.endMs) },
+                theme: VideoTheme(occasionKind: request.occasionKind),
+                outputURL: try documentsDirectory().appendingPathComponent(fileReference)
+            )
+        )
 
         let duration = try await videoDuration(forFileNamed: fileReference)
         let thumbnailReference = try? saveThumbnail(forFileNamed: fileReference)
@@ -88,17 +81,48 @@ public struct LiveVideoGenerationService: VideoGenerationService {
         )
     }
 
+    private struct Narration {
+        let audioURL: URL
+        let words: [WordTiming]
+        let isTemporary: Bool
+    }
+
+    private func narration(for request: VideoGenerationRequest) async throws -> Narration {
+        if let existingVoice = request.existingVoice,
+           let audioURL = existingVoice.audioURL,
+           let words = existingVoice.wordTimestamps {
+            return Narration(audioURL: audioURL, words: words, isTemporary: false)
+        }
+
+        let dto = GenerateAudioRequestDTO(
+            text: request.text,
+            language: SupportedLanguage.current.rawValue,
+            voiceGender: request.voiceGender == .male ? "male" : "female",
+            voiceId: request.providerVoiceID
+        )
+
+        let response: GenerateAudioResponseDTO = try await apiClient.post("/api/generateAudio", body: dto)
+
+        guard let audioData = Data(base64Encoded: response.audioBase64) else {
+            throw APIError.invalidResponse
+        }
+
+        let audioURL = FileManager.default.temporaryDirectory.appendingPathComponent("narration_\(UUID().uuidString).mp3")
+        try audioData.write(to: audioURL)
+
+        return Narration(
+            audioURL: audioURL,
+            words: response.wordTimestamps.map { WordTiming(text: $0.text, startMs: $0.startMs, endMs: $0.endMs) },
+            isTemporary: true
+        )
+    }
+
     private func documentsDirectory() throws -> URL {
         guard let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
             throw APIError.invalidResponse
         }
 
         return url
-    }
-
-    private func saveVideoFile(_ data: Data, named fileName: String) throws {
-        let fileURL = try documentsDirectory().appendingPathComponent(fileName)
-        try data.write(to: fileURL)
     }
 
     private func videoDuration(forFileNamed fileName: String) async throws -> TimeInterval {
@@ -136,6 +160,27 @@ public struct LiveVideoGenerationService: VideoGenerationService {
         try jpegData.write(to: thumbnailURL)
 
         return thumbnailFileName
+    }
+}
+
+private extension VideoTheme {
+    /// Same occasion -> theme matrix as the backend's OCCASION_TO_THEME; anything not
+    /// listed (including no occasion at all) falls back to `.classic`.
+    init(occasionKind: OccasionKind?) {
+        switch occasionKind {
+        case .birthday, .congratulations, .fathersDay:
+            self = .celebration
+        case .anniversary:
+            self = .romantic
+        case .wedding:
+            self = .wedding
+        case .mothersDay, .womensDay, .nameDay:
+            self = .floral
+        case .apology, .thanks:
+            self = .calm
+        case .other, nil:
+            self = .classic
+        }
     }
 }
 

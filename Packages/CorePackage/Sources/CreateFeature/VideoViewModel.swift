@@ -114,21 +114,10 @@ public final class VideoViewModel {
     /// sharing the voiceGender/providerVoiceID fields a fresh-generation request needs.
     private func makeGenerationRequest() -> VideoGenerationRequest? {
         if let reusableVoiceAsset {
-            guard
-                let audioURL = reusableVoiceAsset.audioURL,
-                let audioData = try? Data(contentsOf: audioURL),
-                let wordTimestamps = reusableVoiceAsset.wordTimestamps
-            else {
-                return nil
-            }
-
             return VideoGenerationRequest(
                 text: wishText,
                 occasionKind: creationManager.selectedOccasion?.kind ?? creationManager.occasionKind,
-                existingAudio: VideoGenerationRequest.ExistingAudio(
-                    data: audioData,
-                    wordTimestamps: wordTimestamps
-                )
+                existingVoice: reusableVoiceAsset
             )
         }
 
