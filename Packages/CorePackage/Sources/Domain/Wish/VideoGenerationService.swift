@@ -13,16 +13,24 @@ public struct VideoGenerationRequest: Sendable {
     public let providerVoiceID: String?
     public let occasionKind: OccasionKind?
 
+    /// An already-generated voice recording (with its word timestamps) to narrate the
+    /// video with, instead of synthesizing the text again — keeps the original
+    /// voice/intonation/pace and skips a redundant ElevenLabs call. Ignored (falls
+    /// back to fresh synthesis) when its audio or timestamps file is missing.
+    public let existingVoice: VoiceAsset?
+
     public init(
         text: String,
         voiceGender: VoiceGender,
         providerVoiceID: String? = nil,
-        occasionKind: OccasionKind? = nil
+        occasionKind: OccasionKind? = nil,
+        existingVoice: VoiceAsset? = nil
     ) {
         self.text = text
         self.voiceGender = voiceGender
         self.providerVoiceID = providerVoiceID
         self.occasionKind = occasionKind
+        self.existingVoice = existingVoice
     }
 }
 
@@ -43,6 +51,46 @@ public struct LiveVideoGenerationService: VideoGenerationService {
     /// The backend only synthesizes the narration (audio + word timestamps); the video
     /// itself is rendered on device by `WishVideoRenderer`.
     public func generateVideo(for request: VideoGenerationRequest) async throws -> VideoAsset {
+        let narration = try await narration(for: request)
+        defer {
+            if narration.isTemporary {
+                try? FileManager.default.removeItem(at: narration.audioURL)
+            }
+        }
+
+        let fileReference = "video_\(UUID().uuidString).mp4"
+        try await WishVideoRenderer.render(
+            WishVideoRenderRequest(
+                audioURL: narration.audioURL,
+                words: narration.words.map { VideoWordTiming(text: $0.text, startMs: $0.startMs, endMs: $0.endMs) },
+                theme: VideoTheme(occasionKind: request.occasionKind),
+                outputURL: try documentsDirectory().appendingPathComponent(fileReference)
+            )
+        )
+
+        let duration = try await videoDuration(forFileNamed: fileReference)
+        let thumbnailReference = try? saveThumbnail(forFileNamed: fileReference)
+
+        return VideoAsset(
+            videoFileReference: fileReference,
+            thumbnailReference: thumbnailReference,
+            duration: duration
+        )
+    }
+
+    private struct Narration {
+        let audioURL: URL
+        let words: [WordTiming]
+        let isTemporary: Bool
+    }
+
+    private func narration(for request: VideoGenerationRequest) async throws -> Narration {
+        if let existingVoice = request.existingVoice,
+           let audioURL = existingVoice.audioURL,
+           let words = existingVoice.wordTimestamps {
+            return Narration(audioURL: audioURL, words: words, isTemporary: false)
+        }
+
         let dto = GenerateAudioRequestDTO(
             text: request.text,
             language: SupportedLanguage.current.rawValue,
@@ -58,27 +106,11 @@ public struct LiveVideoGenerationService: VideoGenerationService {
 
         let audioURL = FileManager.default.temporaryDirectory.appendingPathComponent("narration_\(UUID().uuidString).mp3")
         try audioData.write(to: audioURL)
-        defer {
-            try? FileManager.default.removeItem(at: audioURL)
-        }
 
-        let fileReference = "video_\(UUID().uuidString).mp4"
-        try await WishVideoRenderer.render(
-            WishVideoRenderRequest(
-                audioURL: audioURL,
-                words: response.wordTimestamps.map { VideoWordTiming(text: $0.text, startMs: $0.startMs, endMs: $0.endMs) },
-                theme: VideoTheme(occasionKind: request.occasionKind),
-                outputURL: try documentsDirectory().appendingPathComponent(fileReference)
-            )
-        )
-
-        let duration = try await videoDuration(forFileNamed: fileReference)
-        let thumbnailReference = try? saveThumbnail(forFileNamed: fileReference)
-
-        return VideoAsset(
-            videoFileReference: fileReference,
-            thumbnailReference: thumbnailReference,
-            duration: duration
+        return Narration(
+            audioURL: audioURL,
+            words: response.wordTimestamps.map { WordTiming(text: $0.text, startMs: $0.startMs, endMs: $0.endMs) },
+            isTemporary: true
         )
     }
 

@@ -77,7 +77,8 @@ public final class VideoViewModel {
                         text: wishText,
                         voiceGender: selectedVoice.gender,
                         providerVoiceID: selectedVoice.providerVoiceID,
-                        occasionKind: creationManager.selectedOccasion?.kind ?? creationManager.occasionKind
+                        occasionKind: creationManager.selectedOccasion?.kind ?? creationManager.occasionKind,
+                        existingVoice: reusableVoice(for: selectedVoice)
                     )
                 )
 
@@ -113,6 +114,24 @@ public final class VideoViewModel {
         )
 
         libraryManager.save(wish)
+    }
+
+    /// The draft's already-generated voice recording, when it was synthesized with the
+    /// voice selected here and for the current text — the video then reuses that exact
+    /// recording instead of synthesizing the text again.
+    private func reusableVoice(for selectedVoice: VoiceOption) -> VoiceAsset? {
+        guard
+            let voiceAsset = creationManager.generatedVoiceAsset,
+            voiceAsset.providerVoiceID == selectedVoice.providerVoiceID,
+            let wordTimestamps = voiceAsset.wordTimestamps
+        else {
+            return nil
+        }
+
+        let spokenText = wordTimestamps.map(\.text).joined(separator: " ")
+        let currentText = wishText.split(whereSeparator: \.isWhitespace).joined(separator: " ")
+
+        return spokenText == currentText ? voiceAsset : nil
     }
 
     private func loadVoices() async {
