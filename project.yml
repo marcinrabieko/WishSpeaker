@@ -33,9 +33,6 @@ settings:
   DEVELOPMENT_TEAM: AGWMLY37K7
   PRODUCT_BUNDLE_IDENTIFIER: com.rabieko.wishspeaker
   CODE_SIGN_STYLE: Automatic
-  # iPhone only — the app is portrait-only, and App Store validation rejects an iPad
-  # build that doesn't support all four orientations (required for iPad multitasking).
-  TARGETED_DEVICE_FAMILY: "1"
 
 # TARGETS
 
@@ -72,6 +69,11 @@ targets:
     settings:
       base:
         PRODUCT_NAME: WishSpeaker
+        # iPhone only — the app is portrait-only, and App Store validation rejects an iPad
+        # build that doesn't support all four orientations (required for iPad multitasking).
+        # Set on the target, not project-level: xcodegen's iOS application preset writes
+        # its own "1,2" at target level, which would override a project-level value.
+        TARGETED_DEVICE_FAMILY: "1"
         SWIFT_ACTIVE_COMPILATION_CONDITIONS: $(inherited)
         GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
