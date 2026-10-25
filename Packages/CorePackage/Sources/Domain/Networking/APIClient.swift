@@ -8,7 +8,7 @@ public enum APIError: Error, Sendable {
     case transport(Error)
 }
 
-private let networkLogger = Logger(subsystem: "com.wishspeaker.app", category: "Networking")
+private let networkLogger = Logger(subsystem: "com.rabieko.wishspeaker", category: "Networking")
 
 /// Thin JSON POST wrapper around URLSession for the WishSpeaker backend. Every current
 /// endpoint is a POST with a JSON body and a JSON response, so this does not attempt to

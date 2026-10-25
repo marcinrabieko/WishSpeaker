@@ -2,7 +2,7 @@ import ffmpegkit
 import Foundation
 import OSLog
 
-private let logger = Logger(subsystem: "com.wishspeaker.app", category: "VideoRendering")
+private let logger = Logger(subsystem: "com.rabieko.wishspeaker", category: "VideoRendering")
 
 public struct WishVideoRenderRequest: Sendable {
     public let audioURL: URL

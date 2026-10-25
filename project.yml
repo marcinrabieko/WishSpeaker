@@ -31,9 +31,11 @@ settings:
   IPHONEOS_DEPLOYMENT_TARGET: 17.0
   DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
   DEVELOPMENT_TEAM: AGWMLY37K7
-  PRODUCT_BUNDLE_IDENTIFIER: com.wishspeaker.app
+  PRODUCT_BUNDLE_IDENTIFIER: com.rabieko.wishspeaker
   CODE_SIGN_STYLE: Automatic
-  TARGETED_DEVICE_FAMILY: "1,2"
+  # iPhone only — the app is portrait-only, and App Store validation rejects an iPad
+  # build that doesn't support all four orientations (required for iPad multitasking).
+  TARGETED_DEVICE_FAMILY: "1"
 
 # TARGETS
 
