@@ -107,11 +107,15 @@
 "voice_view_load_error" = "Nie udało się wczytać tego głosu. Spróbuj ponownie.";
 "voice_view_retry_button" = "Spróbuj ponownie";
 "voice_view_generation_error" = "Nie udało się wygenerować głosu. Spróbuj ponownie.";
+"voice_view_generating_title" = "Nagrywamy Twoje życzenia…";
+"voice_view_generating_subtitle" = "Lektor już się rozgrzewa. To potrwa tylko chwilę.";
 
 /* Video Card */
 "video_view_title" = "Kartka wideo";
 "video_view_generate_button" = "Wygeneruj wideo";
 "video_view_generation_error" = "Nie udało się wygenerować wideo. Spróbuj ponownie.";
+"video_view_generating_title" = "Pakujemy Twoje wideo…";
+"video_view_generating_subtitle" = "To może chwilę potrwać. Nie zamykaj aplikacji.";
 "video_view_reuse_existing_audio_notice" = "Użyjemy istniejącego nagrania";
 
 /* Package Selection */

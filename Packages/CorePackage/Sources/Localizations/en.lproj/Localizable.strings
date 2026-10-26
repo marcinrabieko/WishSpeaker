@@ -107,11 +107,15 @@
 "voice_view_load_error" = "We couldn't load this voice. Please try again.";
 "voice_view_retry_button" = "Retry";
 "voice_view_generation_error" = "We couldn't generate the voice. Please try again.";
+"voice_view_generating_title" = "Recording your wish…";
+"voice_view_generating_subtitle" = "Your narrator is warming up. This takes just a moment.";
 
 /* Video Card */
 "video_view_title" = "Video Card";
 "video_view_generate_button" = "Generate Video";
 "video_view_generation_error" = "We couldn't generate the video. Please try again.";
+"video_view_generating_title" = "Wrapping up your video…";
+"video_view_generating_subtitle" = "This may take a little while. Please keep the app open.";
 "video_view_reuse_existing_audio_notice" = "We'll use your existing recording";
 
 /* Package Selection */

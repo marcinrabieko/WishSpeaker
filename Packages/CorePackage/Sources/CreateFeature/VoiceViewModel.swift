@@ -89,7 +89,8 @@ public final class VoiceViewModel {
 
                 creationManager.generatedVoiceAsset = voiceAsset
                 saveToLibrary(voiceAsset: voiceAsset)
-                isGenerating = false
+                // isGenerating stays true so the generating overlay rides out the
+                // pop animation instead of flashing the form underneath first.
                 navigateBackAfterGeneration = true
             } catch {
                 isGenerating = false

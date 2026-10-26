@@ -100,7 +100,8 @@ public final class VideoViewModel {
 
                 creationManager.generatedVideoAsset = videoAsset
                 saveToLibrary(videoAsset: videoAsset)
-                isGenerating = false
+                // isGenerating stays true so the generating overlay rides out the
+                // pop animation instead of flashing the form underneath first.
                 navigateBackAfterGeneration = true
             } catch {
                 isGenerating = false

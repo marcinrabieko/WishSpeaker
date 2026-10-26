@@ -37,6 +37,18 @@ public struct VideoView: View {
         .navigationTitle(L10n.videoViewTitle)
         .navigationBarTitleDisplayMode(.large)
         .wsBackButton()
+        .overlay {
+            if viewModel.isGenerating {
+                GeneratingView(
+                    title: L10n.videoViewGeneratingTitle,
+                    subtitle: L10n.videoViewGeneratingSubtitle
+                )
+                .ignoresSafeArea()
+                .transition(.opacity)
+            }
+        }
+        .toolbar(viewModel.isGenerating ? .hidden : .visible, for: .navigationBar)
+        .animation(.easeInOut(duration: 0.3), value: viewModel.isGenerating)
         .onAppear {
             viewModel.didAppear()
         }
@@ -105,15 +117,9 @@ public struct VideoView: View {
 
     private var generateButton: some View {
         PrimaryButton(
-            title: viewModel.isGenerating ? "" : L10n.videoViewGenerateButton,
+            title: L10n.videoViewGenerateButton,
             action: { viewModel.didTapGenerate() },
             isEnabled: viewModel.isGenerateEnabled
         )
-        .overlay {
-            if viewModel.isGenerating {
-                ProgressView()
-                    .tint(.white)
-            }
-        }
     }
 }

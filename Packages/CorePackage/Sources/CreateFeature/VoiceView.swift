@@ -33,6 +33,18 @@ public struct VoiceView: View {
         .navigationTitle(L10n.voiceViewTitle)
         .navigationBarTitleDisplayMode(.large)
         .wsBackButton()
+        .overlay {
+            if viewModel.isGenerating {
+                GeneratingView(
+                    title: L10n.voiceViewGeneratingTitle,
+                    subtitle: L10n.voiceViewGeneratingSubtitle
+                )
+                .ignoresSafeArea()
+                .transition(.opacity)
+            }
+        }
+        .toolbar(viewModel.isGenerating ? .hidden : .visible, for: .navigationBar)
+        .animation(.easeInOut(duration: 0.3), value: viewModel.isGenerating)
         .onAppear {
             viewModel.didAppear()
         }
@@ -89,15 +101,9 @@ public struct VoiceView: View {
 
     private var generateButton: some View {
         PrimaryButton(
-            title: viewModel.isGenerating ? "" : L10n.voiceViewGenerateButton,
+            title: L10n.voiceViewGenerateButton,
             action: { viewModel.didTapGenerate() },
             isEnabled: viewModel.isGenerateEnabled
         )
-        .overlay {
-            if viewModel.isGenerating {
-                ProgressView()
-                    .tint(.white)
-            }
-        }
     }
 }
