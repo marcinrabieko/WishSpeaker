@@ -33,7 +33,7 @@ public struct VideoView: View {
                 .padding(.vertical, WSSpacing.sm)
                 .background(Color.wsBackground)
         }
-        .background(Color.wsBackground)
+        .wsDecoratedBackground()
         .navigationTitle(L10n.videoViewTitle)
         .navigationBarTitleDisplayMode(.large)
         .wsBackButton()

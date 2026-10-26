@@ -109,7 +109,7 @@ public struct FormView: View {
 			.padding(.horizontal, 18)
 			.padding(.vertical, 18)
 		}
-		.background(Color.wsBackground)
+		.wsDecoratedBackground()
 		.navigationTitle(L10n.formTitle)
 		.navigationBarTitleDisplayMode(.large)
 		.wsBackButton()

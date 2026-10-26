@@ -34,7 +34,7 @@ struct ExampleWishDetailView: View {
             .padding(.top, WSSpacing.xxs)
             .padding(.bottom, WSSpacing.md)
         }
-        .background(Color.wsBackground)
+        .wsDecoratedBackground()
         .navigationTitle(wish.recipient)
         .navigationBarTitleDisplayMode(.large)
         .wsBackButton()

@@ -94,7 +94,7 @@ public struct WishResultView: View {
                 .padding(.top, WSSpacing.xxs)
                 .padding(.bottom, WSSpacing.md)
             }
-            .background(Color.wsBackground)
+            .wsDecoratedBackground()
             .navigationTitle(viewModel.wish.recipient)
             .navigationBarTitleDisplayMode(.large)
             .modifier(BackButtonModifier(origin: origin, viewModel: viewModel, path: createFlowPath))

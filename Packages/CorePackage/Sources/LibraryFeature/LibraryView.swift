@@ -39,7 +39,7 @@ public struct LibraryView: View {
                 .padding(.top, WSSpacing.xs)
             }
         }
-        .background(Color.wsBackground)
+        .wsDecoratedBackground()
         .navigationTitle(L10n.libraryTitle)
         .navigationBarTitleDisplayMode(.large)
         .wsBackButton()

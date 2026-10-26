@@ -30,7 +30,7 @@ public struct OccasionSelectionView: View {
 			.padding(.horizontal, WSSpacing.horizontalPadding)
 			.padding(.bottom, WSSpacing.lg)
 		}
-		.background(Color.wsBackground)
+		.wsDecoratedBackground()
 		.navigationTitle(L10n.occasionSelectionTitle)
 		.navigationBarTitleDisplayMode(.large)
 		.wsBackButton()

@@ -46,7 +46,7 @@ public struct ExampleWishesView: View {
                 .padding(.vertical, WSSpacing.sm)
                 .background(Color.wsBackground)
         }
-        .background(Color.wsBackground)
+        .wsDecoratedBackground()
         .navigationTitle(L10n.exampleWishesTitle)
         .navigationBarTitleDisplayMode(.large)
         .wsBackButton()

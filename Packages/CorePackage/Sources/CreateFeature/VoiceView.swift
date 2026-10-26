@@ -29,7 +29,7 @@ public struct VoiceView: View {
                 .padding(.vertical, WSSpacing.sm)
                 .background(Color.wsBackground)
         }
-        .background(Color.wsBackground)
+        .wsDecoratedBackground()
         .navigationTitle(L10n.voiceViewTitle)
         .navigationBarTitleDisplayMode(.large)
         .wsBackButton()

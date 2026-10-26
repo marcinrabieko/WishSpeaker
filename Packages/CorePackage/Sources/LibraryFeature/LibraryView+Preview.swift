@@ -15,7 +15,7 @@ import SwiftUI
             .padding(.horizontal, WSSpacing.horizontalPadding)
             .padding(.vertical, WSSpacing.sm)
         }
-        .background(Color.wsBackground)
+        .wsDecoratedBackground()
         .navigationTitle(L10n.libraryTitle)
         .navigationBarTitleDisplayMode(.large)
     }

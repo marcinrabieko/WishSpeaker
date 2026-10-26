@@ -23,7 +23,7 @@ public struct WishesView: View {
                 contentView
             }
         }
-        .background(Color.wsBackground)
+        .wsDecoratedBackground()
         .navigationTitle(L10n.wishesTitle)
         .navigationBarTitleDisplayMode(.large)
         .wsBackButton()

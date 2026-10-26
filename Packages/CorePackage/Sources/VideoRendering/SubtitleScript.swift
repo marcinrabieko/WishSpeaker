@@ -134,6 +134,10 @@ enum SubtitleScript {
     /// A page boundary goes at every sentence end (.!?); a sentence that would still
     /// wrap past `maxLinesPerPage` is further split at clause boundaries (,;:), packing
     /// consecutive clauses together up to the line cap.
+    ///
+    /// A single-line fragment (e.g. the "Emma, my mom," salutation opening the wish) is
+    /// never left as a page of its own — it's carried onto the next clause's page, and
+    /// any page that then overflows the line cap is split word by word.
     static func groupIntoPages(_ words: [VideoWordTiming]) -> [[VideoWordTiming]] {
         var pages: [[VideoWordTiming]] = []
 
@@ -145,11 +149,17 @@ enum SubtitleScript {
 
             var pending: [VideoWordTiming] = []
             for clause in split(sentence, endingWith: ",;:") {
-                if !pending.isEmpty, lineCount(pending + clause) > maxLinesPerPage {
+                if lineCount(pending) > 1, lineCount(pending + clause) > maxLinesPerPage {
                     pages.append(pending)
                     pending = []
                 }
                 pending += clause
+
+                while lineCount(pending) > maxLinesPerPage {
+                    let page = fittingPrefix(of: pending)
+                    pages.append(page)
+                    pending.removeFirst(page.count)
+                }
             }
             if !pending.isEmpty {
                 pages.append(pending)
@@ -187,6 +197,16 @@ enum SubtitleScript {
 
     private static func lineCount(_ words: [VideoWordTiming]) -> Int {
         wrapIntoLines(words.map(\.text)).count
+    }
+
+    /// The longest leading run of `words` that still wraps to at most `maxLinesPerPage`.
+    private static func fittingPrefix(of words: [VideoWordTiming]) -> [VideoWordTiming] {
+        var count = 1
+        while count < words.count, lineCount(Array(words.prefix(count + 1))) <= maxLinesPerPage {
+            count += 1
+        }
+
+        return Array(words.prefix(count))
     }
 
     private static func split(_ words: [VideoWordTiming], endingWith punctuation: String) -> [[VideoWordTiming]] {
