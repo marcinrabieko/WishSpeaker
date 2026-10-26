@@ -85,6 +85,11 @@ public struct StartView: View {
                 Spacer(minLength: proxy.size.height * 0.12)
             }
         }
+        .background {
+            Resource.startBackgroundBokeh.swiftUIImage
+                .resizable()
+                .scaledToFill()
+        }
         .background(Color.wsBackground)
         .ignoresSafeArea()
         .navigationBarHidden(true)
