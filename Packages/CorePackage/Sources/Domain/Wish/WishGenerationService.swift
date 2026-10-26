@@ -39,9 +39,9 @@ public struct LiveWishGenerationService: WishGenerationService {
         let response: WishVariantsDTO = try await apiClient.post("/api/generateWishes", body: dto)
 
         return WishGenerationResult(
-            warm: response.warm,
-            natural: response.natural,
-            light: response.light
+            warm: response.warm.replacingDashes,
+            natural: response.natural.replacingDashes,
+            light: response.light.replacingDashes
         )
     }
 
@@ -61,7 +61,7 @@ public struct LiveWishGenerationService: WishGenerationService {
 
         let response: RegenerateWishResponseDTO = try await apiClient.post("/api/regenerateWish", body: dto)
 
-        return response.text
+        return response.text.replacingDashes
     }
 
     /// The form only ever collects one "who is this for" field (WishForm.relation, e.g.

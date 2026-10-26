@@ -36,7 +36,7 @@ public struct LiveVoiceGenerationService: VoiceGenerationService {
 
     public func generateVoice(for request: VoiceGenerationRequest) async throws -> VoiceAsset {
         let dto = GenerateAudioRequestDTO(
-            text: request.text,
+            text: request.text.replacingDashes,
             language: SupportedLanguage.current.rawValue,
             voiceGender: request.voiceGender == .male ? "male" : "female",
             voiceId: request.providerVoiceID
