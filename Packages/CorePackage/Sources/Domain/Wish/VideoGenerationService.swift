@@ -66,7 +66,7 @@ public struct LiveVideoGenerationService: VideoGenerationService {
         try await WishVideoRenderer.render(
             WishVideoRenderRequest(
                 audioURL: narration.audioURL,
-                words: narration.words.replacingDashes.map { VideoWordTiming(text: $0.text, startMs: $0.startMs, endMs: $0.endMs) },
+                words: narration.words.sanitizedWishText.map { VideoWordTiming(text: $0.text, startMs: $0.startMs, endMs: $0.endMs) },
                 theme: VideoTheme(occasionKind: request.occasionKind),
                 greeting: videoGreeting(for: request.occasionKind),
                 outputURL: try documentsDirectory().appendingPathComponent(fileReference)
@@ -97,7 +97,7 @@ public struct LiveVideoGenerationService: VideoGenerationService {
         }
 
         let dto = GenerateAudioRequestDTO(
-            text: request.text.replacingDashes,
+            text: request.text.sanitizedWishText,
             language: SupportedLanguage.current.rawValue,
             voiceGender: request.voiceGender == .male ? "male" : "female",
             voiceId: request.providerVoiceID

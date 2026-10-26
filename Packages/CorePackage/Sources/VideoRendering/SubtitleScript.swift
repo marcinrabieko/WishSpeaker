@@ -23,6 +23,9 @@ enum SubtitleScript {
     // longest greetings wrap to at most 2 lines at this limit.
     static let maxGreetingCharsPerLine = 23
     static let maxLinesPerPage = 4
+    // The opening page doubles as the video's thumbnail — below this many words it's
+    // topped up from the following text so it never shows just "Happy birthday.".
+    static let minFirstPageWords = 15
     static let pageCrossfadeMs = 400
     static let pageEndHoldMs = 400
     static let pageStartDelayMs = 100
@@ -164,6 +167,35 @@ enum SubtitleScript {
             if !pending.isEmpty {
                 pages.append(pending)
             }
+        }
+
+        return fillingFirstPage(pages)
+    }
+
+    /// Tops up a short opening page (under `minFirstPageWords`) with the following
+    /// page(s) while they still fit the line cap. When a whole page doesn't fit, only its
+    /// leading clauses (,;:) that do are pulled in, so the split still lands at a
+    /// natural pause.
+    private static func fillingFirstPage(_ pages: [[VideoWordTiming]]) -> [[VideoWordTiming]] {
+        var pages = pages
+
+        while pages.count > 1, pages[0].count < minFirstPageWords {
+            if lineCount(pages[0] + pages[1]) <= maxLinesPerPage {
+                pages[0] += pages.remove(at: 1)
+                continue
+            }
+
+            var pulledWords: [VideoWordTiming] = []
+            for clause in split(pages[1], endingWith: ",;:") {
+                guard lineCount(pages[0] + pulledWords + clause) <= maxLinesPerPage else {
+                    break
+                }
+                pulledWords += clause
+            }
+
+            pages[0] += pulledWords
+            pages[1].removeFirst(pulledWords.count)
+            break
         }
 
         return pages

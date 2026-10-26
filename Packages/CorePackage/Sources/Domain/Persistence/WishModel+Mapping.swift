@@ -75,7 +75,7 @@ extension WishModel {
             recipient: recipient,
             context: context,
             variant: WishVariant(rawValue: variant) ?? .natural,
-            text: text.replacingDashes,
+            text: text.sanitizedWishText,
             language: language,
             createdAt: createdAt,
             updatedAt: updatedAt,
