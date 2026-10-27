@@ -1,6 +1,7 @@
 import DesignSystem
 import Domain
 import Localizations
+import PaywallFeature
 import SharedFeatureComponents
 import SwiftUI
 
@@ -49,6 +50,14 @@ public struct VideoView: View {
         }
         .toolbar(viewModel.isGenerating ? .hidden : .visible, for: .navigationBar)
         .animation(.easeInOut(duration: 0.3), value: viewModel.isGenerating)
+        .sheet(isPresented: $viewModel.isPaywallPresented) {
+            PaywallView(
+                kind: .video,
+                onPurchased: {
+                    viewModel.didCompletePurchase()
+                }
+            )
+        }
         .onAppear {
             viewModel.didAppear()
         }

@@ -81,6 +81,10 @@ targets:
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UIStatusBarStyle: UIStatusBarStyleLightContent
         INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
+    scheme:
+      # Local StoreKit testing (Run only) — products must also exist in App Store
+      # Connect under the same IDs for TestFlight/production.
+      storeKitConfiguration: Targets/MobileApp/StoreKit/WishSpeaker.storekit
     info:
       path: Targets/MobileApp/Resources/Info.plist
       properties:
@@ -96,6 +100,7 @@ targets:
 fileGroups:
   - README.md
   - CLAUDE.md
+  - Targets/MobileApp/StoreKit
 
 # PACKAGES
 

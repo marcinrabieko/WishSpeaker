@@ -24,6 +24,7 @@
 /* Begin PBXFileReference section */
 		075038B486D6552521D95CEC /* CorePackage */ = {isa = PBXFileReference; lastKnownFileType = folder; name = CorePackage; path = Packages/CorePackage; sourceTree = SOURCE_ROOT; };
 		1F375D255DC2D1FFC8147A4F /* WishSpeakerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishSpeakerApp.swift; sourceTree = "<group>"; };
+		270B825B682EE2B8A57CF36F /* WishSpeaker.storekit */ = {isa = PBXFileReference; path = WishSpeaker.storekit; sourceTree = "<group>"; };
 		30E5035B2C6C46FFC253524F /* WishSpeaker.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = WishSpeaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4AC1757CA53B111F3B5ACA45 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		82026C25CEA0F735B325B770 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -106,6 +107,7 @@
 			children = (
 				55B0AD0DBC7884BD12A9A7A6 /* Resources */,
 				6B2C85F612DF15DA7DA7625E /* Sources */,
+				FF5C4752DF9D35D3A885FF4B /* StoreKit */,
 			);
 			path = MobileApp;
 			sourceTree = "<group>";
@@ -121,6 +123,14 @@
 			);
 			sourceTree = "<group>";
 			usesTabs = 0;
+		};
+		FF5C4752DF9D35D3A885FF4B /* StoreKit */ = {
+			isa = PBXGroup;
+			children = (
+				270B825B682EE2B8A57CF36F /* WishSpeaker.storekit */,
+			);
+			path = StoreKit;
+			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 

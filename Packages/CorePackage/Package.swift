@@ -23,7 +23,8 @@ let package = Package(
         .library(name: "WishesFeature", targets: ["WishesFeature"]),
         .library(name: "CreateFeature", targets: ["CreateFeature"]),
         .library(name: "LibraryFeature", targets: ["LibraryFeature"]),
-        .library(name: "ExampleWishesFeature", targets: ["ExampleWishesFeature"])
+        .library(name: "ExampleWishesFeature", targets: ["ExampleWishesFeature"]),
+        .library(name: "PaywallFeature", targets: ["PaywallFeature"])
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.9.0"),
@@ -145,6 +146,17 @@ let package = Package(
                 "DesignSystem",
                 "Localizations",
                 "SharedFeatureComponents",
+                "PaywallFeature",
+                dependenciesProduct
+            ],
+            plugins: [swiftLintPlugin]
+        ),
+        .target(
+            name: "PaywallFeature",
+            dependencies: [
+                "Domain",
+                "DesignSystem",
+                "Localizations",
                 dependenciesProduct
             ],
             plugins: [swiftLintPlugin]

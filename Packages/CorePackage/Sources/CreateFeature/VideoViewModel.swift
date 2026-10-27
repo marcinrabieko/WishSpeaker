@@ -27,6 +27,7 @@ public final class VideoViewModel {
     var isGenerating = false
     var generationError: String?
     var navigateBackAfterGeneration = false
+    var isPaywallPresented = false
 
     @ObservationIgnored
     @Dependency(\.wishCreationManager)
@@ -44,6 +45,10 @@ public final class VideoViewModel {
     @Dependency(\.videoGenerationService)
     private var videoGenerationService: any VideoGenerationService
 
+    @ObservationIgnored
+    @Dependency(\.purchaseManager)
+    private var purchaseManager: PurchaseManager
+
     public init() {}
 
     var isGenerateEnabled: Bool {
@@ -54,6 +59,11 @@ public final class VideoViewModel {
         occasionTitle = creationManager.selectedOccasion?.title ?? creationManager.currentForm.occasion
         variantDisplayName = (creationManager.selectedVariant ?? .natural).displayName
         wishText = creationManager.generatedText
+
+        // Prefetched so the paywall opens with its price already loaded.
+        Task {
+            await purchaseManager.loadProducts()
+        }
 
         guard !hasResolvedExistingAudio else {
             return
@@ -89,6 +99,19 @@ public final class VideoViewModel {
     }
 
     func didTapGenerate() {
+        if purchaseManager.hasUnusedGeneration(.video) {
+            startGeneration()
+        } else {
+            isPaywallPresented = true
+        }
+    }
+
+    func didCompletePurchase() {
+        isPaywallPresented = false
+        startGeneration()
+    }
+
+    private func startGeneration() {
         guard let request = makeGenerationRequest() else { return }
 
         generationError = nil
@@ -98,6 +121,7 @@ public final class VideoViewModel {
             do {
                 let videoAsset = try await videoGenerationService.generateVideo(for: request)
 
+                purchaseManager.consumeGeneration(.video)
                 creationManager.generatedVideoAsset = videoAsset
                 saveToLibrary(videoAsset: videoAsset)
                 // isGenerating stays true so the generating overlay rides out the

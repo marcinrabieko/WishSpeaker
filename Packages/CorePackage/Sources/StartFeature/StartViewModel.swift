@@ -14,7 +14,15 @@ public final class StartViewModel {
     @Dependency(\.wishCreationManager)
     private var creationManager: WishCreationManager
 
+    @ObservationIgnored
+    @Dependency(\.purchaseManager)
+    private var purchaseManager: PurchaseManager
+
     public init() {}
+
+    func didAppear() {
+        purchaseManager.start()
+    }
 
     func didTapCreateWish(path: Binding<NavigationPath>) {
         creationManager.startNewWish()

@@ -93,6 +93,9 @@ public struct StartView: View {
         .background(Color.wsBackground)
         .ignoresSafeArea()
         .navigationBarHidden(true)
+        .onAppear {
+            viewModel.didAppear()
+        }
         .navigationDestination(isPresented: $viewModel.navigateToExamples) {
             ExampleWishesView()
         }

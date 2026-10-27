@@ -118,6 +118,32 @@
 "video_view_generating_subtitle" = "To może chwilę potrwać. Nie zamykaj aplikacji.";
 "video_view_reuse_existing_audio_notice" = "Użyjemy istniejącego nagrania";
 
+/* Paywall */
+"paywall_voice_title" = "Ożyw swoje życzenia";
+"paywall_voice_subtitle" = "Niech przeczyta je na głos lektor o naturalnym brzmieniu.";
+"paywall_video_title" = "Zamień życzenia w wideo";
+"paywall_video_subtitle" = "Kartka wideo z lektorem, dopasowana do okazji.";
+"paywall_voice_benefit_narrator" = "Ciepły, naturalny głos lektora";
+"paywall_video_benefit_theme" = "Animowana kartka w motywie okazji";
+"paywall_video_benefit_subtitles" = "Lektor z zsynchronizowanymi napisami";
+"paywall_benefit_library" = "Zapisane w bibliotece, do odtworzenia w każdej chwili";
+"paywall_voice_benefit_share" = "Plik audio do wysłania w wiadomości";
+"paywall_video_benefit_share" = "Gotowe do wysłania w komunikatorze";
+"paywall_purchase_button" = "Wygeneruj za %@";
+"paywall_loading_price" = "Wczytywanie ceny…";
+"paywall_price_load_error" = "Nie udało się wczytać ceny. Sprawdź połączenie i spróbuj ponownie.";
+"paywall_retry_button" = "Spróbuj ponownie";
+"paywall_one_time_purchase_note" = "Jednorazowa płatność. Jeśli generowanie się nie uda, ponowisz je za darmo.";
+"paywall_purchasing_message" = "Przetwarzanie zakupu…";
+"paywall_pending_title" = "Zakup oczekuje";
+"paywall_pending_message" = "Zakup czeka na zatwierdzenie. Wygenerujesz nagranie, gdy tylko zostanie zatwierdzony.";
+"paywall_error_title" = "Zakup nieudany";
+"paywall_error_payments_disabled" = "Zakupy w aplikacji są wyłączone na tym urządzeniu.";
+"paywall_error_product_unavailable" = "Ten produkt jest obecnie niedostępny. Spróbuj ponownie później.";
+"paywall_error_network" = "Wystąpił problem z siecią. Sprawdź połączenie i spróbuj ponownie.";
+"paywall_error_generic" = "Coś poszło nie tak z zakupem. Nie pobrano opłaty.";
+"paywall_alert_ok_button" = "OK";
+
 /* Package Selection */
 "package_selection_title" = "Wybierz pakiet";
 "package_selection_continue_button" = "Kontynuuj";
