@@ -1,5 +1,5 @@
 import Foundation
 
 enum APIConstants {
-    static let baseURL = URL(string: "https://wishspeaker-backend.onrender.com")!
+    static let baseURL = URL(string: "https://santa-voice-backend.onrender.com")!
 }

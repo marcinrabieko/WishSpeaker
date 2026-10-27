@@ -42,7 +42,7 @@ public struct LiveVoiceGenerationService: VoiceGenerationService {
             voiceId: request.providerVoiceID
         )
 
-        let response: GenerateAudioResponseDTO = try await apiClient.post("/api/generateAudio", body: dto)
+        let response: GenerateAudioResponseDTO = try await apiClient.post("/api/wishspeaker/generateAudio", body: dto)
 
         guard let audioData = Data(base64Encoded: response.audioBase64) else {
             throw APIError.invalidResponse

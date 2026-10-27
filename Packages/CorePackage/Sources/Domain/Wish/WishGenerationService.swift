@@ -36,7 +36,7 @@ public struct LiveWishGenerationService: WishGenerationService {
             language: SupportedLanguage.current.rawValue
         )
 
-        let response: WishVariantsDTO = try await apiClient.post("/api/generateWishes", body: dto)
+        let response: WishVariantsDTO = try await apiClient.post("/api/wishspeaker/generateWishes", body: dto)
 
         return WishGenerationResult(
             warm: response.warm.sanitizedWishText,
@@ -59,7 +59,7 @@ public struct LiveWishGenerationService: WishGenerationService {
             language: SupportedLanguage.current.rawValue
         )
 
-        let response: RegenerateWishResponseDTO = try await apiClient.post("/api/regenerateWish", body: dto)
+        let response: RegenerateWishResponseDTO = try await apiClient.post("/api/wishspeaker/regenerateWish", body: dto)
 
         return response.text.sanitizedWishText
     }

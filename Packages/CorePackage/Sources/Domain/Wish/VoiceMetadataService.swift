@@ -7,7 +7,7 @@ public enum VoiceMetadataError: Error, Sendable {
 
 /// Holds the curated voice catalog in memory for the lifetime of the app process —
 /// shared across every Voice/Video screen visit so the user only ever pays the
-/// `/api/voices/{id}` network cost once per app launch, not once per visit.
+/// `/api/wishspeaker/voices/{id}` network cost once per app launch, not once per visit.
 public actor VoiceMetadataCache {
     public static let shared = VoiceMetadataCache()
 
@@ -69,7 +69,7 @@ public struct LiveVoiceMetadataService: VoiceMetadataService {
     }
 
     private func fetchVoice(providerVoiceID: String) async throws -> VoiceOption {
-        let dto: VoiceMetadataResponseDTO = try await apiClient.get("/api/voices/\(providerVoiceID)")
+        let dto: VoiceMetadataResponseDTO = try await apiClient.get("/api/wishspeaker/voices/\(providerVoiceID)")
 
         var languagePreviewURLs: [String: URL] = [:]
         for verified in dto.verifiedLanguages {
