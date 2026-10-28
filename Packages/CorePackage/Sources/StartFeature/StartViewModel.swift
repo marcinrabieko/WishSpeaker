@@ -9,10 +9,15 @@ import SwiftUI
 public final class StartViewModel {
     var navigateToExamples = false
     var navigateToLibrary = false
+    var hasSavedWishes = false
 
     @ObservationIgnored
     @Dependency(\.wishCreationManager)
     private var creationManager: WishCreationManager
+
+    @ObservationIgnored
+    @Dependency(\.wishLibraryManager)
+    private var libraryManager: WishLibraryManager
 
     @ObservationIgnored
     @Dependency(\.purchaseManager)
@@ -22,6 +27,7 @@ public final class StartViewModel {
 
     func didAppear() {
         purchaseManager.start()
+        hasSavedWishes = !libraryManager.savedWishes.isEmpty
     }
 
     func didTapCreateWish(path: Binding<NavigationPath>) {

@@ -51,7 +51,7 @@ public struct GeneratingView: View {
     private var giftAnimation: some View {
         ZStack {
             Circle()
-                .fill(Color(hex: "F3D9A4"))
+                .fill(Color.wsGlow)
                 .frame(width: 160.0, height: 160.0)
                 .blur(radius: 40.0)
                 .scaleEffect(isAnimating ? 1.15 : 0.85)

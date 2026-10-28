@@ -12,6 +12,7 @@ public extension Color {
     static let wsSurface = Color(hex: "FFFCF7")
     static let wsPrimary = Color(hex: "E50918")
     static let wsSoftBorder = Color(hex: "EDE5D9")
+    static let wsGlow = Color(hex: "F3D9A4")
 }
 
 public extension Color {

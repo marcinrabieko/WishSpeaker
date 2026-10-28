@@ -23,10 +23,7 @@ public struct StartView: View {
                 Spacer(minLength: 0)
 
                 VStack(spacing: WSSpacing.sm) {
-                    Resource.iconUniversalTransparent.swiftUIImage
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 180)
+                    heroEnvelope
 
                     Group {
                         Text(L10n.startTitle)
@@ -47,38 +44,25 @@ public struct StartView: View {
                         viewModel.didTapCreateWish(path: createFlowPath)
                     }
 
-                    Button {
-                        viewModel.didTapHearExample()
-                    } label: {
-                        HStack(spacing: 6) {
-                            Image(systemName: "play.fill")
-                                .font(.system(size: 15, weight: .medium))
-                            Text(L10n.startHearExampleButton)
-                                .font(.system(size: 16, weight: .medium))
+                    secondaryButton(
+                        title: L10n.startHearExampleButton,
+                        systemImage: "play.fill",
+                        action: {
+                            viewModel.didTapHearExample()
                         }
-                        .foregroundColor(.wsSecondaryText)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: WSSize.minTapTarget)
-                    }
-                    .buttonStyle(.plain)
+                    )
 
-                    Button {
-                        viewModel.didTapLibrary()
-                    } label: {
-                        HStack(spacing: 6) {
-                            Image(systemName: "heart.text.square")
-                                .font(.system(size: 14, weight: .semibold))
-                            Text(L10n.startLibraryButton)
-                                .font(.system(size: 14, weight: .semibold))
-                        }
-                        .foregroundColor(.wsPrimary)
-                        .padding(.horizontal, WSSpacing.sm)
-                        .padding(.vertical, WSSpacing.xs)
-                        .background(Color.wsPrimary.opacity(0.08))
-                        .clipShape(Capsule())
+                    // Hidden until there's something to show — a first-time user would
+                    // otherwise land on an empty Library.
+                    if viewModel.hasSavedWishes {
+                        secondaryButton(
+                            title: L10n.startLibraryButton,
+                            systemImage: "heart",
+                            action: {
+                                viewModel.didTapLibrary()
+                            }
+                        )
                     }
-                    .buttonStyle(.plain)
-                    .padding(.top, WSSpacing.xs)
                 }
                 .padding(.horizontal, WSSpacing.horizontalPadding)
 
@@ -117,5 +101,46 @@ public struct StartView: View {
                 WishResultView.fromCreationFlow()
             }
         }
+    }
+
+    /// Slow, subtle float — deliberately calmer than GeneratingView's wobble of the same
+    /// envelope, so the idle Start screen never reads as "something is loading". The glow
+    /// stays static, unlike GeneratingView's pulsing one.
+    private var heroEnvelope: some View {
+        ZStack {
+            Circle()
+                .fill(Color.wsGlow)
+                .frame(width: 170.0, height: 170.0)
+                .blur(radius: 40.0)
+                .opacity(0.7)
+
+            Resource.iconUniversalTransparent.swiftUIImage
+                .resizable()
+                .scaledToFit()
+                .frame(width: 180.0)
+                .phaseAnimator([false, true]) { content, isRaised in
+                    content
+                        .offset(y: isRaised ? -6.0 : 0.0)
+                        .rotationEffect(.degrees(isRaised ? 1.5 : -1.5))
+                } animation: { _ in
+                    .easeInOut(duration: 2.8)
+                }
+        }
+    }
+
+    private func secondaryButton(title: String, systemImage: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(spacing: 6.0) {
+                Image(systemName: systemImage)
+                    .font(.system(size: 15.0, weight: .medium))
+
+                Text(title)
+                    .font(.system(size: 16.0, weight: .medium))
+            }
+            .foregroundColor(.wsSecondaryText)
+            .frame(maxWidth: .infinity)
+            .frame(height: WSSize.minTapTarget)
+        }
+        .buttonStyle(.plain)
     }
 }
