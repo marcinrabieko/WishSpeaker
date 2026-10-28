@@ -4,7 +4,7 @@ import Foundation
 import Observation
 import SwiftUI
 
-/// Where this Wish came from — determines Back's behavior (see didTapBackInCreationFlow)
+/// Where this Wish came from — determines Back's behavior (see didTapHome)
 /// since that's the only remaining difference between the two origins once both flows
 /// render the same result screen.
 enum WishResultOrigin {
@@ -117,15 +117,16 @@ final class WishResultViewModel {
         }
     }
 
+    var hasGeneratedMedia: Bool {
+        wish.voiceAsset != nil || wish.videoAsset != nil
+    }
+
     /// Once a voice/video has been generated, this screen is a terminal step in the
-    /// creation flow — Back returns all the way to Start instead of walking back through
-    /// Occasion/Form/Wishes, which would just re-show already-submitted choices.
-    func didTapBackInCreationFlow(path: Binding<NavigationPath>) {
-        if wish.voiceAsset != nil || wish.videoAsset != nil {
-            path.wrappedValue.removeLast(path.wrappedValue.count)
-        } else {
-            path.wrappedValue.removeLast()
-        }
+    /// creation flow — Home returns all the way to Start instead of
+    /// walking back through Occasion/Form/Wishes, which would just re-show
+    /// already-submitted choices.
+    func didTapHome(path: Binding<NavigationPath>) {
+        path.wrappedValue.removeLast(path.wrappedValue.count)
     }
 }
 

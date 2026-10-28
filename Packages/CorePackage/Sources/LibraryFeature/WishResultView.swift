@@ -11,7 +11,7 @@ import UIKit
 /// LibraryView and at the end of the Occasion → Form → Wishes creation flow. The two
 /// origins show exactly the same data and the same decisions (copy, edit, share, create
 /// voice/video), so they share one view and one WishResultViewModel; `origin` only
-/// changes Back's behavior (see WishResultViewModel.didTapBackInCreationFlow).
+/// changes Back's behavior (see WishResultViewModel.didTapHome).
 public struct WishResultView: View {
     // Matches the backend's GenerateAudioRequest/GenerateVideoRequest max_length (see
     // WishSpeaker-Backend/models.py) — edited text past this point would be rejected
@@ -97,7 +97,7 @@ public struct WishResultView: View {
             .wsDecoratedBackground()
             .navigationTitle(viewModel.wish.recipient)
             .navigationBarTitleDisplayMode(.large)
-            .modifier(BackButtonModifier(origin: origin, viewModel: viewModel, path: createFlowPath))
+            .wsBackButton(homeAction: homeAction)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     shareButton
@@ -184,6 +184,19 @@ public struct WishResultView: View {
             } label: {
                 Label(L10n.wishDetailShareButton, systemImage: "square.and.arrow.up")
             }
+        }
+    }
+
+    /// Non-nil only for a freshly generated voice/video in the creation flow — turns Back
+    /// into Home (and disables the swipe-back gesture). A Wish opened from the Library always
+    /// pops normally.
+    private var homeAction: (() -> Void)? {
+        if origin == .creationFlow, viewModel.hasGeneratedMedia {
+            {
+                viewModel.didTapHome(path: createFlowPath)
+            }
+        } else {
+            nil
         }
     }
 
@@ -418,26 +431,5 @@ public struct WishResultView: View {
         .disabled(isJustSaved)
         .frame(maxWidth: .infinity, alignment: .center)
         .padding(.top, WSSpacing.xs)
-    }
-}
-
-/// `.wsBackButton()` (plain pop) for a Wish opened from the Library vs.
-/// `.wsBackButton(customAction:)` (pop-to-Start once a voice/video exists) for the
-/// creation flow — kept as a ViewModifier rather than an inline `if` in `body` because
-/// `wsBackButton`'s two overloads aren't both callable from a single `@ViewBuilder` if
-/// branch without it.
-private struct BackButtonModifier: ViewModifier {
-    let origin: WishResultOrigin
-    let viewModel: WishResultViewModel
-    let path: Binding<NavigationPath>
-
-    func body(content: Content) -> some View {
-        switch origin {
-        case .library:
-            content.wsBackButton()
-
-        case .creationFlow:
-            content.wsBackButton(customAction: { viewModel.didTapBackInCreationFlow(path: path) })
-        }
     }
 }
