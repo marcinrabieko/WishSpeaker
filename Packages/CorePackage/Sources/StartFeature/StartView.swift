@@ -44,25 +44,19 @@ public struct StartView: View {
                         viewModel.didTapCreateWish(path: createFlowPath)
                     }
 
-                    secondaryButton(
-                        title: L10n.startHearExampleButton,
-                        systemImage: "play.fill",
-                        action: {
-                            viewModel.didTapHearExample()
+                    // Side by side when they fit, stacked otherwise (longer Polish copy) —
+                    // both arrangements give every pill the width of the widest one.
+                    ViewThatFits(in: .horizontal) {
+                        EqualWidthHStack(spacing: WSSpacing.xs) {
+                            secondaryPills
                         }
-                    )
 
-                    // Hidden until there's something to show — a first-time user would
-                    // otherwise land on an empty Library.
-                    if viewModel.hasSavedWishes {
-                        secondaryButton(
-                            title: L10n.startLibraryButton,
-                            systemImage: "heart",
-                            action: {
-                                viewModel.didTapLibrary()
-                            }
-                        )
+                        VStack(spacing: WSSpacing.xs) {
+                            secondaryPills
+                        }
+                        .fixedSize()
                     }
+                    .padding(.top, WSSpacing.sm)
                 }
                 .padding(.horizontal, WSSpacing.horizontalPadding)
 
@@ -128,19 +122,77 @@ public struct StartView: View {
         }
     }
 
-    private func secondaryButton(title: String, systemImage: String, action: @escaping () -> Void) -> some View {
+    /// Library pill hidden until there's something to show — a first-time user would
+    /// otherwise land on an empty Library.
+    @ViewBuilder
+    private var secondaryPills: some View {
+        secondaryPill(
+            title: L10n.startHearExampleButton,
+            systemImage: "play.fill",
+            action: {
+                viewModel.didTapHearExample()
+            }
+        )
+
+        if viewModel.hasSavedWishes {
+            secondaryPill(
+                title: L10n.startLibraryButton,
+                systemImage: "heart",
+                action: {
+                    viewModel.didTapLibrary()
+                }
+            )
+        }
+    }
+
+    private func secondaryPill(title: String, systemImage: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack(spacing: 6.0) {
                 Image(systemName: systemImage)
-                    .font(.system(size: 15.0, weight: .medium))
+                    .font(.system(size: 14.0, weight: .semibold))
 
                 Text(title)
-                    .font(.system(size: 16.0, weight: .medium))
+                    .font(.system(size: 14.0, weight: .semibold))
+                    .lineLimit(1)
             }
-            .foregroundColor(.wsSecondaryText)
             .frame(maxWidth: .infinity)
-            .frame(height: WSSize.minTapTarget)
+            .foregroundColor(.wsPrimary)
+            .padding(.horizontal, WSSpacing.sm)
+            .padding(.vertical, WSSpacing.xs)
+            .background(Color.wsPrimary.opacity(0.08))
+            .clipShape(Capsule())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(ScaleButtonStyle())
+    }
+}
+
+/// An HStack that sizes every subview to the widest one's ideal width — `.fixedSize()` only
+/// achieves that for a VStack, an HStack keeps each child at its own ideal width.
+private struct EqualWidthHStack: Layout {
+    let spacing: CGFloat
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let itemSize = maxIdealSize(of: subviews)
+        let totalSpacing = spacing * CGFloat(max(subviews.count - 1, 0))
+
+        return CGSize(width: itemSize.width * CGFloat(subviews.count) + totalSpacing, height: itemSize.height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let itemSize = maxIdealSize(of: subviews)
+        var x = bounds.minX
+
+        for subview in subviews {
+            subview.place(at: CGPoint(x: x, y: bounds.midY), anchor: .leading, proposal: ProposedViewSize(itemSize))
+            x += itemSize.width + spacing
+        }
+    }
+
+    private func maxIdealSize(of subviews: Subviews) -> CGSize {
+        subviews.reduce(.zero) { result, subview in
+            let size = subview.sizeThatFits(.unspecified)
+
+            return CGSize(width: max(result.width, size.width), height: max(result.height, size.height))
+        }
     }
 }
