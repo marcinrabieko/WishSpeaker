@@ -8,6 +8,7 @@ private struct WSBackButtonModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
+            .background(InteractivePopGestureEnabler())
             .navigationBarBackButtonHidden(true)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -26,6 +27,46 @@ private struct WSBackButtonModifier: ViewModifier {
                     }
                 }
             }
+    }
+}
+
+/// `.navigationBarBackButtonHidden(true)` also disables the edge-swipe-to-go-back gesture.
+/// This invisible child controller re-enables it on every appearance (SwiftUI can disable it
+/// again while updating the bar) and swaps in a delegate that only lets it begin when there is
+/// something to pop — a swipe on the root screen would otherwise freeze the navigation stack.
+private struct InteractivePopGestureEnabler: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> EnablerViewController {
+        EnablerViewController()
+    }
+
+    func updateUIViewController(_ uiViewController: EnablerViewController, context: Context) {}
+
+    final class EnablerViewController: UIViewController {
+        override func viewDidAppear(_ animated: Bool) {
+            super.viewDidAppear(animated)
+
+            guard let popGesture = navigationController?.interactivePopGestureRecognizer else {
+                return
+            }
+
+            popGesture.isEnabled = true
+            popGesture.delegate = PopGestureDelegate.shared
+        }
+    }
+}
+
+/// Stateless and shared on purpose: `UIGestureRecognizer.delegate` is weak, so a per-screen
+/// delegate would be released when its screen is popped, leaving the gesture unguarded on root.
+@MainActor
+private final class PopGestureDelegate: NSObject, UIGestureRecognizerDelegate {
+    static let shared = PopGestureDelegate()
+
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard let navigationController = gestureRecognizer.view?.next as? UINavigationController else {
+            return false
+        }
+
+        return navigationController.viewControllers.count > 1
     }
 }
 
