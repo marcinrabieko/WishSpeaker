@@ -34,12 +34,17 @@ public struct GeneratingView: View {
             .padding(.horizontal, WSSpacing.xl)
 
             Spacer()
-            Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .wsDecoratedBackground()
         .onAppear {
             isAnimating = true
+            // Generation (on-device ffmpeg for video) is interrupted once the app is
+            // backgrounded, which auto-lock would otherwise do mid-render.
+            UIApplication.shared.isIdleTimerDisabled = true
+        }
+        .onDisappear {
+            UIApplication.shared.isIdleTimerDisabled = false
         }
     }
 
@@ -86,6 +91,6 @@ public struct GeneratingView: View {
 #Preview {
     GeneratingView(
         title: "Wrapping up your video…",
-        subtitle: "This may take a little while. Please keep the app open."
+        subtitle: "Almost there. Please keep the app open."
     )
 }

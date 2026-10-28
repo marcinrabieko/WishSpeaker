@@ -57,6 +57,13 @@ public struct VoiceView: View {
         .onAppear {
             viewModel.didAppear()
         }
+        .sensoryFeedback(
+            .success,
+            trigger: viewModel.navigateBackAfterGeneration,
+            condition: { _, isNavigatingBack in
+                isNavigatingBack
+            }
+        )
         .onChange(of: viewModel.navigateBackAfterGeneration) { _, isNavigatingBack in
             guard isNavigatingBack else { return }
             dismiss()

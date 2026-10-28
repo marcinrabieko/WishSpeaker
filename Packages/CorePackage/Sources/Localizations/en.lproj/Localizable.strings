@@ -115,7 +115,7 @@
 "video_view_generate_button" = "Generate Video";
 "video_view_generation_error" = "We couldn't generate the video. Please try again.";
 "video_view_generating_title" = "Wrapping up your video…";
-"video_view_generating_subtitle" = "This may take a little while. Please keep the app open.";
+"video_view_generating_subtitle" = "Almost there. Please keep the app open.";
 "video_view_reuse_existing_audio_notice" = "We'll use your existing recording";
 
 /* Paywall */
