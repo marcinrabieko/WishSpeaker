@@ -34,8 +34,28 @@ public struct OccasionSelectionView: View {
 		.navigationTitle(L10n.occasionSelectionTitle)
 		.navigationBarTitleDisplayMode(.large)
 		.wsBackButton()
+		#if DEBUG
+		.onAppear {
+			runScreenshotDemo()
+		}
+		#endif
 	}
 }
+
+#if DEBUG
+private extension OccasionSelectionView {
+	func runScreenshotDemo() {
+		ScreenshotDemo.run(.occasionSelection) {
+			await ScreenshotDemo.pause(1.4)
+			await ScreenshotDemo.capture("02-occasion")
+
+			if let occasion = viewModel.occasions.first(where: { $0.kind == ScreenshotDemo.occasionKind }) {
+				viewModel.didSelectOccasion(occasion, path: createFlowPath)
+			}
+		}
+	}
+}
+#endif
 
 private struct OccasionRowView: View {
 	let occasion: Occasion

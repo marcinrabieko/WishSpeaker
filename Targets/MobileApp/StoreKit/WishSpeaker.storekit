@@ -13,7 +13,7 @@
   "nonRenewingSubscriptions": [],
   "products": [
     {
-      "displayPrice": "4.99",
+      "displayPrice": "2.99",
       "familyShareable": false,
       "internalID": "WISHSPEAKER-VOICE-LOCAL",
       "localizations": [
@@ -28,7 +28,7 @@
       "type": "Consumable"
     },
     {
-      "displayPrice": "9.99",
+      "displayPrice": "4.99",
       "familyShareable": false,
       "internalID": "WISHSPEAKER-VIDEO-LOCAL",
       "localizations": [

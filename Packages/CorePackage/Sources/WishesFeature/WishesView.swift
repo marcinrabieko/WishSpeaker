@@ -29,8 +29,25 @@ public struct WishesView: View {
         .wsBackButton()
         .onAppear {
             viewModel.didAppear()
+
+            #if DEBUG
+            runScreenshotDemo()
+            #endif
         }
     }
+
+    #if DEBUG
+    private func runScreenshotDemo() {
+        ScreenshotDemo.run(.wishes) {
+            await ScreenshotDemo.pause(1.8)
+            await ScreenshotDemo.capture("04-wishes")
+
+            ScreenshotDemo.attachVideo()
+            viewModel.didTapUseThisWish(.warm, path: createFlowPath)
+            ScreenshotDemo.saveWalkthroughWish()
+        }
+    }
+    #endif
 
     private var loadingView: some View {
         VStack(spacing: WSSpacing.sm) {

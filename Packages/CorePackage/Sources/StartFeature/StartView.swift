@@ -73,6 +73,10 @@ public struct StartView: View {
         .navigationBarHidden(true)
         .onAppear {
             viewModel.didAppear()
+
+            #if DEBUG
+            runScreenshotDemo()
+            #endif
         }
         .navigationDestination(isPresented: $viewModel.navigateToExamples) {
             ExampleWishesView()
@@ -165,6 +169,41 @@ public struct StartView: View {
         .buttonStyle(ScaleButtonStyle())
     }
 }
+
+#if DEBUG
+private extension StartView {
+    /// Start is both where the walkthrough begins and where it returns to for the
+    /// Library and Examples screenshots, taken after the App Preview part is over.
+    func runScreenshotDemo() {
+        ScreenshotDemo.run(.start) {
+            ScreenshotDemo.mark("preview-start")
+            await ScreenshotDemo.pause(1.5)
+            await ScreenshotDemo.capture("01-start")
+
+            viewModel.didTapCreateWish(path: createFlowPath)
+        }
+
+        ScreenshotDemo.run(.libraryAndExamples) {
+            ScreenshotDemo.seedLibrary()
+            viewModel.didAppear()
+            await ScreenshotDemo.pause(1.0)
+
+            viewModel.didTapLibrary()
+            await ScreenshotDemo.pause(1.2)
+            await ScreenshotDemo.capture("06-library")
+
+            viewModel.navigateToLibrary = false
+            await ScreenshotDemo.pause(1.2)
+
+            viewModel.didTapHearExample()
+            await ScreenshotDemo.pause(1.2)
+            await ScreenshotDemo.capture("07-examples")
+
+            ScreenshotDemo.mark("finished")
+        }
+    }
+}
+#endif
 
 /// An HStack that sizes every subview to the widest one's ideal width — `.fixedSize()` only
 /// achieves that for a VStack, an HStack keeps each child at its own ideal width.

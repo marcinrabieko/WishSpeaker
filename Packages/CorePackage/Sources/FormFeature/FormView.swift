@@ -115,9 +115,45 @@ public struct FormView: View {
 		.wsBackButton()
 		.onAppear {
 			viewModel.didAppear()
+
+			#if DEBUG
+			runScreenshotDemo()
+			#endif
 		}
 	}
 }
+
+#if DEBUG
+private extension FormView {
+	/// Waits out the push animation first, then types into each field the way a person
+	/// would — focus, type, move on — and dismisses the keyboard before the screenshot.
+	func runScreenshotDemo() {
+		ScreenshotDemo.run(.form) {
+			await ScreenshotDemo.pause(0.9)
+
+			isRelationFocused = true
+			await ScreenshotDemo.pause(0.5)
+			await ScreenshotDemo.type(ScreenshotDemo.recipientText) { typedText in
+				viewModel.relationText = typedText
+			}
+			await ScreenshotDemo.pause(0.5)
+
+			isDetailsFocused = true
+			await ScreenshotDemo.pause(0.4)
+			await ScreenshotDemo.type(ScreenshotDemo.detailsText) { typedText in
+				viewModel.detailsText = typedText
+			}
+			await ScreenshotDemo.pause(0.6)
+
+			isDetailsFocused = false
+			await ScreenshotDemo.pause(0.7)
+			await ScreenshotDemo.capture("03-form")
+
+			viewModel.didTapGenerate(path: createFlowPath)
+		}
+	}
+}
+#endif
 
 private struct SelectedOccasionChip: View {
 	let occasion: Occasion

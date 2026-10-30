@@ -105,6 +105,10 @@ public struct WishResultView: View {
             }
             .onAppear {
                 viewModel.didAppear()
+
+                #if DEBUG
+                runScreenshotDemo()
+                #endif
             }
             .onChange(of: viewModel.wish.videoAsset?.id) { _, _ in
                 updateVideoPlayerIfNeeded()
@@ -433,3 +437,28 @@ public struct WishResultView: View {
         .padding(.top, WSSpacing.xs)
     }
 }
+
+#if DEBUG
+private extension WishResultView {
+    /// Starts the video the way a user tapping Play would, screenshots it mid-playback
+    /// and lets it run a few more seconds before the App Preview ends — then heads home
+    /// for the Library/Examples screenshots.
+    func runScreenshotDemo() {
+        ScreenshotDemo.run(.result) {
+            await ScreenshotDemo.pause(1.0)
+
+            videoPlayer?.play()
+            ScreenshotDemo.mark("video-start")
+            await ScreenshotDemo.pause(3.5)
+            await ScreenshotDemo.capture("05-result")
+
+            await ScreenshotDemo.pause(3.5)
+            ScreenshotDemo.mark("preview-end")
+            await ScreenshotDemo.pause(0.5)
+
+            videoPlayer?.pause()
+            viewModel.didTapHome(path: createFlowPath)
+        }
+    }
+}
+#endif

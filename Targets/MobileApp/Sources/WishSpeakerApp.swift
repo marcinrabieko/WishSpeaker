@@ -8,6 +8,10 @@ struct WishSpeakerApp: App {
     @State private var createFlowPath = NavigationPath()
 
     init() {
+        #if DEBUG
+        ScreenshotDemo.configureLaunch()
+        #endif
+
         // setActive(_:) blocks until the audio route is ready, which can stall the UI
         // (e.g. delaying the keyboard) when called on the main thread — so the whole
         // session setup runs off it. The async activate(options:) API would avoid this
