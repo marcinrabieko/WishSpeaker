@@ -45,8 +45,8 @@
   ],
   "settings": {
     "_failTransactionsEnabled": false,
-    "_locale": "pl",
-    "_storefront": "POL",
+    "_locale": "en_US",
+    "_storefront": "USA",
     "_storeKitErrors": [
       {
         "current": {

@@ -52,8 +52,7 @@ let package = Package(
         .target(
             name: "Localizations",
             resources: [
-                .process("en.lproj"),
-                .process("pl.lproj")
+                .process("en.lproj")
             ],
             plugins: [swiftGenPlugin, swiftLintPlugin]
         ),

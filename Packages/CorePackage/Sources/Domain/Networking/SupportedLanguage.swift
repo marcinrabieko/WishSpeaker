@@ -1,15 +1,10 @@
 import Foundation
 
-/// The 6 languages the backend has a dedicated prompt for (see
-/// WishSpeaker-Backend/services/prompts/). Falls back to English for anything else.
+/// The app is English-only, so wishes are always generated in English regardless of the
+/// device locale. The backend also has prompts for pl/de/fr/it/es (see
+/// WishSpeaker-Backend/services/prompts/), but the app deliberately doesn't use them.
 enum SupportedLanguage: String {
-    case en, pl, de, fr, it, es
+    case en
 
-    static var current: SupportedLanguage {
-        guard let languageCode = Locale.current.language.languageCode?.identifier else {
-            return .en
-        }
-
-        return SupportedLanguage(rawValue: languageCode) ?? .en
-    }
+    static var current: SupportedLanguage { .en }
 }
